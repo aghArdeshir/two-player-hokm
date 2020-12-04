@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { GAME_EVENTS } from "../common.typings";
 import LoginPage from "./LoginPage";
 import PickingPage from "./PickingPage";
 import { socketService } from "./socket-service";
@@ -9,7 +10,7 @@ export default function App() {
 
   useEffect(() => {
     socketService.onConnected(() => setSocketConnected(true));
-    socketService.once("game-started", () => setGameStarted(true));
+    socketService.once(GAME_EVENTS.GAME_STARTED, () => setGameStarted(true));
   }, []);
 
   if (gameStarted) return <PickingPage />;

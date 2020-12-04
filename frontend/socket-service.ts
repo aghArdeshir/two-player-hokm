@@ -1,25 +1,28 @@
 import { io, Socket } from "socket.io-client";
+import { GAME_EVENTS, GAME_PORT } from "../common.typings";
 
 class SocketService {
   private connected = false;
   private socketConnection: Socket;
 
   constructor() {
-    this.socketConnection = io("localhost:3000");
+    this.socketConnection = io(`localhost:${GAME_PORT}`);
 
-    this.socketConnection.on("connect", () => {
+    this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       this.connected = true;
       this.setupListeners();
-      document.body.dispatchEvent(new CustomEvent("socket-connected"));
+      document.body.dispatchEvent(
+        new CustomEvent(GAME_EVENTS.SOCKET_CONNECTED)
+      );
     });
   }
 
   onConnected(callback: () => void) {
     if (this.connected) callback();
-    else this.once("socket-connected", callback);
+    else this.once(GAME_EVENTS.SOCKET_CONNECTED, callback);
   }
 
-  once(eventName: "socket-connected" | "game-started", listener: () => void) {
+  once(eventName: GAME_EVENTS, listener: () => void) {
     function _listener() {
       listener();
       document.body.removeEventListener(eventName, _listener);
@@ -29,13 +32,13 @@ class SocketService {
   }
 
   registerUser(username: string) {
-    this.socketConnection.emit("register", { register: username });
+    this.socketConnection.emit(GAME_EVENTS.REGISTER, { register: username });
   }
 
   setupListeners() {
-    this.socketConnection.on("error", console.error);
-    this.socketConnection.on("game-started", () =>
-      document.body.dispatchEvent(new CustomEvent("game-started"))
+    this.socketConnection.on(GAME_EVENTS.ERROR, console.error);
+    this.socketConnection.on(GAME_EVENTS.GAME_STARTED, () =>
+      document.body.dispatchEvent(new CustomEvent(GAME_EVENTS.GAME_STARTED))
     );
   }
 }
