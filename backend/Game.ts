@@ -1,3 +1,4 @@
+import { Socket } from "socket.io";
 import { CARD_FORMAT, GAME_EVENTS, ICardNumber } from "../common.typings";
 
 class Card {
@@ -35,11 +36,11 @@ class Deck {
   }
 }
 
-class Player {
+export class Player {
   private username: string;
   private carads: Card[] = [];
 
-  constructor(username: string) {
+  constructor(username: string, connection: Socket) {
     this.username = username;
   }
 
@@ -53,9 +54,9 @@ export class Game {
   private player2: Player;
   private deck = new Deck();
 
-  constructor(player_1_username: string, player_2_username: string) {
-    this.player1 = new Player(player_1_username);
-    this.player2 = new Player(player_2_username);
+  constructor(player1: Player, player2: Player) {
+    this.player1 = player1;
+    this.player2 = player2;
 
     this.giveEachPlayerFive();
   }
