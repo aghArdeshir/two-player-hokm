@@ -1,11 +1,15 @@
-import { createServer } from "http";
+import { createServer as createHttpServer } from "http";
+import { Server as SocketServer } from "socket.io";
 
-const http = createServer((_req, res) => {
-  res.end("Nothing here!");
-});
-
-http.listen(3000);
-
+const http = createHttpServer();
 http.on("listening", () => {
   console.log("backend listening on port 3000");
 });
+
+const socketServer = new SocketServer();
+socketServer.attach(http);
+socketServer.on("connect", () => {
+  console.log("a user connected");
+});
+
+http.listen(3000);
