@@ -1,0 +1,79 @@
+import { CARD_FORMAT, GAME_EVENTS, ICardNumber } from "../common.typings";
+
+class Card {
+  readonly number: ICardNumber;
+  readonly format: CARD_FORMAT;
+
+  constructor(number: ICardNumber, format: CARD_FORMAT) {
+    this.number = number;
+    this.format = format;
+  }
+}
+
+class Deck {
+  private cards: Card[] = [];
+
+  constructor() {
+    this.fillDeck();
+  }
+
+  private fillDeck() {
+    for (let i: ICardNumber = 1; i !== 14; i++) {
+      [
+        CARD_FORMAT.PIKES,
+        CARD_FORMAT.HEARTS,
+        CARD_FORMAT.CLOVERS,
+        CARD_FORMAT.TILES,
+      ].forEach((format) => {
+        this.cards.push(new Card(i, format));
+      });
+    }
+  }
+
+  pop() {
+    return this.cards.pop();
+  }
+}
+
+class Player {
+  private username: string;
+  private carads: Card[] = [];
+
+  constructor(username: string) {
+    this.username = username;
+  }
+
+  addCard(card: Card) {
+    this.carads.push(card);
+  }
+}
+
+export class Game {
+  private player1: Player;
+  private player2: Player;
+  private deck = new Deck();
+
+  constructor(player_1_username: string, player_2_username: string) {
+    this.player1 = new Player(player_1_username);
+    this.player2 = new Player(player_2_username);
+
+    this.giveEachPlayerFive();
+  }
+
+  private giveEachPlayerFive() {
+    [this.player1, this.player2].forEach((player) => {
+      for (let i = 0; i < 5; i++) {
+        player.addCard(this.deck.pop());
+      }
+    });
+  }
+
+  reportGameState() {
+    return {
+      player1: this.player1,
+      player2: this.player2,
+
+      NEXT_STEP: GAME_EVENTS.CHOOSE_HOKM,
+    };
+  }
+}
