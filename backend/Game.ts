@@ -1,7 +1,12 @@
 import { Socket } from "socket.io";
-import { CARD_FORMAT, GAME_EVENTS, ICardNumber } from "../common.typings";
+import {
+  CARD_FORMAT,
+  GAME_EVENTS,
+  ICard,
+  ICardNumber,
+} from "../common.typings";
 
-class Card {
+class Card implements ICard {
   readonly number: ICardNumber;
   readonly format: CARD_FORMAT;
 
@@ -32,7 +37,7 @@ class Deck {
   }
 
   pop() {
-    return this.cards.pop();
+    return this.cards.shift();
   }
 }
 

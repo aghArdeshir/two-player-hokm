@@ -18,3 +18,16 @@ export enum CARD_FORMAT {
   CLOVERS = "Clovers",
   TILES = "Tiles",
 }
+
+export interface ICard {
+  number: ICardNumber;
+  format: CARD_FORMAT;
+}
+
+export interface IGameState {
+  NEXT_STEP: GAME_EVENTS;
+}
+
+export interface IGameStateForUi extends IGameState {
+  cards: ICard[];
+}

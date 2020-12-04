@@ -12,7 +12,7 @@ export default function LoginPage() {
   return (
     <form onSubmit={onFormSubmit}>
       <label htmlFor="username">Username:</label>
-      <input id="username" ref={inputRef} />
+      <input id="username" ref={inputRef} autoFocus />
       <br />
       <button type="submit">Join</button>
     </form>

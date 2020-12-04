@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { GAME_EVENTS, GAME_PORT } from "../common.typings";
+import { GAME_EVENTS, GAME_PORT, IGameStateForUi } from "../common.typings";
 
 class SocketService {
   private connected = false;
@@ -40,6 +40,10 @@ class SocketService {
     this.socketConnection.on(GAME_EVENTS.GAME_STARTED, () =>
       document.body.dispatchEvent(new CustomEvent(GAME_EVENTS.GAME_STARTED))
     );
+  }
+
+  on(eventName: GAME_EVENTS, listener: (data: IGameStateForUi) => void) {
+    this.socketConnection.on(eventName, listener);
   }
 }
 
