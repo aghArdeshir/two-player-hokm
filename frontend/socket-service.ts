@@ -9,7 +9,8 @@ class SocketService {
 
     this.socketConnection.on("connect", () => {
       this.connected = true;
-      document.body.dispatchEvent(new Event("socket-connected"));
+      this.setupListeners();
+      document.body.dispatchEvent(new CustomEvent("socket-connected"));
     });
   }
 
@@ -18,7 +19,7 @@ class SocketService {
     else this.once("socket-connected", callback);
   }
 
-  private once(eventName: "socket-connected", listener: () => void) {
+  once(eventName: "socket-connected" | "game-started", listener: () => void) {
     function _listener() {
       listener();
       document.body.removeEventListener(eventName, _listener);
@@ -29,6 +30,13 @@ class SocketService {
 
   registerUser(username: string) {
     this.socketConnection.emit("register", { register: username });
+  }
+
+  setupListeners() {
+    this.socketConnection.on("error", console.error);
+    this.socketConnection.on("game-started", () =>
+      document.body.dispatchEvent(new CustomEvent("game-started"))
+    );
   }
 }
 
