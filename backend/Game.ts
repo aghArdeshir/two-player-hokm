@@ -38,10 +38,12 @@ class Deck {
 
 export class Player {
   private username: string;
-  private carads: Card[] = [];
+  carads: Card[] = [];
+  connection: Socket;
 
   constructor(username: string, connection: Socket) {
     this.username = username;
+    this.connection = connection;
   }
 
   addCard(card: Card) {
@@ -71,9 +73,6 @@ export class Game {
 
   reportGameState() {
     return {
-      player1: this.player1,
-      player2: this.player2,
-
       NEXT_STEP: GAME_EVENTS.CHOOSE_HOKM,
     };
   }

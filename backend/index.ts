@@ -31,7 +31,12 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
       game = new Game(players[0], players[1]);
 
-      socketServer.emit(GAME_EVENTS.GAME_STATE, game.reportGameState());
+      players.forEach((player) =>
+        player.connection.emit(GAME_EVENTS.GAME_STATE, {
+          ...game.reportGameState(),
+          cards: player.carads,
+        })
+      );
     }
   });
 });
