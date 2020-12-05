@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { GAME_EVENTS, IGameStateForUi } from "../common.typings";
+import ChooseHokm from "./ChooseHokm";
 import { GameStateContext } from "./GameStateContext";
 import LoginPage from "./LoginPage";
 import PickingPage from "./PickingPage";
 import PlayerCards from "./PlayerCards";
+import ShowHokm from "./ShowHokm";
 import { socketService } from "./socket-service";
 
 export default function App() {
@@ -18,7 +20,9 @@ export default function App() {
   if (gameState)
     return (
       <GameStateContext.Provider value={gameState}>
+        <ShowHokm />
         <PickingPage />
+        <ChooseHokm />
         <PlayerCards />
       </GameStateContext.Provider>
     );

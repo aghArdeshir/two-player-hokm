@@ -1,5 +1,10 @@
 import { io, Socket } from "socket.io-client";
-import { GAME_EVENTS, GAME_PORT, IGameStateForUi } from "../common.typings";
+import {
+  CARD_FORMAT,
+  GAME_EVENTS,
+  GAME_PORT,
+  IGameStateForUi,
+} from "../common.typings";
 
 class SocketService {
   private connected = false;
@@ -44,6 +49,10 @@ class SocketService {
 
   on(eventName: GAME_EVENTS, listener: (data: IGameStateForUi) => void) {
     this.socketConnection.on(eventName, listener);
+  }
+
+  selectHokm(format: CARD_FORMAT) {
+    this.socketConnection.emit(GAME_EVENTS.HOKM, format);
   }
 }
 

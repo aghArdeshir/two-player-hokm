@@ -44,15 +44,26 @@ class Deck {
 export class Player {
   private username: string;
   carads: Card[] = [];
+  index: 1 | 2; // player1 or player2
   connection: Socket;
+  isHaakem: boolean = false;
 
-  constructor(username: string, connection: Socket) {
+  constructor(username: string, index: 1 | 2, connection: Socket) {
     this.username = username;
     this.connection = connection;
+    this.index = index;
   }
 
   addCard(card: Card) {
     this.carads.push(card);
+  }
+
+  setAsHaakem() {
+    this.isHaakem = true;
+  }
+
+  reportGameState() {
+    return { cards: this.carads, player: this.index, isHaakem: this.isHaakem };
   }
 }
 
@@ -60,6 +71,7 @@ export class Game {
   private player1: Player;
   private player2: Player;
   private deck = new Deck();
+  private hokm: CARD_FORMAT;
 
   constructor(player1: Player, player2: Player) {
     this.player1 = player1;
@@ -76,9 +88,17 @@ export class Game {
     });
   }
 
+  setHokm(format: CARD_FORMAT) {
+    this.hokm = format;
+  }
+
   reportGameState() {
+    let NEXT_STEP = GAME_EVENTS.CHOOSE_HOKM;
+    if (this.hokm) NEXT_STEP = GAME_EVENTS.PICK;
+
     return {
-      NEXT_STEP: GAME_EVENTS.CHOOSE_HOKM,
+      NEXT_STEP,
+      hokm: this.hokm,
     };
   }
 }

@@ -6,6 +6,8 @@ export enum GAME_EVENTS {
   ERROR = "error",
   CHOOSE_HOKM = "choose-hokm",
   GAME_STATE = "game-state",
+  HOKM = "hokm",
+  PICK = "pick",
 }
 
 export const GAME_PORT = 3000;
@@ -26,8 +28,18 @@ export interface ICard {
 
 export interface IGameState {
   NEXT_STEP: GAME_EVENTS;
+  hokm?: CARD_FORMAT;
 }
 
 export interface IGameStateForUi extends IGameState {
   cards: ICard[];
+  player: 1 | 2;
+  isHaakem: boolean;
 }
+
+export const formats = [
+  CARD_FORMAT.PIKES,
+  CARD_FORMAT.HEARTS,
+  CARD_FORMAT.CLOVERS,
+  CARD_FORMAT.TILES,
+];
