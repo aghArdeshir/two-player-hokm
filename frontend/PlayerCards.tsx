@@ -8,6 +8,8 @@ export default function PlayerCards() {
 
   return (
     <>
+      These are your cards:
+      <br />
       {gameState.cards.map((card: ICard) => (
         <Card
           key={card.number + card.format}
@@ -15,6 +17,7 @@ export default function PlayerCards() {
           number={card.number}
         />
       ))}
+      <br />
     </>
   );
 }

@@ -20,10 +20,10 @@ export default function App() {
   if (gameState)
     return (
       <GameStateContext.Provider value={gameState}>
+        <PlayerCards />
         <ShowHokm />
         <PickingPage />
         <ChooseHokm />
-        <PlayerCards />
       </GameStateContext.Provider>
     );
   if (socketConnected) return <LoginPage />;
