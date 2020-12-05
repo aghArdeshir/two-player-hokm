@@ -10,8 +10,6 @@ export default function App() {
   const [socketConnected, setSocketConnected] = useState(false);
   const [gameState, setGameState] = useState<IGameStateForUi>(null);
 
-  console.log(222, gameState);
-
   useEffect(() => {
     socketService.onConnected(() => setSocketConnected(true));
     socketService.on(GAME_EVENTS.GAME_STATE, setGameState);
