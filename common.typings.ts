@@ -29,6 +29,8 @@ export interface ICard {
 export interface IGameState {
   NEXT_STEP: GAME_EVENTS;
   hokm?: CARD_FORMAT;
+  turn?: 1 | 2;
+  card?: ICard;
 }
 
 export interface IGameStateForUi extends IGameState {

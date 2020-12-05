@@ -18,10 +18,14 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
   function emitGameState() {
     players.forEach((player) => {
-      player.connection.emit(GAME_EVENTS.GAME_STATE, {
+      const gameState = {
         ...game.reportGameState(),
         ...player.reportGameState(),
-      });
+      };
+
+      if (gameState.turn !== gameState.player) delete gameState.card;
+
+      player.connection.emit(GAME_EVENTS.GAME_STATE, gameState);
     });
   }
 

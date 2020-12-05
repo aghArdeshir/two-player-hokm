@@ -36,7 +36,7 @@ class Deck {
     }
   }
 
-  pop() {
+  shift() {
     return this.cards.shift();
   }
 }
@@ -83,7 +83,7 @@ export class Game {
   private giveEachPlayerFive() {
     [this.player1, this.player2].forEach((player) => {
       for (let i = 0; i < 5; i++) {
-        player.addCard(this.deck.pop());
+        player.addCard(this.deck.shift());
       }
     });
   }
@@ -96,9 +96,28 @@ export class Game {
     let NEXT_STEP = GAME_EVENTS.CHOOSE_HOKM;
     if (this.hokm) NEXT_STEP = GAME_EVENTS.PICK;
 
+    let turn: 1 | 2;
+    let card: Card;
+
+    if (NEXT_STEP === GAME_EVENTS.PICK) {
+      if (this.player1.carads.length === this.player2.carads.length) {
+        if (this.player1.isHaakem) turn = this.player1.index;
+        else turn = this.player2.index;
+      } else {
+        turn =
+          this.player1.carads.length < this.player2.carads.length
+            ? this.player1.index
+            : this.player2.index;
+      }
+
+      card = this.deck.shift();
+    }
+
     return {
       NEXT_STEP,
       hokm: this.hokm,
+      turn,
+      card,
     };
   }
 }
