@@ -7,8 +7,9 @@ export default function ChooseHokm() {
   const gameContext = useContext(GameStateContext);
 
   if (gameContext.NEXT_STEP !== GAME_EVENTS.CHOOSE_HOKM) return <></>;
-  if (!gameContext.isHaakem) return <></>;
   if (gameContext.hokm) return <></>;
+
+  if (!gameContext.isHaakem) return <>Waiting for haakem to select hokm</>;
 
   return (
     <>
