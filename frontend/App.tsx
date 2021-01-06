@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GAME_EVENTS, IGameStateForUi } from "../common.typings";
+import { GAME_EVENTS, IGameState } from "../common.typings";
 import ChooseHokm from "./ChooseHokm";
 import { GameStateContext } from "./GameStateContext";
 import LoginPage from "./LoginPage";
@@ -10,7 +10,7 @@ import { socketService } from "./socket-service";
 
 export default function App() {
   const [socketConnected, setSocketConnected] = useState(false);
-  const [gameState, setGameState] = useState<IGameStateForUi>(null);
+  const [gameState, setGameState] = useState<IGameState>(null);
 
   useEffect(() => {
     socketService.onConnected(() => setSocketConnected(true));

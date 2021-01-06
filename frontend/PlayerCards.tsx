@@ -10,7 +10,7 @@ export default function PlayerCards() {
     <>
       These are your cards:
       <br />
-      {gameState.cards.map((card: ICard) => (
+      {gameState.player.cards.map((card: ICard) => (
         <Card
           key={card.number + card.format}
           format={card.format}
@@ -18,6 +18,6 @@ export default function PlayerCards() {
         />
       ))}
       <br />
-    </>
+    </> 
   );
 }

@@ -1,4 +1,4 @@
 import { createContext } from "react";
-import { IGameStateForUi } from "../common.typings";
+import { IGameState } from "../common.typings";
 
-export const GameStateContext = createContext({} as IGameStateForUi);
+export const GameStateContext = createContext({} as IGameState);

@@ -1,10 +1,15 @@
 import { io, Socket } from "socket.io-client";
 import {
   CARD_FORMAT,
+  GAME_ACTION,
   GAME_EVENTS,
   GAME_PORT,
-  IGameStateForUi,
+  ICard,
+  IGameState,
+  IPlayerAction,
 } from "../common.typings";
+
+const SOCKET_CONNECTED_EVENT = "SOCKET_CONNECTED";
 
 class SocketService {
   private connected = false;
@@ -16,43 +21,50 @@ class SocketService {
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       this.connected = true;
       this.setupListeners();
-      document.body.dispatchEvent(
-        new CustomEvent(GAME_EVENTS.SOCKET_CONNECTED)
-      );
+      document.body.dispatchEvent(new CustomEvent(SOCKET_CONNECTED_EVENT));
     });
   }
 
   onConnected(callback: () => void) {
     if (this.connected) callback();
-    else this.once(GAME_EVENTS.SOCKET_CONNECTED, callback);
+    else this.once(callback);
   }
 
-  once(eventName: GAME_EVENTS, listener: () => void) {
+  once(listener: () => void) {
     function _listener() {
       listener();
-      document.body.removeEventListener(eventName, _listener);
+      document.body.removeEventListener(SOCKET_CONNECTED_EVENT, _listener);
     }
 
-    document.body.addEventListener(eventName, _listener);
+    document.body.addEventListener(SOCKET_CONNECTED_EVENT, _listener);
   }
 
   registerUser(username: string) {
-    this.socketConnection.emit(GAME_EVENTS.REGISTER, { register: username });
+    this.socketConnection.emit(GAME_EVENTS.REGISTER, { username });
   }
 
   setupListeners() {
     this.socketConnection.on(GAME_EVENTS.ERROR, console.error);
-    this.socketConnection.on(GAME_EVENTS.GAME_STARTED, () =>
-      document.body.dispatchEvent(new CustomEvent(GAME_EVENTS.GAME_STARTED))
-    );
   }
 
-  on(eventName: GAME_EVENTS, listener: (data: IGameStateForUi) => void) {
+  on(eventName: GAME_EVENTS, listener: (data: IGameState) => void) {
     this.socketConnection.on(eventName, listener);
   }
 
   selectHokm(format: CARD_FORMAT) {
-    this.socketConnection.emit(GAME_EVENTS.HOKM, format);
+    const action: IPlayerAction = {
+      action: GAME_ACTION.CHOOSE_HOKM,
+      hokm: format,
+    };
+    this.socketConnection.emit(GAME_EVENTS.ACTION, action);
+  }
+
+  pickCard(card: ICard) {
+    // this.socketConnection.emit(GAME_EVENTS.PICK, card);
+  }
+
+  refuseCard(card: ICard) {
+    // this.socketConnection.emit(GAME_EVENTS.REFUSE, card);
   }
 }
 

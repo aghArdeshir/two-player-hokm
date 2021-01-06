@@ -1,6 +1,11 @@
 import { createServer as createHttpServer } from "http";
 import { Server as SocketServer, Socket } from "socket.io";
-import { CARD_FORMAT, GAME_EVENTS, GAME_PORT } from "../common.typings";
+import {
+  GAME_ACTION,
+  GAME_EVENTS,
+  GAME_PORT,
+  IPlayerAction,
+} from "../common.typings";
 import { Game, Player } from "./Game";
 
 const http = createHttpServer();
@@ -9,25 +14,11 @@ http.on("listening", () => {
 });
 
 const players: Player[] = [];
-let game: Game;
 
 const socketServer = new SocketServer();
 socketServer.attach(http);
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   console.log("a user connected");
-
-  function emitGameState() {
-    players.forEach((player) => {
-      const gameState = {
-        ...game.reportGameState(),
-        ...player.reportGameState(),
-      };
-
-      if (gameState.turn !== gameState.player) delete gameState.card;
-
-      player.connection.emit(GAME_EVENTS.GAME_STATE, gameState);
-    });
-  }
 
   connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
     if (players.length === 2) {
@@ -42,19 +33,25 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     );
 
     if (players.length === 2) {
-      players[Math.random() > 0.5 ? 1 : 0].setAsHaakem();
-
-      socketServer.emit(GAME_EVENTS.GAME_STARTED);
-
-      game = new Game(players[0], players[1]);
-
-      emitGameState();
+      Game.TheGame = new Game(players[0], players[1]);
+      // players[Math.random() > 0.5 ? 1 : 0].setAsHaakem();
+      players[0].setAsHaakem();
+      Game.TheGame.emitGameState();
     }
   });
 
-  connection.on(GAME_EVENTS.HOKM, (format: CARD_FORMAT) => {
-    game.setHokm(format);
-    emitGameState();
+  connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
+    if (action.action === GAME_ACTION.CHOOSE_HOKM) {
+      Game.TheGame.setHokm(action.hokm);
+    } else if (action.action === GAME_ACTION.DROP_TWO) {
+      // TODO
+    } else if (action.action === GAME_ACTION.PICK_CARDS) {
+      // TODO
+    } else if (action.action === GAME_ACTION.PLAY) {
+      // TODO
+    }
+
+    Game.TheGame.emitGameState();
   });
 });
 
