@@ -2,22 +2,22 @@ import { useEffect, useState } from "react";
 import { GAME_EVENTS, IGameState } from "../common.typings";
 import ChooseHokm from "./ChooseHokm";
 import { GameStateContext } from "./GameStateContext";
-import LoginPage from "./LoginPage";
+import LoginPage, { useBooleanState } from "./LoginPage";
 import PickingPage from "./PickingPage";
 import PlayerCards from "./PlayerCards";
 import ShowHokm from "./ShowHokm";
 import { socketService } from "./socket-service";
 
 export default function App() {
-  const [socketConnected, setSocketConnected] = useState(false);
-  const [gameState, setGameState] = useState<IGameState>(null);
+  const [socketConnected, toggleSocketConnected] = useBooleanState(false);
+  const [gameState, setGameState] = useState<IGameState | null>(null);
 
   useEffect(() => {
-    socketService.onConnected(() => setSocketConnected(true));
+    socketService.onConnected(() => toggleSocketConnected());
     socketService.on(GAME_EVENTS.GAME_STATE, setGameState);
   }, []);
 
-  if (gameState)
+  if (gameState) {
     return (
       <GameStateContext.Provider value={gameState}>
         <PlayerCards />
@@ -26,6 +26,6 @@ export default function App() {
         <ChooseHokm />
       </GameStateContext.Provider>
     );
-  if (socketConnected) return <LoginPage />;
-  return <div>Waiting for server</div>;
+  } else if (socketConnected) return <LoginPage />;
+  else return <div>Waiting for server</div>;
 }

@@ -27,10 +27,9 @@ export default function PlayerCards() {
       {gameState.player.cards.map((card: ICard) => (
         <Card
           key={card.number + card.format}
-          format={card.format}
-          number={card.number}
+          card={card}
           isChosen={isChosen(card)}
-          onClick={() => {
+          onClick={(card) => {
             if (gameState.nextAction === GAME_ACTION.DROP_TWO && !dropped) {
               if (isChosen(card)) {
                 setCardsToDrop((ctd) => ctd.filter((c) => !isEqual(c, card)));
