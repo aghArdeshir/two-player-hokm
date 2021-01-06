@@ -22,10 +22,11 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
   connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
     if (players.length === 2) {
-      connection.emit(GAME_EVENTS.ERROR, {
-        error: "room is full (2 players are joined",
-      });
-      connection.disconnect(true);
+      players.splice(0, 2); // only for easier dev
+      // connection.emit(GAME_EVENTS.ERROR, {
+      //   error: "room is full (2 players are joined",
+      // });
+      // connection.disconnect(true);
     }
 
     players.push(
@@ -43,15 +44,18 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
       Game.TheGame.setHokm(action.hokm);
+      Game.TheGame.emitGameState();
     } else if (action.action === GAME_ACTION.DROP_TWO) {
-      // TODO
+      Game.TheGame.dropTwo(action.cardsToDrop, connection);
+      if (players.every((player) => player.cards.length === 3)) {
+        Game.TheGame.setAction(GAME_ACTION.PICK_CARDS);
+        Game.TheGame.emitGameState();
+      }
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       // TODO
     } else if (action.action === GAME_ACTION.PLAY) {
       // TODO
     }
-
-    Game.TheGame.emitGameState();
   });
 });
 

@@ -8,19 +8,10 @@ import {
   IGameState,
   ICommonGameState,
 } from "../common.typings";
-
-class Card implements ICard {
-  // readonly number: ICardNumber;
-  // readonly format: CARD_FORMAT;
-
-  constructor(readonly number: ICardNumber, readonly format: CARD_FORMAT) {
-    // this.number = number;
-    // this.format = format;
-  }
-}
+import { isEqual } from "lodash";
 
 class Deck {
-  private cards: Card[] = [];
+  private cards: ICard[] = [];
 
   constructor() {
     this.fillDeck();
@@ -34,7 +25,7 @@ class Deck {
         CARD_FORMAT.CLOVERS,
         CARD_FORMAT.TILES,
       ].forEach((format) => {
-        this.cards.push(new Card(i, format));
+        this.cards.push({ number: i, format });
       });
     }
   }
@@ -50,7 +41,7 @@ class Deck {
 
 export class Player {
   username: string;
-  cards: Card[] = [];
+  cards: ICard[] = [];
   index: 1 | 2; // player1 or player2
   connection: Socket;
   isHaakem: boolean = false;
@@ -64,8 +55,12 @@ export class Player {
     // this.setupListeners();
   }
 
-  addCard(card: Card) {
+  addCard(card: ICard) {
     this.cards.push(card);
+  }
+
+  removeCard(card: ICard) {
+    this.cards = this.cards.filter((c) => !isEqual(c, card));
   }
 
   setAsHaakem() {
@@ -113,6 +108,18 @@ export class Game {
   setHokm(format: CARD_FORMAT) {
     this.hokm = format;
     this.nextAction = GAME_ACTION.DROP_TWO;
+  }
+
+  dropTwo(cards: [ICard, ICard], connection: Socket) {
+    const player = [this.player1, this.player2].find(
+      (player) => player.connection === connection
+    );
+
+    cards.forEach((card) => player.removeCard(card));
+  }
+
+  setAction(action: GAME_ACTION) {
+    this.nextAction = action;
   }
 
   emitGameState() {

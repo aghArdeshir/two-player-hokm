@@ -66,6 +66,19 @@ class SocketService {
   refuseCard(card: ICard) {
     // this.socketConnection.emit(GAME_EVENTS.REFUSE, card);
   }
+
+  dropTwo(cards: [ICard, ICard]) {
+    if (cards.length !== 2) {
+      throw new Error("Exacly 2 cards must be chosen");
+    }
+
+    const action: IPlayerAction = {
+      action: GAME_ACTION.DROP_TWO,
+      cardsToDrop: cards,
+    };
+
+    this.socketConnection.emit(GAME_EVENTS.ACTION, action);
+  }
 }
 
 export const socketService = new SocketService();
