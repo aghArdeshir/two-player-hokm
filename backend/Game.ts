@@ -26,7 +26,7 @@ export class Game {
     this.player2 = player2;
 
     this.giveEachPlayerFive();
-    this.player1.setAsHaakem();
+    this.player2.setAsHaakem();
   }
 
   private giveEachPlayerFive() {
@@ -196,7 +196,7 @@ export class Game {
           )
             mustPickCard = true;
         } else {
-          commonGameStateForPlayer1.otherPlayer.isTurn = true;
+          commonGameStateForPlayer2.player.isTurn = true;
           if (
             this.deck.length % 2 === 1 &&
             this.player2.cards.length > this.player1.cards.length
@@ -212,7 +212,7 @@ export class Game {
         // not haakem's turn
         // only assuming if player 1 is haakem
         if (commonGameStateForPlayer2.player.isHaakem) {
-          commonGameStateForPlayer2.otherPlayer.isTurn = true;
+          commonGameStateForPlayer1.player.isTurn = true;
           if (
             this.deck.length % 2 === 1 &&
             this.player1.cards.length === this.player2.cards.length
@@ -278,10 +278,18 @@ export class Game {
       return result;
     } else if (this.nextAction === GAME_ACTION.PLAY) {
       if (this.player1.score === 0 && this.player2.score === 0) {
-        if (this.player1.isHaakem && !this.cardOnGround) {
-          commonGameStateForPlayer1.player.isTurn = true;
+        if (!this.cardOnGround) {
+          if (this.player1.isHaakem) {
+            commonGameStateForPlayer1.player.isTurn = true;
+          } else {
+            commonGameStateForPlayer2.player.isTurn = true;
+          }
         } else {
-          commonGameStateForPlayer2.player.isTurn = true;
+          if (this.player1.isHaakem) {
+            commonGameStateForPlayer2.player.isTurn = true;
+          } else {
+            commonGameStateForPlayer1.player.isTurn = true;
+          }
         }
       } else {
         if (
