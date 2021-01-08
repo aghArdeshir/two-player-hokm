@@ -1,4 +1,5 @@
-import { CARD_FORMAT, ICard } from "../common.typings";
+import { ICard } from "../common.typings";
+import CardDrawer from "./CardDrawer";
 
 export default function Card(props: {
   card: ICard;
@@ -10,19 +11,10 @@ export default function Card(props: {
       onClick={() => props.onClick(props.card)}
       style={{
         display: "inline-block",
-        margin: 10,
-        width: 100,
-        height: 100,
-        color: "white",
         boxShadow: props.isChosen ? "0 0 10px blue" : "unset",
-        backgroundColor:
-          props.card.format === CARD_FORMAT.PIKES ||
-          props.card.format === CARD_FORMAT.CLOVERS
-            ? "black"
-            : "red",
       }}
     >
-      {props.card.number} of {props.card.format}
+      <CardDrawer card={props.card} />
     </div>
   );
 }

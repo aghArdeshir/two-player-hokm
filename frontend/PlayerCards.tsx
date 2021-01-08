@@ -20,11 +20,18 @@ export default function PlayerCards() {
     return cardsToDrop.indexOf(card) > -1;
   }
 
+  let cardsToList = gameState.player.cards;
+  if (gameState.nextAction === GAME_ACTION.DROP_TWO && dropped) {
+    cardsToList = gameState.player.cards.filter(
+      (card) => cardsToDrop.indexOf(card) === -1
+    );
+  }
+
   return (
     <>
       These are your cards:
       <br />
-      {gameState.player.cards.map((card: ICard) => (
+      {cardsToList.map((card: ICard) => (
         <Card
           key={card.number + card.format}
           card={card}
