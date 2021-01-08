@@ -41,13 +41,13 @@ export default function PlayerCards() {
       {cardsToList
         .sort((cardA, cardB) => {
           if (cardA.format === cardB.format) {
-            if(cardA.number === 1) return -1;
-            if(cardB.number === 1) return 1;
+            if (cardA.number === 1) return -1;
+            if (cardB.number === 1) return 1;
             return cardA.number > cardB.number ? -1 : 1;
-          } else if (cardA.format === gameState.hokm) {
-            return -1;
-          } else if (cardB.format === gameState.hokm) {
-            return 1;
+            // } else if (cardA.format === gameState.hokm) {
+            //   return -1;
+            // } else if (cardB.format === gameState.hokm) {
+            //   return 1;
           } else {
             if (
               CARD_FORMAT_SUIT_ORDER.indexOf(cardA.format) <
