@@ -5,6 +5,7 @@ import {
   IGameState,
   IGameStateForHokmChoosing,
 } from "../common.typings";
+import FormatDrawer from "./FormatDrawer";
 import { GameStateContext } from "./GameStateContext";
 import { socketService } from "./socket-service";
 
@@ -25,14 +26,30 @@ export default function ChooseHokm() {
 
   return (
     <>
-      You are haakem. Select your hokm:
+      You are haakem. Select the hokm:
       {[
         CARD_FORMAT.SPADES,
         CARD_FORMAT.HEARTS,
         CARD_FORMAT.CLUBS,
         CARD_FORMAT.DIAMONDS,
       ].map((format) => (
-        <button key={format} onClick={() => socketService.selectHokm(format)}>
+        <button
+          key={format}
+          onClick={() => socketService.selectHokm(format)}
+          style={{
+            backgroundColor: "white",
+            display: "flex",
+            alignItems: "center",
+            width: 150,
+            justifyContent: "start",
+            border: "1px solid green",
+            margin: 10,
+            boxShadow: "2px 2px 5px green",
+            height: 50,
+          }}
+        >
+          <FormatDrawer format={format} />
+          <span style={{ width: 10 }}>{/* divider */}</span>
           {format}
         </button>
       ))}
