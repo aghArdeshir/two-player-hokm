@@ -59,10 +59,11 @@ class SocketService {
     this.socketConnection.emit(GAME_EVENTS.ACTION, action);
   }
 
-  pickCard() {
+  pickCard(card?: ICard) {
     const action: IPlayerAction = {
       action: GAME_ACTION.PICK_CARDS,
       picks: true,
+      card,
     };
     this.socketConnection.emit(GAME_EVENTS.ACTION, action);
   }

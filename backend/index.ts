@@ -1,4 +1,4 @@
-import { createServer as createHttpServer } from "http";
+   import { createServer as createHttpServer } from "http";
 import { Server as SocketServer, Socket } from "socket.io";
 import {
   GAME_ACTION,
@@ -57,7 +57,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       }
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {
-        Game.TheGame.acceptCard(player);
+        Game.TheGame.acceptCard(player, action.card);
       } else {
         Game.TheGame.refuseCard(player);
       }

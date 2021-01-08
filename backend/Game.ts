@@ -75,6 +75,7 @@ export class Player {
 export class Game {
   static TheGame: Game;
   static cardToChoose: ICard;
+  static cardsToChoose: [ICard, ICard];
   static lastTurn: Player;
 
   private player1: Player;
@@ -120,8 +121,16 @@ export class Game {
     this.haakem = player;
   }
 
-  acceptCard(player: Player) {
-    player.addCard(Game.cardToChoose);
+  acceptCard(player: Player, card?: ICard) {
+    if (
+      player.cards.length === 12 &&
+      card &&
+      Game.cardsToChoose.findIndex((ctd) => isEqual(ctd, card)) > -1
+    ) {
+      player.addCard(card);
+    } else {
+      player.addCard(Game.cardToChoose);
+    }
   }
 
   refuseCard(player: Player) {}
@@ -266,8 +275,6 @@ export class Game {
         }
       }
 
-      Game.cardToChoose = this.deck.shift();
-
       const result: {
         player1: IGameStateForPickingStep;
         player2: IGameStateForPickingStep;
@@ -289,10 +296,20 @@ export class Game {
       if (mustPickCard) result.player2.mustPickCard = mustPickCard;
       if (mustRefuseCard) result.player2.mustRefuseCard = mustRefuseCard;
 
-      if (result.player1.player.isTurn) {
-        result.player1.cardToChoose = Game.cardToChoose;
+      if (this.deck.length === 2) {
+        Game.cardsToChoose = [this.deck.shift(), this.deck.shift()];
+        if (result.player1.player.isTurn) {
+          result.player1.cardsToChoose = Game.cardsToChoose;
+        } else {
+          result.player2.cardsToChoose = Game.cardsToChoose;
+        }
       } else {
-        result.player2.cardToChoose = Game.cardToChoose;
+        Game.cardToChoose = this.deck.shift();
+        if (result.player1.player.isTurn) {
+          result.player1.cardToChoose = Game.cardToChoose;
+        } else {
+          result.player2.cardToChoose = Game.cardToChoose;
+        }
       }
 
       return result;

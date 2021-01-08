@@ -65,6 +65,7 @@ type IGameStateForDroppingTwo = ICommonGameState & {
 export type IGameStateForPickingStep = ICommonGameState & {
   nextAction: GAME_ACTION.PICK_CARDS;
   cardToChoose?: ICard;
+  cardsToChoose?: [ICard, ICard];
   mustPickCard?: true; // because has refused the earlier card
   mustRefuseCard?: true; // because has picked the earlier card
   isLastPickStep?: true; // so player can see both cards at the same time
@@ -97,6 +98,7 @@ export type IPlayerAction =
   | {
       action: GAME_ACTION.PICK_CARDS;
       picks: boolean;
+      card?: ICard;
     }
   | {
       action: GAME_ACTION.PLAY;

@@ -16,6 +16,17 @@ export default function PickingPage() {
     return <p>other player is picking cards</p>;
   }
 
+  if (gameState.cardsToChoose)
+    return (
+      <>
+        Click on one card to pick it. The other card will be dropped!
+        <br />
+        {gameState.cardsToChoose.map((card) => (
+          <Card card={card} onClick={() => socketService.pickCard(card)} />
+        ))}
+      </>
+    );
+
   return (
     <div>
       <Card card={gameState.cardToChoose} />
