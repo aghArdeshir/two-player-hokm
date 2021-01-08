@@ -6,7 +6,8 @@ import {
   GAME_PORT,
   IPlayerAction,
 } from "../common.typings";
-import { Game, Player } from "./Game";
+import { Game } from "./Game";
+import { Player } from "./Player";
 
 const http = createHttpServer();
 http.on("listening", () => {

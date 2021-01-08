@@ -3,105 +3,17 @@ import {
   CARD_FORMAT,
   GAME_EVENTS,
   ICard,
-  ICardNumber,
   GAME_ACTION,
   IGameState,
   IGameStateForPickingStep,
 } from "../common.typings";
 import { isEqual } from "lodash";
-
-class Deck {
-  private cards: ICard[] = [];
-
-  constructor() {
-    this.fillDeck();
-  }
-
-  private fillDeck() {
-    for (let i: ICardNumber = 1; i !== 14; i++) {
-      [
-        CARD_FORMAT.PIKES,
-        CARD_FORMAT.HEARTS,
-        CARD_FORMAT.CLOVERS,
-        CARD_FORMAT.TILES,
-      ].forEach((format) => {
-        this.cards.push({ number: i, format });
-      });
-    }
-
-    this.shift();
-    this.shift();
-  }
-
-  shift() {
-    return this.cards.shift();
-  }
-
-  get length() {
-    return this.cards.length;
-  }
-
-  static is(card: ICard) {
-    return {
-      // always assuming otherCard is played first
-      betterThan(otherCard: ICard) {
-        return {
-          whenHokmIs(hokm: CARD_FORMAT) {
-            if (card.format === otherCard.format) {
-              if (card.number === 1) return true;
-              if (otherCard.number === 1) return false;
-              return card.number > otherCard.number;
-            } else if (card.format === hokm || otherCard.format === hokm) {
-              return card.format === hokm;
-            } else {
-              // the new played card has other (non-hokm) format
-              return false;
-            }
-          },
-        };
-      },
-    };
-  }
-}
-
-export class Player {
-  username: string;
-  cards: ICard[] = [];
-  index: 1 | 2; // player1 or player2
-  connection: Socket;
-  isHaakem: boolean = false;
-  score = 0;
-
-  constructor(username: string, index: 1 | 2, connection: Socket) {
-    this.username = username;
-    this.connection = connection;
-    this.index = index;
-
-    // this.setupListeners();
-  }
-
-  addCard(card: ICard) {
-    this.cards.push(card);
-  }
-
-  removeCard(card: ICard) {
-    this.cards = this.cards.filter((c) => !isEqual(c, card));
-  }
-
-  setAsHaakem() {
-    this.isHaakem = true;
-  }
-
-  incrementScore() {
-    this.score++;
-  }
-}
+import { Deck } from "./Deck";
+import { Player } from "./Player";
 
 export class Game {
-  static cardToChoose: ICard;
-  static cardsToChoose: [ICard, ICard];
-  static lastTurn: Player;
-
+  private cardToChoose: ICard;
+  private cardsToChoose: [ICard, ICard];
   private player1: Player;
   private player2: Player;
   private deck = new Deck();
@@ -170,11 +82,11 @@ export class Game {
     if (
       player.cards.length === 12 &&
       card &&
-      Game.cardsToChoose.findIndex((ctd) => isEqual(ctd, card)) > -1
+      this.cardsToChoose.findIndex((ctd) => isEqual(ctd, card)) > -1
     ) {
       player.addCard(card);
     } else {
-      player.addCard(Game.cardToChoose);
+      player.addCard(this.cardToChoose);
     }
   }
 
@@ -342,18 +254,18 @@ export class Game {
       if (mustRefuseCard) result.player2.mustRefuseCard = mustRefuseCard;
 
       if (this.deck.length === 2) {
-        Game.cardsToChoose = [this.deck.shift(), this.deck.shift()];
+        this.cardsToChoose = [this.deck.shift(), this.deck.shift()];
         if (result.player1.player.isTurn) {
-          result.player1.cardsToChoose = Game.cardsToChoose;
+          result.player1.cardsToChoose = this.cardsToChoose;
         } else {
-          result.player2.cardsToChoose = Game.cardsToChoose;
+          result.player2.cardsToChoose = this.cardsToChoose;
         }
       } else {
-        Game.cardToChoose = this.deck.shift();
+        this.cardToChoose = this.deck.shift();
         if (result.player1.player.isTurn) {
-          result.player1.cardToChoose = Game.cardToChoose;
+          result.player1.cardToChoose = this.cardToChoose;
         } else {
-          result.player2.cardToChoose = Game.cardToChoose;
+          result.player2.cardToChoose = this.cardToChoose;
         }
       }
 
