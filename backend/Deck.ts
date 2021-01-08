@@ -26,13 +26,15 @@ export class Deck {
       });
     }
 
-    Array(100)
-      .fill(1)
-      .forEach(() => this.shuffle());
+    this.shuffle();
   }
 
   private shuffle() {
-    this.cards.sort(() => (Math.random() > 0.5 ? -1 : 1));
+    Array(100)
+      .fill(1)
+      .forEach(() => {
+        this.cards.sort(() => (Math.random() > 0.5 ? -1 : 1));
+      });
   }
 
   shift() {

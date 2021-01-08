@@ -5,17 +5,13 @@ import { ICard } from "../common.typings";
 export class Player {
   username: string;
   cards: ICard[] = [];
-  index: 1 | 2; // player1 or player2
-  connection: Socket;
+  connection: Socket; // better to be kept somewhere else
   isHaakem: boolean = false;
   score = 0;
 
-  constructor(username: string, index: 1 | 2, connection: Socket) {
+  constructor(username: string, connection: Socket) {
     this.username = username;
     this.connection = connection;
-    this.index = index;
-
-    // this.setupListeners();
   }
 
   addCard(card: ICard) {

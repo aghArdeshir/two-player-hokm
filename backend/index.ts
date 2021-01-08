@@ -33,9 +33,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       // connection.disconnect(true);
     }
 
-    players.push(
-      new Player(username, players.length === 0 ? 1 : 2, connection)
-    );
+    players.push(new Player(username, connection));
 
     if (players.length === 2) {
       game = new Game(players[0], players[1]);
