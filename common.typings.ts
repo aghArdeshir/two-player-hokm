@@ -51,6 +51,8 @@ type IPlayer = IOtherPlayer & {
 export type ICommonGameState = {
   player: IPlayer;
   otherPlayer: IOtherPlayer;
+  hokm: CARD_FORMAT | null;
+  nextAction: GAME_ACTION;
 };
 
 export type IGameStateForHokmChoosing = ICommonGameState & {
@@ -59,7 +61,6 @@ export type IGameStateForHokmChoosing = ICommonGameState & {
 
 type IGameStateForDroppingTwo = ICommonGameState & {
   nextAction: GAME_ACTION.DROP_TWO;
-  hokm: CARD_FORMAT;
 };
 
 export type IGameStateForPickingStep = ICommonGameState & {
@@ -69,13 +70,11 @@ export type IGameStateForPickingStep = ICommonGameState & {
   mustPickCard?: true; // because has refused the earlier card
   mustRefuseCard?: true; // because has picked the earlier card
   isLastPickStep?: true; // so player can see both cards at the same time
-  hokm: CARD_FORMAT;
 };
 
 type IGameStateForPlayStep = ICommonGameState & {
   nextAction: GAME_ACTION.PLAY;
   cardOnGround?: ICard; // the card that is currently played
-  hokm: CARD_FORMAT;
 };
 
 export type IGameState =

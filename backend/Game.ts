@@ -152,10 +152,12 @@ export class Game {
         player1: {
           ...commonGameStateForPlayer1,
           nextAction: this.nextAction,
+          hokm: null,
         },
         player2: {
           ...commonGameStateForPlayer2,
           nextAction: this.nextAction,
+          hokm: null,
         },
       };
     } else if (this.nextAction === GAME_ACTION.DROP_TWO) {
