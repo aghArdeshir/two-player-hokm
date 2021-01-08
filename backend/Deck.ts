@@ -43,25 +43,23 @@ export class Deck {
     return this.cards.length;
   }
 
-  static is(card: ICard) {
-    return {
-      // always assuming otherCard is played first
-      betterThan(otherCard: ICard) {
-        return {
-          whenHokmIs(hokm: CARD_FORMAT) {
-            if (card.format === otherCard.format) {
-              if (card.number === 1) return true;
-              if (otherCard.number === 1) return false;
-              return card.number > otherCard.number;
-            } else if (card.format === hokm || otherCard.format === hokm) {
-              return card.format === hokm;
-            } else {
-              // the new played card has other (non-hokm) format
-              return false;
-            }
-          },
-        };
-      },
-    };
+  static compareCards(
+    firstPlayedCard: ICard,
+    secondPlayedCard: ICard,
+    hokm: CARD_FORMAT
+  ) {
+    if (secondPlayedCard.format === firstPlayedCard.format) {
+      if (secondPlayedCard.number === 1) return true;
+      if (firstPlayedCard.number === 1) return false;
+      return secondPlayedCard.number > firstPlayedCard.number;
+    } else if (
+      secondPlayedCard.format === hokm ||
+      firstPlayedCard.format === hokm
+    ) {
+      return secondPlayedCard.format === hokm;
+    } else {
+      // the new played card has other (non-hokm) format
+      return false;
+    }
   }
 }

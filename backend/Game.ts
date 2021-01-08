@@ -58,7 +58,7 @@ export class Game {
       ) {
         return;
       }
-      if (Deck.is(card).betterThan(this.cardOnGround).whenHokmIs(this.hokm)) {
+      if (Deck.compareCards(this.cardOnGround, card, this.hokm)) {
         player.incrementScore();
         this.lastWinner = player;
       } else {
