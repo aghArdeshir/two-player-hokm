@@ -138,11 +138,7 @@ export class Game {
   }
 
   private reportGameState(): { player1: IGameState; player2: IGameState } {
-    if (
-      this.nextAction === GAME_ACTION.PICK_CARDS &&
-      this.player1.cards.length === 13 &&
-      this.player2.cards.length === 13
-    )
+    if (this.nextAction === GAME_ACTION.PICK_CARDS && this.deck.length === 0)
       this.nextAction = GAME_ACTION.PLAY;
 
     const commonGameStateForPlayer1 = {
