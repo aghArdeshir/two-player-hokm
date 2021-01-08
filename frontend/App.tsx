@@ -5,6 +5,7 @@ import { GameStateContext } from "./GameStateContext";
 import LoginPage, { useBooleanState } from "./LoginPage";
 import PickingPage from "./PickingPage";
 import PlayerCards from "./PlayerCards";
+import PlayingPage from "./PlayingPage";
 import ShowHokm from "./ShowHokm";
 import { socketService } from "./socket-service";
 
@@ -27,6 +28,8 @@ export default function App() {
         <ShowHokm />
         <hr />
         <PickingPage />
+        <hr />
+        <PlayingPage />
         <hr />
         <pre>{JSON.stringify(gameState, null, 2)}</pre>
       </GameStateContext.Provider>

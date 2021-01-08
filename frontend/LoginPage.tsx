@@ -21,15 +21,6 @@ export default function LoginPage() {
     socketService.registerUser(inputRef.current?.value);
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setJoined();
-      socketService.registerUser(
-        Math.random().toFixed(2) + "ali" + Math.random().toFixed(2)
-      );
-    }, 1000); // only for ease of development
-  }, []);
-
   if (joined) {
     return <h4>waiting for other player to join ...</h4>;
   }

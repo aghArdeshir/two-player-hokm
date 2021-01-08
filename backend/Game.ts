@@ -40,6 +40,28 @@ class Deck {
   get length() {
     return this.cards.length;
   }
+
+  static is(card: ICard) {
+    return {
+      // always assuming otherCard is played first
+      betterThan(otherCard: ICard) {
+        return {
+          whenHokmIs(hokm: CARD_FORMAT) {
+            if (card.format === otherCard.format) {
+              if (card.number === 1) return true;
+              if (otherCard.number === 1) return false;
+              return card.number > otherCard.number;
+            } else if (card.format === hokm || otherCard.format === hokm) {
+              return card.format === hokm;
+            } else {
+              // the new played card has other (non-hokm) format
+              return false;
+            }
+          },
+        };
+      },
+    };
+  }
 }
 
 export class Player {
@@ -48,7 +70,7 @@ export class Player {
   index: 1 | 2; // player1 or player2
   connection: Socket;
   isHaakem: boolean = false;
-  score: 0;
+  score = 0;
 
   constructor(username: string, index: 1 | 2, connection: Socket) {
     this.username = username;
@@ -68,22 +90,24 @@ export class Player {
 
   setAsHaakem() {
     this.isHaakem = true;
-    Game.TheGame.setHaakem(this);
+  }
+
+  incrementScore() {
+    this.score++;
   }
 }
 
 export class Game {
-  static TheGame: Game;
   static cardToChoose: ICard;
   static cardsToChoose: [ICard, ICard];
   static lastTurn: Player;
 
   private player1: Player;
   private player2: Player;
-  private haakem: Player;
   private deck = new Deck();
   private hokm: CARD_FORMAT;
-  // private card?: Card;
+  private lastWinner: Player;
+  private cardOnGround: ICard;
 
   constructor(player1: Player, player2: Player) {
     this.player1 = player1;
@@ -113,12 +137,33 @@ export class Game {
     cards.forEach((card) => player.removeCard(card));
   }
 
-  setAction(action: GAME_ACTION) {
-    this.nextAction = action;
+  play(player: Player, card: ICard) {
+    if (this.cardOnGround) {
+      if (
+        // player.isTurn // TODODODODODODOTODOTODOTODO TODO
+        card.format !== this.cardOnGround.format &&
+        player.cards.find((c) => c.format === this.cardOnGround.format)
+      ) {
+        return;
+      }
+      if (Deck.is(card).betterThan(this.cardOnGround).whenHokmIs(this.hokm)) {
+        player.incrementScore();
+        this.lastWinner = player;
+      } else {
+        this.lastWinner = [this.player1, this.player2].find(
+          (p) => p !== player
+        );
+        this.lastWinner.incrementScore();
+      }
+      this.cardOnGround = undefined;
+    } else {
+      this.cardOnGround = card;
+    }
+    player.removeCard(card);
   }
 
-  setHaakem(player: Player) {
-    this.haakem = player;
+  setAction(action: GAME_ACTION) {
+    this.nextAction = action;
   }
 
   acceptCard(player: Player, card?: ICard) {
@@ -314,16 +359,35 @@ export class Game {
 
       return result;
     } else if (this.nextAction === GAME_ACTION.PLAY) {
+      if (this.player1.score === 0 && this.player2.score === 0) {
+        if (this.player1.isHaakem && !this.cardOnGround) {
+          commonGameStateForPlayer1.player.isTurn = true;
+        } else {
+          commonGameStateForPlayer2.player.isTurn = true;
+        }
+      } else {
+        if (
+          (this.lastWinner === this.player1 && !this.cardOnGround) ||
+          (this.lastWinner === this.player2 && this.cardOnGround)
+        ) {
+          commonGameStateForPlayer1.player.isTurn = true;
+        } else {
+          commonGameStateForPlayer2.player.isTurn = true;
+        }
+      }
+
       return {
         player1: {
           ...commonGameStateForPlayer1,
           nextAction: this.nextAction,
           hokm: this.hokm,
+          cardOnGround: this.cardOnGround,
         },
         player2: {
           ...commonGameStateForPlayer2,
           nextAction: this.nextAction,
           hokm: this.hokm,
+          cardOnGround: this.cardOnGround,
         },
       };
     }

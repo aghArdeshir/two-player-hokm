@@ -1,4 +1,4 @@
-   import { createServer as createHttpServer } from "http";
+import { createServer as createHttpServer } from "http";
 import { Server as SocketServer, Socket } from "socket.io";
 import {
   GAME_ACTION,
@@ -15,6 +15,7 @@ http.on("listening", () => {
 
 const players: Player[] = [];
 
+let game: Game;
 const socketServer = new SocketServer();
 socketServer.attach(http);
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
@@ -36,10 +37,10 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     );
 
     if (players.length === 2) {
-      Game.TheGame = new Game(players[0], players[1]);
+      game = new Game(players[0], players[1]);
       // players[Math.random() > 0.5 ? 1 : 0].setAsHaakem();
       players[0].setAsHaakem();
-      Game.TheGame.emitGameState();
+      game.emitGameState();
     }
   });
 
@@ -47,24 +48,24 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     const player = players.find((player) => player.connection === connection);
 
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
-      Game.TheGame.setHokm(action.hokm);
-      Game.TheGame.emitGameState();
+      game.setHokm(action.hokm);
+      game.emitGameState();
     } else if (action.action === GAME_ACTION.DROP_TWO) {
-      Game.TheGame.dropTwo(action.cardsToDrop, connection);
+      game.dropTwo(action.cardsToDrop, connection);
       if (players.every((player) => player.cards.length === 3)) {
-        Game.TheGame.setAction(GAME_ACTION.PICK_CARDS);
-        Game.TheGame.emitGameState();
+        game.setAction(GAME_ACTION.PICK_CARDS);
+        game.emitGameState();
       }
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {
-        Game.TheGame.acceptCard(player, action.card);
+        game.acceptCard(player, action.card);
       } else {
-        Game.TheGame.refuseCard(player);
+        game.refuseCard(player);
       }
-      Game.TheGame.emitGameState();
-      // TODO
+      game.emitGameState();
     } else if (action.action === GAME_ACTION.PLAY) {
-      // TODO
+      game.play(player, action.card);
+      game.emitGameState();
     }
   });
 });

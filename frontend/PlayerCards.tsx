@@ -47,6 +47,18 @@ export default function PlayerCards() {
                 setCardsToDrop((ctd) => ctd.concat(card));
               }
             }
+
+            if (
+              gameState.nextAction === GAME_ACTION.PLAY &&
+              gameState.player.isTurn &&
+              (card.format === gameState.cardOnGround?.format ||
+                !gameState.player.cards.find(
+                  (c) => c.format === gameState.cardOnGround?.format
+                ) ||
+                !gameState.cardOnGround)
+            ) {
+              socketService.play(card);
+            }
           }}
         />
       ))}

@@ -88,6 +88,15 @@ class SocketService {
 
     this.socketConnection.emit(GAME_EVENTS.ACTION, action);
   }
+
+  play(card: ICard) {
+    const action: IPlayerAction = {
+      action: GAME_ACTION.PLAY,
+      card,
+    };
+
+    this.socketConnection.emit(GAME_EVENTS.ACTION, action);
+  }
 }
 
 export const socketService = new SocketService();
