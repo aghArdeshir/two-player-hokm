@@ -15,18 +15,17 @@ http.on("listening", () => {
 });
 
 const players: Player[] = [];
-
 let game: Game;
+
 const socketServer = new SocketServer();
 socketServer.attach(http);
+
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   console.log("a user connected");
 
-  connection.on(GAME_EVENTS.REGISTER, (args: { username: string }) => {
-    const { username } = args;
-    console.log({ args });
+  connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
     if (players.length === 2) {
-      players.splice(0, 2); // only for easier dev
+      players.splice(0, 2); // only for easier development testing
       // connection.emit(GAME_EVENTS.ERROR, {
       //   error: "room is full (2 players are joined",
       // });
@@ -37,7 +36,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     if (players.length === 2) {
       game = new Game(players[0], players[1]);
-      // players[Math.random() > 0.5 ? 1 : 0].setAsHaakem();
+
       players[0].setAsHaakem();
       game.emitGameState();
     }
@@ -45,18 +44,22 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
     const player = players.find((player) => player.connection === connection);
-
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
+      // TODO: check if hokm is valid CARD_FORMAT
       game.setHokm(action.hokm);
       game.emitGameState();
     } else if (action.action === GAME_ACTION.DROP_TWO) {
+      // check if user has the cards
       game.dropTwo(action.cardsToDrop, connection);
+      // TODO: on every card rop by each player, game state should be emitted
+      //    so the other player knows that the other player has 3 cards and have dropped 2
       if (players.every((player) => player.cards.length === 3)) {
-        game.setAction(GAME_ACTION.PICK_CARDS);
+        game.setAction(GAME_ACTION.PICK_CARDS); // TODO: this should be setby the game itself, logic is not related to here
         game.emitGameState();
       }
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {
+        // TODO: in the game class/instance, check if the card is actually provided
         game.acceptCard(player, action.card);
       } else {
         game.refuseCard(player);

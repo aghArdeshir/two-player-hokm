@@ -79,6 +79,8 @@ export class Game {
   }
 
   acceptCard(player: Player, card?: ICard) {
+    // TODO: check if card is actually provided as an a=option
+    // TODO: check if it is valid to accept card (e.g. do not accept both cards, count them)
     if (
       player.cards.length === 12 &&
       card &&
@@ -104,8 +106,9 @@ export class Game {
   }
 
   private reportGameState(): { player1: IGameState; player2: IGameState } {
-    if (this.nextAction === GAME_ACTION.PICK_CARDS && this.deck.length === 0)
+    if (this.nextAction === GAME_ACTION.PICK_CARDS && this.deck.length === 0) {
       this.nextAction = GAME_ACTION.PLAY;
+    }
 
     const commonGameStateForPlayer1 = {
       player: {
