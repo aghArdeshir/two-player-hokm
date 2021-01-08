@@ -3,6 +3,7 @@ import { GAME_EVENTS, IGameState } from "../common.typings";
 import ChooseHokm from "./ChooseHokm";
 import { GameStateContext } from "./GameStateContext";
 import LoginPage, { useBooleanState } from "./LoginPage";
+import OtherPlayerCards from "./OtherPlayerCards";
 import PickingPage from "./PickingPage";
 import PlayerCards from "./PlayerCards";
 import PlayingPage from "./PlayingPage";
@@ -30,6 +31,8 @@ export default function App() {
         <PickingPage />
         <hr />
         <PlayingPage />
+        <hr />
+        <OtherPlayerCards />
         <hr />
         <pre>{JSON.stringify(gameState, null, 2)}</pre>
       </GameStateContext.Provider>
