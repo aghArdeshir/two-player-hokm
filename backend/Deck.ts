@@ -15,12 +15,24 @@ export class Deck {
         CARD_FORMAT.CLOVERS,
         CARD_FORMAT.TILES,
       ].forEach((format) => {
-        this.cards.push({ number: i, format });
+        if (
+          i === 2 &&
+          (format === CARD_FORMAT.TILES || format === CARD_FORMAT.CLOVERS)
+        ) {
+          //do nothing
+        } else {
+          this.cards.push({ number: i, format });
+        }
       });
     }
 
-    this.shift();
-    this.shift();
+    Array(100)
+      .fill(1)
+      .forEach(() => this.shuffle());
+  }
+
+  private shuffle() {
+    this.cards.sort(() => (Math.random() > 0.5 ? -1 : 1));
   }
 
   shift() {
