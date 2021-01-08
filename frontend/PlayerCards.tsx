@@ -12,10 +12,10 @@ function isValidToDrop(cards: ICard[]): cards is [ICard, ICard] {
 }
 
 const CARD_FORMAT_SUIT_ORDER = [
-  CARD_FORMAT.PIKES,
+  CARD_FORMAT.SPADES,
   CARD_FORMAT.HEARTS,
-  CARD_FORMAT.CLOVERS,
-  CARD_FORMAT.TILES,
+  CARD_FORMAT.CLUBS,
+  CARD_FORMAT.DIAMONDS,
 ];
 
 export default function PlayerCards() {

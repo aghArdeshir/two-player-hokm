@@ -11,10 +11,10 @@ export const GAME_PORT = 3000;
 export type ICardNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 
 export enum CARD_FORMAT {
-  PIKES = "Pikes",
+  SPADES = "Spades",
   HEARTS = "Hearts",
-  CLOVERS = "Clovers",
-  TILES = "Tiles",
+  CLUBS = "Clubs",
+  DIAMONDS = "Diamonds",
 }
 
 export type ICard = {

@@ -27,10 +27,10 @@ export default function ChooseHokm() {
     <>
       You are haakem. Select your hokm:
       {[
-        CARD_FORMAT.PIKES,
+        CARD_FORMAT.SPADES,
         CARD_FORMAT.HEARTS,
-        CARD_FORMAT.CLOVERS,
-        CARD_FORMAT.TILES,
+        CARD_FORMAT.CLUBS,
+        CARD_FORMAT.DIAMONDS,
       ].map((format) => (
         <button key={format} onClick={() => socketService.selectHokm(format)}>
           {format}

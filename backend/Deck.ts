@@ -10,14 +10,14 @@ export class Deck {
   private fillDeck() {
     for (let i: ICardNumber = 1; i !== 14; i++) {
       [
-        CARD_FORMAT.PIKES,
+        CARD_FORMAT.SPADES,
         CARD_FORMAT.HEARTS,
-        CARD_FORMAT.CLOVERS,
-        CARD_FORMAT.TILES,
+        CARD_FORMAT.CLUBS,
+        CARD_FORMAT.DIAMONDS,
       ].forEach((format) => {
         if (
           i === 2 &&
-          (format === CARD_FORMAT.TILES || format === CARD_FORMAT.CLOVERS)
+          (format === CARD_FORMAT.DIAMONDS || format === CARD_FORMAT.CLUBS)
         ) {
           //do nothing
         } else {
