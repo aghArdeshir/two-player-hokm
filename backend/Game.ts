@@ -106,16 +106,76 @@ export class Game {
     this.player2.connection.emit(GAME_EVENTS.GAME_STATE, result.player2);
   }
 
+  private setTurn() {
+    if (this.nextAction === GAME_ACTION.DROP_TWO) {
+      this.player1.isTurn = true;
+      this.player2.isTurn = true;
+    } else if (this.nextAction === GAME_ACTION.PICK_CARDS) {
+      if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
+        // haakem's turn
+        if (this.player1.isHaakem) {
+          this.player1.isTurn = true;
+          this.player2.isTurn = false;
+        } else {
+          this.player2.isTurn = true;
+          this.player1.isTurn = false;
+        }
+      } else {
+        // not haakem's turn
+        if (this.player2.isHaakem) {
+          this.player1.isTurn = true;
+          this.player2.isTurn = false;
+        } else {
+          this.player2.isTurn = true;
+          this.player1.isTurn = false;
+        }
+      }
+    } else if (this.nextAction === GAME_ACTION.PLAY) {
+      if (this.player1.score === 0 && this.player2.score === 0) {
+        if (!this.cardOnGround) {
+          if (this.player1.isHaakem) {
+            this.player1.isTurn = true;
+            this.player2.isTurn = false;
+          } else {
+            this.player2.isTurn = true;
+            this.player1.isTurn = false;
+          }
+        } else {
+          if (this.player1.isHaakem) {
+            this.player2.isTurn = true;
+            this.player1.isTurn = false;
+          } else {
+            this.player1.isTurn = true;
+            this.player2.isTurn = false;
+          }
+        }
+      } else {
+        if (
+          (this.lastWinner === this.player1 && !this.cardOnGround) ||
+          (this.lastWinner === this.player2 && this.cardOnGround)
+        ) {
+          this.player1.isTurn = true;
+          this.player2.isTurn = false;
+        } else {
+          this.player2.isTurn = true;
+          this.player1.isTurn = false;
+        }
+      }
+    }
+  }
+
   private reportGameState(): { player1: IGameState; player2: IGameState } {
     if (this.nextAction === GAME_ACTION.PICK_CARDS && this.deck.length === 0) {
       this.nextAction = GAME_ACTION.PLAY;
     }
 
+    this.setTurn();
+
     const commonGameStateForPlayer1 = {
       player: {
         cardsLength: this.player1.cards.length,
         isHaakem: this.player1.isHaakem,
-        isTurn: false,
+        isTurn: this.player1.isTurn,
         name: this.player1.username,
         score: this.player1.score,
         cards: this.player1.cards,
@@ -124,7 +184,7 @@ export class Game {
       otherPlayer: {
         cardsLength: this.player2.cards.length,
         isHaakem: this.player2.isHaakem,
-        isTurn: false,
+        isTurn: this.player2.isTurn,
         name: this.player2.username,
         score: this.player2.score,
         isWinner: false,
@@ -135,7 +195,7 @@ export class Game {
       player: {
         cardsLength: this.player2.cards.length,
         isHaakem: this.player2.isHaakem,
-        isTurn: false,
+        isTurn: this.player2.isTurn,
         name: this.player2.username,
         score: this.player2.score,
         cards: this.player2.cards,
@@ -144,7 +204,7 @@ export class Game {
       otherPlayer: {
         cardsLength: this.player1.cards.length,
         isHaakem: this.player1.isHaakem,
-        isTurn: false,
+        isTurn: this.player1.isTurn,
         name: this.player1.username,
         score: this.player1.score,
         isWinner: false,
@@ -181,10 +241,7 @@ export class Game {
       let mustPickCard = false;
       let mustRefuseCard = false;
       if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
-        // haakem's turn
-        // only assuming if player 1 is haakem
         if (commonGameStateForPlayer1.player.isHaakem) {
-          commonGameStateForPlayer1.player.isTurn = true;
           if (
             this.deck.length % 2 === 1 &&
             this.player1.cards.length > this.player2.cards.length
@@ -196,7 +253,6 @@ export class Game {
           )
             mustPickCard = true;
         } else {
-          commonGameStateForPlayer2.player.isTurn = true;
           if (
             this.deck.length % 2 === 1 &&
             this.player2.cards.length > this.player1.cards.length
@@ -209,10 +265,7 @@ export class Game {
             mustPickCard = true;
         }
       } else {
-        // not haakem's turn
-        // only assuming if player 1 is haakem
         if (commonGameStateForPlayer2.player.isHaakem) {
-          commonGameStateForPlayer1.player.isTurn = true;
           if (
             this.deck.length % 2 === 1 &&
             this.player1.cards.length === this.player2.cards.length
@@ -224,7 +277,6 @@ export class Game {
           )
             mustPickCard = true;
         } else {
-          commonGameStateForPlayer2.player.isTurn = true;
           if (
             this.deck.length % 2 === 1 &&
             this.player2.cards.length === this.player1.cards.length
@@ -277,31 +329,6 @@ export class Game {
 
       return result;
     } else if (this.nextAction === GAME_ACTION.PLAY) {
-      if (this.player1.score === 0 && this.player2.score === 0) {
-        if (!this.cardOnGround) {
-          if (this.player1.isHaakem) {
-            commonGameStateForPlayer1.player.isTurn = true;
-          } else {
-            commonGameStateForPlayer2.player.isTurn = true;
-          }
-        } else {
-          if (this.player1.isHaakem) {
-            commonGameStateForPlayer2.player.isTurn = true;
-          } else {
-            commonGameStateForPlayer1.player.isTurn = true;
-          }
-        }
-      } else {
-        if (
-          (this.lastWinner === this.player1 && !this.cardOnGround) ||
-          (this.lastWinner === this.player2 && this.cardOnGround)
-        ) {
-          commonGameStateForPlayer1.player.isTurn = true;
-        } else {
-          commonGameStateForPlayer2.player.isTurn = true;
-        }
-      }
-
       return {
         player1: {
           ...commonGameStateForPlayer1,

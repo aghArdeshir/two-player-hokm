@@ -8,6 +8,7 @@ export class Player {
   connection: Socket; // better to be kept somewhere else
   isHaakem: boolean = false;
   score = 0;
+  isTurn = false;
 
   constructor(username: string, connection: Socket) {
     this.username = username;
