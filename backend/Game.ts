@@ -26,6 +26,7 @@ export class Game {
     this.player2 = player2;
 
     this.giveEachPlayerFive();
+    this.player1.setAsHaakem();
   }
 
   private giveEachPlayerFive() {

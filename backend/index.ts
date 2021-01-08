@@ -36,8 +36,6 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     if (players.length === 2) {
       game = new Game(players[0], players[1]);
-
-      players[0].setAsHaakem();
       game.emitGameState();
     }
   });
