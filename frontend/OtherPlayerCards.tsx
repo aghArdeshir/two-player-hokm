@@ -10,8 +10,8 @@ export default function OtherPlayerCards() {
     <>
       {Array(gameState.otherPlayer.cardsLength)
         .fill(1)
-        .map(() => (
-          <div style={{ display: "inline-block", width: 40 }}>
+        .map((_, index: number) => (
+          <div style={{ display: "inline-block", width: 40 }} key={index}>
             <div
               style={{
                 width: 152,

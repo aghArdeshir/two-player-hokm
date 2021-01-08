@@ -22,7 +22,11 @@ export default function PickingPage() {
         Click on one card to pick it. The other card will be dropped!
         <br />
         {gameState.cardsToChoose.map((card) => (
-          <Card card={card} onClick={() => socketService.pickCard(card)} />
+          <Card
+            card={card}
+            onClick={() => socketService.pickCard(card)}
+            key={card.format + card.number}
+          />
         ))}
       </>
     );

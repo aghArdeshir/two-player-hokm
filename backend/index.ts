@@ -11,14 +11,13 @@ import { Player } from "./Player";
 
 const http = createHttpServer();
 http.on("listening", () => {
-  console.log(`backend listening on port ${GAME_PORT}`);
+  console.log(`server listening on port ${GAME_PORT}`);
 });
 
 const players: Player[] = [];
 let game: Game;
 
-const socketServer = new SocketServer();
-socketServer.attach(http);
+const socketServer = new SocketServer(http);
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   console.log("a user connected");
