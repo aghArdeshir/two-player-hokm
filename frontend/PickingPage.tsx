@@ -19,10 +19,14 @@ export default function PickingPage() {
   return (
     <div>
       <Card card={gameState.cardToChoose} />
-      <button onClick={() => socketService.pickCard()}>I want it</button>
-      <button onClick={() => socketService.refuseCard()}>
-        I DON'T want it
-      </button>
+      {!gameState.mustRefuseCard && (
+        <button onClick={() => socketService.pickCard()}>I want it</button>
+      )}
+      {!gameState.mustPickCard && (
+        <button onClick={() => socketService.refuseCard()}>
+          I DON'T want it
+        </button>
+      )}
     </div>
   );
 }

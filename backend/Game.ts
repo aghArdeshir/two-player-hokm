@@ -203,21 +203,63 @@ export class Game {
         },
       };
     } else if (this.nextAction === GAME_ACTION.PICK_CARDS) {
+      let mustPickCard = false;
+      let mustRefuseCard = false;
       if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
         // haakem's turn
         // only assuming if player 1 is haakem
-        if (commonGameStateForPlayer1.player.isHaakem)
+        if (commonGameStateForPlayer1.player.isHaakem) {
           commonGameStateForPlayer1.player.isTurn = true;
-        else {
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player1.cards.length > this.player2.cards.length
+          )
+            mustRefuseCard = true;
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player1.cards.length === this.player2.cards.length
+          )
+            mustPickCard = true;
+        } else {
           commonGameStateForPlayer1.otherPlayer.isTurn = true;
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player2.cards.length > this.player1.cards.length
+          )
+            mustRefuseCard = true;
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player2.cards.length === this.player1.cards.length
+          )
+            mustPickCard = true;
         }
       } else {
         // not haakem's turn
         // only assuming if player 1 is haakem
-        if (commonGameStateForPlayer2.player.isHaakem)
+        if (commonGameStateForPlayer2.player.isHaakem) {
           commonGameStateForPlayer2.otherPlayer.isTurn = true;
-        else {
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player1.cards.length === this.player2.cards.length
+          )
+            mustRefuseCard = true;
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player1.cards.length < this.player2.cards.length
+          )
+            mustPickCard = true;
+        } else {
           commonGameStateForPlayer2.player.isTurn = true;
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player2.cards.length === this.player1.cards.length
+          )
+            mustRefuseCard = true;
+          if (
+            this.deck.length % 2 === 1 &&
+            this.player2.cards.length < this.player1.cards.length
+          )
+            mustPickCard = true;
         }
       }
 
@@ -238,6 +280,11 @@ export class Game {
           hokm: this.hokm,
         },
       };
+
+      if (mustPickCard) result.player1.mustPickCard = mustPickCard;
+      if (mustRefuseCard) result.player1.mustRefuseCard = mustRefuseCard;
+      if (mustPickCard) result.player2.mustPickCard = mustPickCard;
+      if (mustRefuseCard) result.player2.mustRefuseCard = mustRefuseCard;
 
       if (result.player1.player.isTurn) {
         result.player1.cardToChoose = Game.cardToChoose;
