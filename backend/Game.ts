@@ -313,14 +313,14 @@ export class Game {
 
       if (this.deck.length === 2) {
         this.cardsToChoose = [this.deck.shift(), this.deck.shift()];
-        if (result.player1.player.isTurn) {
+        if (this.player1.isTurn) {
           result.player1.cardsToChoose = this.cardsToChoose;
         } else {
           result.player2.cardsToChoose = this.cardsToChoose;
         }
       } else {
         this.cardToChoose = this.deck.shift();
-        if (result.player1.player.isTurn) {
+        if (this.player1.isTurn) {
           result.player1.cardToChoose = this.cardToChoose;
         } else {
           result.player2.cardToChoose = this.cardToChoose;
