@@ -15,7 +15,6 @@ export default function CardDrawer(props: { card: ICard }) {
         width: 126,
         height: 188,
         backgroundSize: "1387%",
-        margin: 10,
         display: "inline-block",
         backgroundPositionX: -7 + (props.card.number - 1) * -134,
         backgroundPositionY: height,

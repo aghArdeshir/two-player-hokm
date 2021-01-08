@@ -31,11 +31,16 @@ export default function PlayerCards() {
     <>
       These are your cards:
       <br />
-      {cardsToList.map((card: ICard) => (
+      {cardsToList.map((card: ICard, index: number) => (
         <Card
-          key={card.number + card.format}
+          key={card.format + card.number}
           card={card}
-          isChosen={isChosen(card)}
+          style={{
+            transform: isChosen(card) ? "translateY(60px)" : "unset",
+            transition: "all 0.4s",
+            zIndex: index + 1,
+            position: "relative",
+          }}
           onClick={(card) => {
             if (gameState.nextAction === GAME_ACTION.DROP_TWO && !dropped) {
               if (isChosen(card)) {
