@@ -62,7 +62,7 @@ type IGameStateForDroppingTwo = ICommonGameState & {
   hokm: CARD_FORMAT;
 };
 
-type IGameStateForPickingStep = ICommonGameState & {
+export type IGameStateForPickingStep = ICommonGameState & {
   nextAction: GAME_ACTION.PICK_CARDS;
   cardToChoose?: ICard;
   mustPickCard?: true; // because has refused the earlier card

@@ -59,12 +59,20 @@ class SocketService {
     this.socketConnection.emit(GAME_EVENTS.ACTION, action);
   }
 
-  pickCard(card: ICard) {
-    // this.socketConnection.emit(GAME_EVENTS.PICK, card);
+  pickCard() {
+    const action: IPlayerAction = {
+      action: GAME_ACTION.PICK_CARDS,
+      picks: true,
+    };
+    this.socketConnection.emit(GAME_EVENTS.ACTION, action);
   }
 
-  refuseCard(card: ICard) {
-    // this.socketConnection.emit(GAME_EVENTS.REFUSE, card);
+  refuseCard() {
+    const action: IPlayerAction = {
+      action: GAME_ACTION.PICK_CARDS,
+      picks: false,
+    };
+    this.socketConnection.emit(GAME_EVENTS.ACTION, action);
   }
 
   dropTwo(cards: [ICard, ICard]) {

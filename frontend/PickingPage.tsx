@@ -1,29 +1,28 @@
-// import { useContext } from "react";
-// import { GAME_EVENTS } from "../common.typings";
-// import Card from "./Card";
-// import { GameStateContext } from "./GameStateContext";
-// import { socketService } from "./socket-service";
+import { useContext } from "react";
+import { GAME_ACTION } from "../common.typings";
+import Card from "./Card";
+import { GameStateContext } from "./GameStateContext";
+import { socketService } from "./socket-service";
 
 export default function PickingPage() {
-  // const gameState = useContext(GameStateContext);
+  const gameState = useContext(GameStateContext);
 
-  // if (gameState.NEXT_STEP !== GAME_EVENTS.PICK) return <></>;
-  // if (
-  //   gameState.NEXT_STEP === GAME_EVENTS.PICK &&
-  //   gameState.turn !== gameState.player
-  // ) {
-  //   return <p>other player is picking cards</p>;
-  // }
+  if (gameState.nextAction !== GAME_ACTION.PICK_CARDS) return <></>;
+
+  if (
+    gameState.nextAction === GAME_ACTION.PICK_CARDS &&
+    !gameState.player.isTurn
+  ) {
+    return <p>other player is picking cards</p>;
+  }
 
   return (
     <div>
-      {/* <Card format={gameState.card.format} number={gameState.card.number} /> */}
-      {/* <button onClick={() => socketService.pickCard(gameState.card)}>
-        I want it
-      </button> */}
-      {/* <button onClick={() => socketService.refuseCard(gameState.card)}>
+      <Card card={gameState.cardToChoose} />
+      <button onClick={() => socketService.pickCard()}>I want it</button>
+      <button onClick={() => socketService.refuseCard()}>
         I DON'T want it
-      </button> */}
+      </button>
     </div>
   );
 }

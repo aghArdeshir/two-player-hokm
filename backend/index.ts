@@ -20,7 +20,9 @@ socketServer.attach(http);
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   console.log("a user connected");
 
-  connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
+  connection.on(GAME_EVENTS.REGISTER, (args: { username: string }) => {
+    const { username } = args;
+    console.log({ args });
     if (players.length === 2) {
       players.splice(0, 2); // only for easier dev
       // connection.emit(GAME_EVENTS.ERROR, {
@@ -42,6 +44,8 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   });
 
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
+    const player = players.find((player) => player.connection === connection);
+
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
       Game.TheGame.setHokm(action.hokm);
       Game.TheGame.emitGameState();
@@ -52,6 +56,12 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
         Game.TheGame.emitGameState();
       }
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
+      if (action.picks) {
+        Game.TheGame.acceptCard(player);
+      } else {
+        Game.TheGame.refuseCard(player);
+      }
+      Game.TheGame.emitGameState();
       // TODO
     } else if (action.action === GAME_ACTION.PLAY) {
       // TODO

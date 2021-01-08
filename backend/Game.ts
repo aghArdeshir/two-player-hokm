@@ -6,7 +6,7 @@ import {
   ICardNumber,
   GAME_ACTION,
   IGameState,
-  ICommonGameState,
+  IGameStateForPickingStep,
 } from "../common.typings";
 import { isEqual } from "lodash";
 
@@ -28,6 +28,9 @@ class Deck {
         this.cards.push({ number: i, format });
       });
     }
+
+    this.shift();
+    this.shift();
   }
 
   shift() {
@@ -67,27 +70,18 @@ export class Player {
     this.isHaakem = true;
     Game.TheGame.setHaakem(this);
   }
-
-  // reportGameState() {
-  //   return { cards: this.cards, player: this.index, isHaakem: this.isHaakem };
-  // }
-
-  // setupListeners() {
-  //   this.connection.on(GAME_EVENTS.PICK, (card: ICard) => {
-  //     this.cards.push(card);
-  //     Game.TheGame.emitGameState(this);
-  //   });
-  // }
 }
 
 export class Game {
+  static TheGame: Game;
+  static cardToChoose: ICard;
+  static lastTurn: Player;
+
   private player1: Player;
   private player2: Player;
   private haakem: Player;
   private deck = new Deck();
   private hokm: CARD_FORMAT;
-  static TheGame: Game;
-  private turn?: Player;
   // private card?: Card;
 
   constructor(player1: Player, player2: Player) {
@@ -122,117 +116,149 @@ export class Game {
     this.nextAction = action;
   }
 
-  emitGameState() {
-    // [this.player1, this.player2].forEach((player) => {
-    // const gameState = {
-    //   ...Game.TheGame.reportGameState(player, otherPlayer),
-    //   // ...player.reportGameState(),
-    // };
-
-    // if (this.turn?.index !== gameState.player) delete gameState.card;
-
-    this.player1.connection.emit(
-      GAME_EVENTS.GAME_STATE,
-      Game.TheGame.reportGameState(this.player1, this.player2)
-    );
-    this.player2.connection.emit(
-      GAME_EVENTS.GAME_STATE,
-      Game.TheGame.reportGameState(this.player2, this.player1)
-    );
-
-    // });
-  }
-
   setHaakem(player: Player) {
     this.haakem = player;
   }
+
+  acceptCard(player: Player) {
+    player.addCard(Game.cardToChoose);
+  }
+
+  refuseCard(player: Player) {}
 
   // later, on choose hokm, nextAction will be drop, on both players drop,
   //   next action will be pick, on both players reach 13 cards, next action
   //   will be play
   nextAction: GAME_ACTION = GAME_ACTION.CHOOSE_HOKM;
 
-  reportGameState(player: Player, otherPlayer: Player): IGameState {
-    const commonGameState: ICommonGameState = {
+  emitGameState() {
+    const result = this.reportGameState();
+    this.player1.connection.emit(GAME_EVENTS.GAME_STATE, result.player1);
+    this.player2.connection.emit(GAME_EVENTS.GAME_STATE, result.player2);
+  }
+
+  private reportGameState(): { player1: IGameState; player2: IGameState } {
+    const commonGameStateForPlayer1 = {
       player: {
-        cardsLength: player.cards.length,
-        isHaakem: player.isHaakem,
-        isTurn:
-          this.turn === player || this.nextAction === GAME_ACTION.DROP_TWO,
-        name: player.username,
-        score: player.score,
-        cards: player.cards,
+        cardsLength: this.player1.cards.length,
+        isHaakem: this.player1.isHaakem,
+        isTurn: false,
+        name: this.player1.username,
+        score: this.player1.score,
+        cards: this.player1.cards,
         isWinner: false,
       },
       otherPlayer: {
-        cardsLength: otherPlayer.cards.length,
-        isHaakem: otherPlayer.isHaakem,
-        isTurn:
-          this.turn === otherPlayer || this.nextAction === GAME_ACTION.DROP_TWO,
-        name: otherPlayer.username,
-        score: otherPlayer.score,
+        cardsLength: this.player2.cards.length,
+        isHaakem: this.player2.isHaakem,
+        isTurn: false,
+        name: this.player2.username,
+        score: this.player2.score,
+        isWinner: false,
+      },
+    };
+
+    const commonGameStateForPlayer2 = {
+      player: {
+        cardsLength: this.player2.cards.length,
+        isHaakem: this.player2.isHaakem,
+        isTurn: false,
+        name: this.player2.username,
+        score: this.player2.score,
+        cards: this.player2.cards,
+        isWinner: false,
+      },
+      otherPlayer: {
+        cardsLength: this.player1.cards.length,
+        isHaakem: this.player1.isHaakem,
+        isTurn: false,
+        name: this.player1.username,
+        score: this.player1.score,
         isWinner: false,
       },
     };
 
     if (this.nextAction === GAME_ACTION.CHOOSE_HOKM) {
       return {
-        ...commonGameState,
-        nextAction: this.nextAction,
+        player1: {
+          ...commonGameStateForPlayer1,
+          nextAction: this.nextAction,
+        },
+        player2: {
+          ...commonGameStateForPlayer2,
+          nextAction: this.nextAction,
+        },
       };
     } else if (this.nextAction === GAME_ACTION.DROP_TWO) {
       return {
-        ...commonGameState,
-        nextAction: this.nextAction,
-        hokm: this.hokm,
+        player1: {
+          ...commonGameStateForPlayer1,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+        },
+        player2: {
+          ...commonGameStateForPlayer2,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+        },
       };
     } else if (this.nextAction === GAME_ACTION.PICK_CARDS) {
-      return {
-        ...commonGameState,
-        nextAction: this.nextAction,
-        hokm: this.hokm,
-        cardToChoose: this.deck.shift(),
-        // isLastPickStep: true,
-        // mustPickCard: true,
-        // mustRefuseCard: true,
+      if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
+        // haakem's turn
+        // only assuming if player 1 is haakem
+        if (commonGameStateForPlayer1.player.isHaakem)
+          commonGameStateForPlayer1.player.isTurn = true;
+        else {
+          commonGameStateForPlayer1.otherPlayer.isTurn = true;
+        }
+      } else {
+        // not haakem's turn
+        // only assuming if player 1 is haakem
+        if (commonGameStateForPlayer2.player.isHaakem)
+          commonGameStateForPlayer2.otherPlayer.isTurn = true;
+        else {
+          commonGameStateForPlayer2.player.isTurn = true;
+        }
+      }
+
+      Game.cardToChoose = this.deck.shift();
+
+      const result: {
+        player1: IGameStateForPickingStep;
+        player2: IGameStateForPickingStep;
+      } = {
+        player1: {
+          ...commonGameStateForPlayer1,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+        },
+        player2: {
+          ...commonGameStateForPlayer2,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+        },
       };
+
+      if (result.player1.player.isTurn) {
+        result.player1.cardToChoose = Game.cardToChoose;
+      } else {
+        result.player2.cardToChoose = Game.cardToChoose;
+      }
+
+      return result;
     } else if (this.nextAction === GAME_ACTION.PLAY) {
       return {
-        ...commonGameState,
-        nextAction: this.nextAction,
-        hokm: this.hokm,
-        // cardOnGround: // ...
+        player1: {
+          ...commonGameStateForPlayer1,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+        },
+        player2: {
+          ...commonGameStateForPlayer2,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+        },
       };
     }
-    // let NEXT_STEP = GAME_EVENTS.CHOOSE_HOKM;
-    // if (this.hokm) NEXT_STEP = GAME_EVENTS.PICK;
-    // let force: GAME_EVENTS.PICK | GAME_EVENTS.REFUSE;
-    // if (NEXT_STEP === GAME_EVENTS.PICK) {
-    //   if (this.deck.length % 2) {
-    //     if (!this.turn) this.turn = this.haakem;
-    //     else
-    //       force =
-    //         52 - this.deck.length > this.turn.cards.length * 2
-    //           ? GAME_EVENTS.PICK
-    //           : GAME_EVENTS.REFUSE;
-    //   } else if (this.player1.cards.length === this.player2.cards.length) {
-    //     this.turn = this.haakem;
-    //   } else {
-    //     this.turn =
-    //       this.player1.cards.length < this.player2.cards.length
-    //         ? this.player1
-    //         : this.player2;
-    //   }
-    // }
-    // if (player === this.turn) {
-    //   this.card = this.deck.shift();
-    // }
-    // return {
-    //   NEXT_STEP,
-    //   hokm: this.hokm,
-    //   turn: this.turn?.index,
-    //   card: this.card,
-    //   length: this.deck.length,
-    // };
   }
 }

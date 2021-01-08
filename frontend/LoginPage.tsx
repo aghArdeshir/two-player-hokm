@@ -22,7 +22,12 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    setTimeout(onFormSubmit); // only for ease of development
+    setTimeout(() => {
+      setJoined();
+      socketService.registerUser(
+        Math.random().toFixed(2) + "ali" + Math.random().toFixed(2)
+      );
+    }, 1000); // only for ease of development
   }, []);
 
   if (joined) {
@@ -31,7 +36,7 @@ export default function LoginPage() {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <label htmlFor="username">Username:</label>
+      <label htmlFor="username">username:</label>
       <input
         id="username"
         ref={inputRef}
