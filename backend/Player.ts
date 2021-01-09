@@ -15,19 +15,23 @@ export class Player {
     this.connection = connection;
   }
 
-  addCard(card: ICard) {
+  public addCard(card: ICard) {
     this.cards.push(card);
   }
 
-  removeCard(card: ICard) {
+  public removeCard(card: ICard) {
     this.cards = this.cards.filter((c) => !isEqual(c, card));
   }
 
-  setAsHaakem() {
+  public setAsHaakem() {
     this.isHaakem = true;
   }
 
-  incrementScore() {
+  public incrementScore() {
     this.score++;
+  }
+
+  public hasCard(card: ICard) {
+    return this.cards.findIndex((c) => isEqual(c, card)) > -1;
   }
 }

@@ -24,6 +24,8 @@ export class Game {
   private cardOnGround: ICard | null;
   private cardsOnGround: [ICard, ICard] | null;
 
+  private nextAction: GAME_ACTION = GAME_ACTION.CHOOSE_HOKM;
+
   constructor(player1: Player, player2: Player) {
     this.player1 = player1;
     this.player2 = player2;
@@ -66,14 +68,14 @@ export class Game {
     this.emitGameState();
   }
 
-  play(player: Player, card: ICard) {
-    if (player.isTurn) {
+  public play(player: Player, card: ICard) {
+    if (player.isTurn && player.hasCard(card)) {
       if (this.cardOnGround) {
         if (
           card.format !== this.cardOnGround.format &&
           player.cards.find((c) => c.format === this.cardOnGround.format)
         ) {
-          return; // the card is not played by rules of hokm
+          return; // the card format is not as the `cardOnGround` format
         }
         if (Deck.compareCards(this.cardOnGround, card, this.hokm)) {
           player.incrementScore();
@@ -84,39 +86,36 @@ export class Game {
         }
         this.cardsOnGround = [this.cardOnGround, card];
         this.cardOnGround = null;
+        player.removeCard(card);
       } else {
         this.cardOnGround = card;
+        player.removeCard(card);
       }
-      player.removeCard(card);
     }
 
     this.emitGameState();
   }
 
-  acceptCard(player: Player, card?: ICard) {
-    // TODO: check if card is actually provided as an a=option
-    // TODO: check if it is valid to accept card (e.g. do not accept both cards, count them)
-    if (
-      player.cards.length === 12 &&
-      card &&
-      this.cardsToChoose.findIndex((ctd) => isEqual(ctd, card)) > -1
-    ) {
-      player.addCard(card);
-    } else {
-      player.addCard(this.cardToChoose);
+  public acceptCard(player: Player, card?: ICard) {
+    if (player.isTurn) {
+      // TODO: check if it is valid to accept card (e.g. do not accept both cards, count them)
+      if (
+        player.cards.length === 12 &&
+        card &&
+        this.cardsToChoose.findIndex((ctd) => isEqual(ctd, card)) > -1
+      ) {
+        player.addCard(card);
+      } else {
+        player.addCard(this.cardToChoose);
+      }
+
+      this.emitGameState();
     }
-
-    this.emitGameState();
   }
 
-  refuseCard() {
+  public refuseCard() {
     this.emitGameState();
   }
-
-  // later, on choose hokm, nextAction will be drop, on both players drop,
-  //   next action will be pick, on both players reach 13 cards, next action
-  //   will be play
-  nextAction: GAME_ACTION = GAME_ACTION.CHOOSE_HOKM;
 
   private emitGameState() {
     if (this.cardsOnGround) {
