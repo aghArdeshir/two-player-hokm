@@ -23,9 +23,8 @@ const http = createHttpServer((req, res) => {
     res.setHeader("Content-Type", "image/png");
   }
 
-  console.log({ fileName });
   readFile(fileName, (error, data) => {
-    console.log({ error });
+    if (error) console.log({ error });
     if (error) res.end();
     else res.end(data);
   });
