@@ -17,6 +17,10 @@ export default function PlayingPage() {
       {gameState.cardOnGround && <Card card={gameState.cardOnGround} />}
       {gameState.cardsOnGround && (
         <>
+          <div>
+            <strong>Winner</strong> is <h4>{gameState.winner}</h4>
+          </div>
+          <br />
           <Card card={gameState.cardsOnGround[0]} />
           <Card card={gameState.cardsOnGround[1]} />
         </>

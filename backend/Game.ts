@@ -341,6 +341,7 @@ export class Game {
           hokm: this.hokm,
           cardOnGround: this.cardOnGround,
           cardsOnGround: this.cardsOnGround,
+          winner: this.lastWinner?.username,
         },
         player2: {
           ...commonGameStateForPlayer2,
@@ -348,7 +349,8 @@ export class Game {
           hokm: this.hokm,
           cardOnGround: this.cardOnGround,
           cardsOnGround: this.cardsOnGround,
-        },
+          winner: this.lastWinner?.username,
+        }, 
       };
     }
   }

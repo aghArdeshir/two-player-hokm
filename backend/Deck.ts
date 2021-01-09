@@ -19,7 +19,7 @@ export class Deck {
           i === 2 &&
           (format === CARD_FORMAT.DIAMONDS || format === CARD_FORMAT.CLUBS)
         ) {
-          //do nothing
+          // do nothing, we don't want these 2 cards in our deck
         } else {
           this.cards.push({ number: i, format });
         }
