@@ -55,6 +55,9 @@ export class Game {
 
   public dropTwo(cards: [ICard, ICard], player: Player) {
     cards.forEach((card) => player.removeCard(card));
+    if (this.players.every((player) => player.cards.length === 3)) {
+      this.nextAction = GAME_ACTION.PICK_CARDS;
+    }
   }
 
   play(player: Player, card: ICard) {
@@ -80,10 +83,6 @@ export class Game {
       }
       player.removeCard(card);
     }
-  }
-
-  setAction(action: GAME_ACTION) {
-    this.nextAction = action;
   }
 
   acceptCard(player: Player, card?: ICard) {
