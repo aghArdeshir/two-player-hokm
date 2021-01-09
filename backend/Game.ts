@@ -12,13 +12,15 @@ import { Deck } from "./Deck";
 import { Player } from "./Player";
 
 export class Game {
-  private cardToChoose: ICard;
-  private cardsToChoose: [ICard, ICard];
   private player1: Player;
   private player2: Player;
+  private lastWinner: Player;
+
   private deck = new Deck();
   private hokm: CARD_FORMAT;
-  private lastWinner: Player;
+
+  private cardToChoose: ICard;
+  private cardsToChoose: [ICard, ICard];
   private cardOnGround: ICard;
   private cardsOnGround: [ICard, ICard] | null;
 
@@ -27,15 +29,25 @@ export class Game {
     this.player2 = player2;
 
     this.giveEachPlayerFive();
-    this.player2.setAsHaakem();
+    this.setHaakem();
+  }
+
+  get players() {
+    return [this.player1, this.player2];
   }
 
   private giveEachPlayerFive() {
-    [this.player1, this.player2].forEach((player) => {
+    this.players.forEach((player) => {
       for (let i = 0; i < 5; i++) {
         player.addCard(this.deck.shift());
       }
     });
+  }
+
+  private setHaakem() {
+    const random = Math.random();
+    console.log({ random });
+    this.players[random > 0.5 ? 0 : 1].setAsHaakem();
   }
 
   setHokm(format: CARD_FORMAT) {
