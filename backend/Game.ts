@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";
+import { EventEmitter } from "events";
 import {
   CARD_FORMAT,
   GAME_EVENTS,
@@ -26,6 +26,8 @@ export class Game {
 
   private nextAction: GAME_ACTION = GAME_ACTION.CHOOSE_HOKM;
 
+  private EventEmitter = new EventEmitter();
+
   constructor(player1: Player, player2: Player) {
     this.player1 = player1;
     this.player2 = player2;
@@ -33,7 +35,7 @@ export class Game {
     this.giveEachPlayerFive();
     this.setHaakem();
 
-    this.emitGameState();
+    // this.emitGameState();
   }
 
   private get players() {
@@ -119,6 +121,7 @@ export class Game {
 
   private emitGameState() {
     if (this.cardsOnGround) {
+      // stall 2 seconds so both users see what cards are played
       setTimeout(() => {
         this.cardsOnGround = null;
         this.emitGameState();
@@ -126,8 +129,15 @@ export class Game {
     }
 
     const result = this.reportGameState();
-    this.player1.connection.emit(GAME_EVENTS.GAME_STATE, result.player1);
-    this.player2.connection.emit(GAME_EVENTS.GAME_STATE, result.player2);
+
+    this.EventEmitter.emit(GAME_EVENTS.GAME_STATE, result);
+  }
+
+  onStateChange(
+    listener: (state: { player1: IGameState; player2: IGameState }) => void
+  ) {
+    this.EventEmitter.addListener(GAME_EVENTS.GAME_STATE, listener);
+    this.emitGameState();
   }
 
   private setTurn() {

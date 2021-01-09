@@ -55,6 +55,11 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     if (players.length === 2) {
       game = new Game(players[0], players[1]);
+
+      game.onStateChange((state) => {
+        players[0].connection.emit(GAME_EVENTS.GAME_STATE, state.player1);
+        players[1].connection.emit(GAME_EVENTS.GAME_STATE, state.player2);
+      });
     }
   });
 
