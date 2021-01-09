@@ -16,7 +16,7 @@ class SocketService {
   private socketConnection: Socket;
 
   constructor() {
-    this.socketConnection = io(`localhost:${GAME_PORT}`);
+    this.socketConnection = io({ port: "3000" });
 
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       this.connected = true;

@@ -1,4 +1,5 @@
-import { createServer as createHttpServer } from "http";
+import { readFile, readFileSync } from "fs";
+import { createServer as createHttpsServer } from "https";
 import { Server as SocketServer, Socket } from "socket.io";
 import {
   GAME_ACTION,
@@ -9,15 +10,40 @@ import {
 import { Game } from "./Game";
 import { Player } from "./Player";
 
-const http = createHttpServer();
-http.on("listening", () => {
+const options = {
+  key: readFileSync(__dirname + "/key.pem"),
+  cert: readFileSync(__dirname + "/cert.pem"),
+};
+
+// TODO retry non-https version  as https version was for trial
+const https = createHttpsServer(options, (req, res) => {
+  const fileName =
+    __dirname + "/../dist" + (req.url === "/" ? "/index.html" : req.url);
+
+  if (fileName.endsWith(".html")) {
+    res.setHeader("Content-Type", "text/html");
+  } else if (fileName.endsWith(".js")) {
+    res.setHeader("Content-Type", "text/javascript");
+  } else if (fileName.endsWith(".png")) {
+    res.setHeader("Content-Type", "image/png");
+  }
+
+  console.log({ fileName });
+  readFile(fileName, (error, data) => {
+    console.log({ error });
+    if (error) res.end();
+    else res.end(data);
+  });
+});
+https.on("listening", () => {
   console.log(`server listening on port ${GAME_PORT}`);
 });
 
 const players: Player[] = [];
 let game: Game;
 
-const socketServer = new SocketServer(http);
+// TODO: try removing cors as it may not be needed any more
+const socketServer = new SocketServer(https, { cors: {} });
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   console.log("a user connected");
@@ -69,4 +95,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   });
 });
 
-http.listen(GAME_PORT);
+https.listen(GAME_PORT);
+
+// TODO: Players only see the cardOnGround, they don't see the other played card
+//       Maybe a little delay would be fine
