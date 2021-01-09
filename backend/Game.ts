@@ -20,7 +20,7 @@ export class Game {
   private hokm: CARD_FORMAT;
   private lastWinner: Player;
   private cardOnGround: ICard;
-  cardsOnGround: [ICard, ICard] | null;
+  private cardsOnGround: [ICard, ICard] | null;
 
   constructor(player1: Player, player2: Player) {
     this.player1 = player1;
@@ -103,6 +103,13 @@ export class Game {
   nextAction: GAME_ACTION = GAME_ACTION.CHOOSE_HOKM;
 
   emitGameState() {
+    if (this.cardsOnGround) {
+      setTimeout(() => {
+        this.cardsOnGround = null;
+        this.emitGameState();
+      }, 2000);
+    }
+
     const result = this.reportGameState();
     this.player1.connection.emit(GAME_EVENTS.GAME_STATE, result.player1);
     this.player2.connection.emit(GAME_EVENTS.GAME_STATE, result.player2);
@@ -350,7 +357,7 @@ export class Game {
           cardOnGround: this.cardOnGround,
           cardsOnGround: this.cardsOnGround,
           winner: this.lastWinner?.username,
-        }, 
+        },
       };
     }
   }

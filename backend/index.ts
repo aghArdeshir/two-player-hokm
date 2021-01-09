@@ -85,12 +85,6 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     } else if (action.action === GAME_ACTION.PLAY) {
       game.play(player, action.card);
       game.emitGameState();
-      if (game.cardsOnGround) {
-        setTimeout(() => {
-          game.cardsOnGround = null;
-          game.emitGameState();
-        }, 2000);
-      }
     }
   });
 });
