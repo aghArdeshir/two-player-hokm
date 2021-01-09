@@ -15,6 +15,12 @@ export default function PlayingPage() {
         : "Waiting for other player to play"}
       <br />
       {gameState.cardOnGround && <Card card={gameState.cardOnGround} />}
+      {gameState.cardsOnGround && (
+        <>
+          <Card card={gameState.cardsOnGround[0]} />
+          <Card card={gameState.cardsOnGround[1]} />
+        </>
+      )}
       <br />
       Your score is {gameState.player.score}
       <br />

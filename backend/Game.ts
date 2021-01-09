@@ -20,6 +20,7 @@ export class Game {
   private hokm: CARD_FORMAT;
   private lastWinner: Player;
   private cardOnGround: ICard;
+  cardsOnGround: [ICard, ICard] | null;
 
   constructor(player1: Player, player2: Player) {
     this.player1 = player1;
@@ -68,6 +69,7 @@ export class Game {
         );
         this.lastWinner.incrementScore();
       }
+      this.cardsOnGround = [this.cardOnGround, card];
       this.cardOnGround = undefined;
     } else {
       this.cardOnGround = card;
@@ -131,7 +133,10 @@ export class Game {
         }
       }
     } else if (this.nextAction === GAME_ACTION.PLAY) {
-      if (this.player1.score === 0 && this.player2.score === 0) {
+      if (this.cardsOnGround) {
+        this.player1.isTurn = false;
+        this.player2.isTurn = false;
+      } else if (this.player1.score === 0 && this.player2.score === 0) {
         if (!this.cardOnGround) {
           if (this.player1.isHaakem) {
             this.player1.isTurn = true;
@@ -335,12 +340,14 @@ export class Game {
           nextAction: this.nextAction,
           hokm: this.hokm,
           cardOnGround: this.cardOnGround,
+          cardsOnGround: this.cardsOnGround,
         },
         player2: {
           ...commonGameStateForPlayer2,
           nextAction: this.nextAction,
           hokm: this.hokm,
           cardOnGround: this.cardOnGround,
+          cardsOnGround: this.cardsOnGround,
         },
       };
     }
