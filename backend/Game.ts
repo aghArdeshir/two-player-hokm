@@ -30,6 +30,8 @@ export class Game {
 
     this.giveEachPlayerFive();
     this.setHaakem();
+
+    this.emitGameState();
   }
 
   private get players() {
@@ -51,6 +53,8 @@ export class Game {
   public setHokm(format: CARD_FORMAT) {
     this.hokm = format;
     this.nextAction = GAME_ACTION.DROP_TWO;
+
+    this.emitGameState();
   }
 
   public dropTwo(cards: [ICard, ICard], player: Player) {
@@ -58,6 +62,8 @@ export class Game {
     if (this.players.every((player) => player.cards.length === 3)) {
       this.nextAction = GAME_ACTION.PICK_CARDS;
     }
+
+    this.emitGameState();
   }
 
   play(player: Player, card: ICard) {
@@ -83,6 +89,8 @@ export class Game {
       }
       player.removeCard(card);
     }
+
+    this.emitGameState();
   }
 
   acceptCard(player: Player, card?: ICard) {
@@ -97,16 +105,20 @@ export class Game {
     } else {
       player.addCard(this.cardToChoose);
     }
+
+    this.emitGameState();
   }
 
-  refuseCard(player: Player) {}
+  refuseCard() {
+    this.emitGameState();
+  }
 
   // later, on choose hokm, nextAction will be drop, on both players drop,
   //   next action will be pick, on both players reach 13 cards, next action
   //   will be play
   nextAction: GAME_ACTION = GAME_ACTION.CHOOSE_HOKM;
 
-  emitGameState() {
+  private emitGameState() {
     if (this.cardsOnGround) {
       setTimeout(() => {
         this.cardsOnGround = null;

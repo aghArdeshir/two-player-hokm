@@ -55,7 +55,6 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     if (players.length === 2) {
       game = new Game(players[0], players[1]);
-      game.emitGameState();
     }
   });
 
@@ -64,22 +63,18 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
       // TODO: check if hokm is valid CARD_FORMAT
       game.setHokm(action.hokm);
-      game.emitGameState();
     } else if (action.action === GAME_ACTION.DROP_TWO) {
       // check if user has the cards
       game.dropTwo(action.cardsToDrop, player);
-      game.emitGameState();
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {
         // TODO: in the game class/instance, check if the card is actually provided
         game.acceptCard(player, action.card);
       } else {
-        game.refuseCard(player);
+        game.refuseCard();
       }
-      game.emitGameState();
     } else if (action.action === GAME_ACTION.PLAY) {
       game.play(player, action.card);
-      game.emitGameState();
     }
   });
 });
