@@ -67,7 +67,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       game.emitGameState();
     } else if (action.action === GAME_ACTION.DROP_TWO) {
       // check if user has the cards
-      game.dropTwo(action.cardsToDrop, connection);
+      game.dropTwo(action.cardsToDrop, player);
       // TODO: on every card rop by each player, game state should be emitted
       //    so the other player knows that the other player has 3 cards and have dropped 2
       if (players.every((player) => player.cards.length === 3)) {

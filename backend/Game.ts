@@ -21,7 +21,7 @@ export class Game {
 
   private cardToChoose: ICard;
   private cardsToChoose: [ICard, ICard];
-  private cardOnGround: ICard;
+  private cardOnGround: ICard | null;
   private cardsOnGround: [ICard, ICard] | null;
 
   constructor(player1: Player, player2: Player) {
@@ -32,7 +32,7 @@ export class Game {
     this.setHaakem();
   }
 
-  get players() {
+  private get players() {
     return [this.player1, this.player2];
   }
 
@@ -45,48 +45,41 @@ export class Game {
   }
 
   private setHaakem() {
-    const random = Math.random();
-    console.log({ random });
-    this.players[random > 0.5 ? 0 : 1].setAsHaakem();
+    this.players[Math.random() > 0.5 ? 0 : 1].setAsHaakem();
   }
 
-  setHokm(format: CARD_FORMAT) {
+  public setHokm(format: CARD_FORMAT) {
     this.hokm = format;
     this.nextAction = GAME_ACTION.DROP_TWO;
   }
 
-  dropTwo(cards: [ICard, ICard], connection: Socket) {
-    const player = [this.player1, this.player2].find(
-      (player) => player.connection === connection
-    );
-
+  public dropTwo(cards: [ICard, ICard], player: Player) {
     cards.forEach((card) => player.removeCard(card));
   }
 
   play(player: Player, card: ICard) {
-    if (this.cardOnGround) {
-      if (
-        // player.isTurn // TODODODODODODOTODOTODOTODO TODO
-        card.format !== this.cardOnGround.format &&
-        player.cards.find((c) => c.format === this.cardOnGround.format)
-      ) {
-        return;
-      }
-      if (Deck.compareCards(this.cardOnGround, card, this.hokm)) {
-        player.incrementScore();
-        this.lastWinner = player;
+    if (player.isTurn) {
+      if (this.cardOnGround) {
+        if (
+          card.format !== this.cardOnGround.format &&
+          player.cards.find((c) => c.format === this.cardOnGround.format)
+        ) {
+          return; // the card is not played by rules of hokm
+        }
+        if (Deck.compareCards(this.cardOnGround, card, this.hokm)) {
+          player.incrementScore();
+          this.lastWinner = player;
+        } else {
+          this.lastWinner = this.players.find((p) => p !== player);
+          this.lastWinner.incrementScore();
+        }
+        this.cardsOnGround = [this.cardOnGround, card];
+        this.cardOnGround = null;
       } else {
-        this.lastWinner = [this.player1, this.player2].find(
-          (p) => p !== player
-        );
-        this.lastWinner.incrementScore();
+        this.cardOnGround = card;
       }
-      this.cardsOnGround = [this.cardOnGround, card];
-      this.cardOnGround = undefined;
-    } else {
-      this.cardOnGround = card;
+      player.removeCard(card);
     }
-    player.removeCard(card);
   }
 
   setAction(action: GAME_ACTION) {
