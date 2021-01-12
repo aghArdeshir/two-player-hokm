@@ -3,7 +3,6 @@ import {
   CARD_FORMAT,
   GAME_ACTION,
   GAME_EVENTS,
-  GAME_PORT,
   ICard,
   IGameState,
   IPlayerAction,
@@ -17,6 +16,12 @@ class SocketService {
 
   constructor() {
     this.socketConnection = io({ port: "3000" });
+
+    this.socketConnection.on(GAME_EVENTS.CONNECTION, (connectionsCount) => {
+      document.querySelector(
+        ".connections-count"
+      ).textContent = connectionsCount;
+    });
 
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       this.connected = true;

@@ -4,6 +4,7 @@ export enum GAME_EVENTS {
   ERROR = "error",
   GAME_STATE = "game-state", // Backend tells UI that I'm emitting a game state
   ACTION = "action", // UI tells Backend that I am emitting a game/plyer action
+  CONNECTION = "connection",
 }
 
 export const GAME_PORT = 3000;

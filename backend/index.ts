@@ -12,6 +12,7 @@ import { Player } from "./Player";
 
 // TODO retry non-https version  as https version was for trial
 const http = createHttpServer((req, res) => {
+  increaseConnections();
   const fileName =
     __dirname + "/../dist" + (req.url === "/" ? "/index.html" : req.url);
 
@@ -40,9 +41,11 @@ let game: Game;
 const socketServer = new SocketServer(http, { cors: {} });
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
+  increaseConnections();
   console.log("a user connected");
 
   connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
+    increaseConnections();
     if (players.length === 2) {
       players.splice(0, 2); // only for easier development testing
       // connection.emit(GAME_EVENTS.ERROR, {
@@ -59,11 +62,14 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       game.onStateChange((state) => {
         players[0].connection.emit(GAME_EVENTS.GAME_STATE, state.player1);
         players[1].connection.emit(GAME_EVENTS.GAME_STATE, state.player2);
+        increaseConnections();
+        increaseConnections();
       });
     }
   });
 
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
+    increaseConnections();
     const player = players.find((player) => player.connection === connection);
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
       // TODO: check if hokm is valid CARD_FORMAT
@@ -88,3 +94,18 @@ http.listen(GAME_PORT);
 
 // TODO: Players only see the cardOnGround, they don't see the other played card
 //       Maybe a little delay would be fine
+
+let connections = [];
+function increaseConnections(increase = true) {
+  if (increase) connections.push(new Date().getTime());
+  players.forEach((player) =>
+    player.connection.emit(
+      GAME_EVENTS.CONNECTION,
+      connections.filter((time) => time >= new Date().getTime() - 60000).length
+    )
+  );
+}
+
+setInterval(() => {
+  increaseConnections(false);
+}, 1000);
