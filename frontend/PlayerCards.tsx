@@ -92,19 +92,19 @@ export default function PlayerCards() {
           ))}
       </div>
       {gameState.nextAction === GAME_ACTION.DROP_TWO ? (
-        <>
+        <div
+          style={{
+            position: "fixed",
+            top: "calc(50% - 50px)",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        >
           {gameState.player.cardsLength === 3 &&
           gameState.otherPlayer.cardsLength > 3 ? (
             <>Waiting for other player to drop cards</>
           ) : (
-            <div
-              style={{
-                position: "fixed",
-                top: "calc(50% - 50px)",
-                left: "50%",
-                transform: "translate(-50%,-50%)",
-              }}
-            >
+            <>
               <h4>Please choose two cards to drop out</h4>
               {cardsToDrop.length === 2 ? (
                 <button
@@ -119,9 +119,9 @@ export default function PlayerCards() {
               ) : (
                 <></>
               )}
-            </div>
+            </>
           )}
-        </>
+        </div>
       ) : (
         <></>
       )}
