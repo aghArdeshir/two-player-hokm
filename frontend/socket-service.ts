@@ -17,12 +17,6 @@ class SocketService {
   constructor() {
     this.socketConnection = io({ port: "3000" });
 
-    this.socketConnection.on(GAME_EVENTS.CONNECTION, (connectionsCount) => {
-      document.querySelector(
-        ".connections-count"
-      ).textContent = connectionsCount;
-    });
-
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       this.connected = true;
       this.setupListeners();
