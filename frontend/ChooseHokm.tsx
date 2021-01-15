@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { createUseStyles } from "react-jss";
 import {
   CARD_FORMAT,
   GAME_ACTION,
@@ -9,6 +10,27 @@ import FormatDrawer from "./FormatDrawer";
 import { GameStateContext } from "./GameStateContext";
 import { socketService } from "./socket-service";
 
+const useStyles = createUseStyles({
+  hokmButton: {
+    backgroundColor: "white",
+    display: "flex",
+    alignItems: "center",
+    width: 150,
+    justifyContent: "start",
+    cursor: "pointer",
+    height: 50,
+
+    "&:hover": {
+      backgroundColor: "blue",
+      width: 200,
+    },
+
+    "&:focus": {
+      boxShadow: "2px 2px 5px green",
+    },
+  },
+});
+
 export function isChooseHokm(
   gameState: IGameState
 ): gameState is IGameStateForHokmChoosing {
@@ -16,18 +38,36 @@ export function isChooseHokm(
 }
 
 export default function ChooseHokm() {
+  const classes = useStyles();
   const gameContext = useContext(GameStateContext);
 
-  // if (gameContext.NEXT_STEP !== GAME_EVENTS.CHOOSE_HOKM) return <></>;
   if (!isChooseHokm(gameContext)) return <></>;
 
   if (!gameContext.player.isHaakem)
-    return <>Waiting for haakem to select hokm</>;
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: "calc(50% - 50px)",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        Waiting for Haakem to select Hokm
+      </div>
+    );
 
   return (
-    <>
-      You are haakem. Select the hokm:
-      <div style={{ display: "flex" }}>
+    <div
+      style={{
+        position: "fixed",
+        top: "calc(50% - 50px)",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      Choose the Hokm:
+      <div style={{ display: "flex", flexWrap: "wrap", width: 300 }}>
         {[
           CARD_FORMAT.SPADES,
           CARD_FORMAT.HEARTS,
@@ -37,17 +77,7 @@ export default function ChooseHokm() {
           <button
             key={format}
             onClick={() => socketService.selectHokm(format)}
-            style={{
-              backgroundColor: "white",
-              display: "flex",
-              alignItems: "center",
-              width: 150,
-              justifyContent: "start",
-              border: "1px solid green",
-              margin: 10,
-              boxShadow: "2px 2px 5px green",
-              height: 50,
-            }}
+            className={classes.hokmButton}
           >
             <FormatDrawer format={format} />
             <span style={{ width: 10 }}>{/* divider */}</span>
@@ -55,6 +85,6 @@ export default function ChooseHokm() {
           </button>
         ))}
       </div>
-    </>
+    </div>
   );
 }
