@@ -22,19 +22,12 @@ export default function App() {
   if (gameState) {
     return (
       <GameStateContext.Provider value={gameState}>
-        <PlayerCards />
-        <hr />
-        <ChooseHokm />
-        <hr />
-        <ShowHokm />
-        <hr />
-        <PickingPage />
-        <hr />
-        <PlayingPage />
-        <hr />
         <OtherPlayerCards />
-        <hr />
-        <pre>{JSON.stringify(gameState, null, 2)}</pre>
+        <ChooseHokm />
+        <ShowHokm />
+        <PickingPage />
+        <PlayingPage />
+        <PlayerCards />
       </GameStateContext.Provider>
     );
   } else if (socketConnected) return <LoginPage />;
