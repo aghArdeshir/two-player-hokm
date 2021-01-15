@@ -35,7 +35,7 @@ export class Game {
     this.giveEachPlayerFive();
     this.setHaakem();
 
-    // this.emitGameState();
+    this.emitGameState();
   }
 
   private get players() {
@@ -62,7 +62,11 @@ export class Game {
   }
 
   public dropTwo(cards: [ICard, ICard], player: Player) {
-    cards.forEach((card) => player.removeCard(card));
+    cards.forEach((card) => {
+      if (player.hasCard(card)) {
+        player.removeCard(card);
+      }
+    });
     if (this.players.every((player) => player.cards.length === 3)) {
       this.nextAction = GAME_ACTION.PICK_CARDS;
     }
@@ -74,18 +78,17 @@ export class Game {
     if (player.isTurn && player.hasCard(card)) {
       if (this.cardOnGround) {
         if (
-          card.format !== this.cardOnGround.format &&
-          player.cards.find((c) => c.format === this.cardOnGround.format)
+          card.format !== this.cardOnGround.format && // is this condition necessary?
+          player.hasCardOf(card.format)
         ) {
           return; // the card format is not as the `cardOnGround` format
         }
         if (Deck.compareCards(this.cardOnGround, card, this.hokm)) {
-          player.incrementScore();
           this.lastWinner = player;
         } else {
           this.lastWinner = this.players.find((p) => p !== player);
-          this.lastWinner.incrementScore();
         }
+        this.lastWinner.incrementScore();
         this.cardsOnGround = [this.cardOnGround, card];
         this.cardOnGround = null;
         player.removeCard(card);
@@ -121,7 +124,7 @@ export class Game {
 
   private emitGameState() {
     if (this.cardsOnGround) {
-      // stall 2 seconds so both users see what cards are played
+      // stall 2 seconds so both players see what cards are played
       setTimeout(() => {
         this.cardsOnGround = null;
         this.emitGameState();
@@ -133,36 +136,46 @@ export class Game {
     this.EventEmitter.emit(GAME_EVENTS.GAME_STATE, result);
   }
 
-  onStateChange(
+  public onStateChange(
     listener: (state: { player1: IGameState; player2: IGameState }) => void
   ) {
     this.EventEmitter.addListener(GAME_EVENTS.GAME_STATE, listener);
     this.emitGameState();
   }
 
-  private setTurn() {
+  // TODO: add a game destroyer to add some manual cleanups
+
+  private setHaakemTurn() {
+    if (this.player1.isHaakem) {
+      this.player1.isTurn = true;
+      this.player2.isTurn = false;
+    } else {
+      this.player1.isTurn = false;
+      this.player2.isTurn = true;
+    }
+  }
+
+  private setNonHaakemTurn() {
+    if (this.player1.isHaakem) {
+      this.player1.isTurn = false;
+      this.player2.isTurn = true;
+    } else {
+      this.player1.isTurn = true;
+      this.player2.isTurn = false;
+    }
+  }
+
+  private setTurns() {
     if (this.nextAction === GAME_ACTION.DROP_TWO) {
       this.player1.isTurn = true;
       this.player2.isTurn = true;
     } else if (this.nextAction === GAME_ACTION.PICK_CARDS) {
+      // card indexes of 40 & 39 are for haakem, 38 & 37 for other player, 36 &
+      //   35 for haakem, 34 && 33 for other player, 32 & 31 for haakem, etc...
       if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
-        // haakem's turn
-        if (this.player1.isHaakem) {
-          this.player1.isTurn = true;
-          this.player2.isTurn = false;
-        } else {
-          this.player2.isTurn = true;
-          this.player1.isTurn = false;
-        }
+        this.setHaakemTurn();
       } else {
-        // not haakem's turn
-        if (this.player2.isHaakem) {
-          this.player1.isTurn = true;
-          this.player2.isTurn = false;
-        } else {
-          this.player2.isTurn = true;
-          this.player1.isTurn = false;
-        }
+        this.setNonHaakemTurn();
       }
     } else if (this.nextAction === GAME_ACTION.PLAY) {
       if (this.cardsOnGround) {
@@ -170,21 +183,9 @@ export class Game {
         this.player2.isTurn = false;
       } else if (this.player1.score === 0 && this.player2.score === 0) {
         if (!this.cardOnGround) {
-          if (this.player1.isHaakem) {
-            this.player1.isTurn = true;
-            this.player2.isTurn = false;
-          } else {
-            this.player2.isTurn = true;
-            this.player1.isTurn = false;
-          }
+          this.setHaakemTurn();
         } else {
-          if (this.player1.isHaakem) {
-            this.player2.isTurn = true;
-            this.player1.isTurn = false;
-          } else {
-            this.player1.isTurn = true;
-            this.player2.isTurn = false;
-          }
+          this.setNonHaakemTurn();
         }
       } else {
         if (
@@ -206,9 +207,9 @@ export class Game {
       this.nextAction = GAME_ACTION.PLAY;
     }
 
-    this.setTurn();
+    this.setTurns();
 
-    const commonGameStateForPlayer1 = {
+    const gameStateForPlayer1 = {
       player: {
         cardsLength: this.player1.cards.length,
         isHaakem: this.player1.isHaakem,
@@ -216,7 +217,7 @@ export class Game {
         name: this.player1.username,
         score: this.player1.score,
         cards: this.player1.cards,
-        isWinner: false,
+        isWinner: this.player1.isWinner,
       },
       otherPlayer: {
         cardsLength: this.player2.cards.length,
@@ -224,11 +225,11 @@ export class Game {
         isTurn: this.player2.isTurn,
         name: this.player2.username,
         score: this.player2.score,
-        isWinner: false,
+        isWinner: this.player2.isWinner,
       },
     };
 
-    const commonGameStateForPlayer2 = {
+    const gameStateForPlayer2 = {
       player: {
         cardsLength: this.player2.cards.length,
         isHaakem: this.player2.isHaakem,
@@ -236,7 +237,7 @@ export class Game {
         name: this.player2.username,
         score: this.player2.score,
         cards: this.player2.cards,
-        isWinner: false,
+        isWinner: this.player2.isWinner,
       },
       otherPlayer: {
         cardsLength: this.player1.cards.length,
@@ -244,19 +245,19 @@ export class Game {
         isTurn: this.player1.isTurn,
         name: this.player1.username,
         score: this.player1.score,
-        isWinner: false,
+        isWinner: this.player1.isWinner,
       },
     };
 
     if (this.nextAction === GAME_ACTION.CHOOSE_HOKM) {
       return {
         player1: {
-          ...commonGameStateForPlayer1,
+          ...gameStateForPlayer1,
           nextAction: this.nextAction,
           hokm: null,
         },
         player2: {
-          ...commonGameStateForPlayer2,
+          ...gameStateForPlayer2,
           nextAction: this.nextAction,
           hokm: null,
         },
@@ -264,12 +265,12 @@ export class Game {
     } else if (this.nextAction === GAME_ACTION.DROP_TWO) {
       return {
         player1: {
-          ...commonGameStateForPlayer1,
+          ...gameStateForPlayer1,
           nextAction: this.nextAction,
           hokm: this.hokm,
         },
         player2: {
-          ...commonGameStateForPlayer2,
+          ...gameStateForPlayer2,
           nextAction: this.nextAction,
           hokm: this.hokm,
         },
@@ -278,7 +279,7 @@ export class Game {
       let mustPickCard = false;
       let mustRefuseCard = false;
       if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
-        if (commonGameStateForPlayer1.player.isHaakem) {
+        if (gameStateForPlayer1.player.isHaakem) {
           if (
             this.deck.length % 2 === 1 &&
             this.player1.cards.length > this.player2.cards.length
@@ -302,7 +303,7 @@ export class Game {
             mustPickCard = true;
         }
       } else {
-        if (commonGameStateForPlayer2.player.isHaakem) {
+        if (gameStateForPlayer2.player.isHaakem) {
           if (
             this.deck.length % 2 === 1 &&
             this.player1.cards.length === this.player2.cards.length
@@ -332,12 +333,12 @@ export class Game {
         player2: IGameStateForPickingStep;
       } = {
         player1: {
-          ...commonGameStateForPlayer1,
+          ...gameStateForPlayer1,
           nextAction: this.nextAction,
           hokm: this.hokm,
         },
         player2: {
-          ...commonGameStateForPlayer2,
+          ...gameStateForPlayer2,
           nextAction: this.nextAction,
           hokm: this.hokm,
         },
@@ -368,7 +369,7 @@ export class Game {
     } else if (this.nextAction === GAME_ACTION.PLAY) {
       return {
         player1: {
-          ...commonGameStateForPlayer1,
+          ...gameStateForPlayer1,
           nextAction: this.nextAction,
           hokm: this.hokm,
           cardOnGround: this.cardOnGround,
@@ -376,7 +377,7 @@ export class Game {
           winner: this.lastWinner?.username,
         },
         player2: {
-          ...commonGameStateForPlayer2,
+          ...gameStateForPlayer2,
           nextAction: this.nextAction,
           hokm: this.hokm,
           cardOnGround: this.cardOnGround,

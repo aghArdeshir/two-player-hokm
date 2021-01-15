@@ -37,8 +37,7 @@ http.on("listening", () => {
 const players: Player[] = [];
 let game: Game;
 
-// TODO: try removing cors as it may not be needed any more
-const socketServer = new SocketServer(http, { cors: {} });
+const socketServer = new SocketServer(http);
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   increaseConnections();

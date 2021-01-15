@@ -9,7 +9,9 @@ export default function Card(props: {
 }) {
   return (
     <div
-      onClick={() => props.onClick(props.card)}
+      onClick={() => {
+        if (props.onClick) props.onClick(props.card);
+      }}
       style={{
         display: "inline-block",
         maxWidth: 40,

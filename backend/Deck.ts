@@ -45,6 +45,14 @@ export class Deck {
     return this.cards.length;
   }
 
+  /**
+   * returns `true` if `firstPlayedCard` (first input) is more valuable card
+   *   than `secondPlayedCard` (second input) regarding game's `hokm` (third)
+   *   input
+   * @param firstPlayedCard the card that is played first
+   * @param secondPlayedCard the card that is played second
+   * @param hokm
+   */
   static compareCards(
     firstPlayedCard: ICard,
     secondPlayedCard: ICard,

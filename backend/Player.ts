@@ -1,6 +1,6 @@
 import { isEqual } from "lodash";
 import { Socket } from "socket.io";
-import { ICard } from "../common.typings";
+import { CARD_FORMAT, ICard } from "../common.typings";
 
 export class Player {
   username: string;
@@ -9,6 +9,7 @@ export class Player {
   isHaakem: boolean = false;
   score = 0;
   isTurn = false;
+  isWinner = false;
 
   constructor(username: string, connection: Socket) {
     this.username = username;
@@ -33,5 +34,13 @@ export class Player {
 
   public hasCard(card: ICard) {
     return this.cards.findIndex((c) => isEqual(c, card)) > -1;
+  }
+
+  public hasCardOf(format: CARD_FORMAT) {
+    return !!this.cards.find((c) => c.format === format);
+  }
+
+  public setWinner() {
+    this.isWinner = true;
   }
 }
