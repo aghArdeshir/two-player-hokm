@@ -13,7 +13,18 @@ export default function PickingPage() {
     gameState.nextAction === GAME_ACTION.PICK_CARDS &&
     !gameState.player.isTurn
   ) {
-    return <p>other player is picking cards</p>;
+    return (
+      <p
+        style={{
+          top: "calc(50% - 75px)",
+          position: "fixed",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        other player is picking cards
+      </p>
+    );
   }
 
   if (gameState.cardsToChoose)
@@ -32,8 +43,22 @@ export default function PickingPage() {
     );
 
   return (
-    <div>
-      <Card card={gameState.cardToChoose} />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        top: "calc(50% - 75px)",
+        position: "fixed",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <Card
+        card={gameState.cardToChoose}
+        style={{ transform: "scale(0.72)", transformOrigin: "bottom" }}
+      />
       {!gameState.mustRefuseCard && (
         <button onClick={() => socketService.pickCard()}>I want it</button>
       )}
