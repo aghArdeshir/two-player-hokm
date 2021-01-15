@@ -24,7 +24,7 @@ export default function PlayerCards() {
   const [dropped, setDropped] = useBooleanState();
 
   function isChosen(card: ICard) {
-    return cardsToDrop.indexOf(card) > -1;
+    return cardsToDrop.findIndex((c) => isEqual(c, card)) > -1;
   }
 
   let cardsToList = gameState.player.cards;
