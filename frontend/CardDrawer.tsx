@@ -2,6 +2,8 @@ import { CARD_FORMAT, ICard } from "../common.typings";
 //@ts-ignore
 import deckAsPng from "./deck.png";
 
+export const cardWidth = 126;
+
 export default function CardDrawer(props: { card: ICard }) {
   let height = -9;
   if (props.card.format === CARD_FORMAT.HEARTS) height = -204;
@@ -12,7 +14,7 @@ export default function CardDrawer(props: { card: ICard }) {
     <div
       style={{
         backgroundImage: `url(${deckAsPng})`,
-        width: 126,
+        width: cardWidth,
         height: 188,
         backgroundSize: "1387%",
         display: "inline-block",
