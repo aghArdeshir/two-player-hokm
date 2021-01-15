@@ -5,8 +5,8 @@ import deckAsPng from "./deck.png";
 export default function CardDrawer(props: { card: ICard }) {
   let height = -9;
   if (props.card.format === CARD_FORMAT.HEARTS) height = -204;
-  if (props.card.format === CARD_FORMAT.CLUBS) height = -595;
   if (props.card.format === CARD_FORMAT.DIAMONDS) height = -399;
+  if (props.card.format === CARD_FORMAT.CLUBS) height = -595;
 
   return (
     <div
