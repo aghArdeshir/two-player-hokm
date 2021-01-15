@@ -29,17 +29,30 @@ export default function PickingPage() {
 
   if (gameState.cardsToChoose)
     return (
-      <>
-        Click on one card to pick it. The other card will be dropped!
-        <br />
-        {gameState.cardsToChoose.map((card) => (
-          <Card
-            card={card}
-            onClick={() => socketService.pickCard(card)}
-            key={card.format + card.number}
-          />
-        ))}
-      </>
+      <div
+        style={{
+          display: "flex",
+          position: "fixed",
+          flexDirection: "column",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <div>Click on one card to pick it. The other card will be dropped!</div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          {gameState.cardsToChoose.map((card) => (
+            <Card
+              style={{
+                transform: "scale(0.72)",
+              }}
+              card={card}
+              onClick={() => socketService.pickCard(card)}
+              key={card.format + card.number}
+            />
+          ))}
+        </div>
+      </div>
     );
 
   return (
