@@ -79,7 +79,7 @@ export class Game {
       if (this.cardOnGround) {
         if (
           card.format !== this.cardOnGround.format && // is this condition necessary?
-          player.hasCardOf(card.format)
+          player.hasCardOf(this.cardOnGround.format)
         ) {
           return; // the card format is not as the `cardOnGround` format
         }
