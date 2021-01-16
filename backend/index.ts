@@ -39,8 +39,6 @@ let game: Game;
 const socketServer = new SocketServer(http);
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
-  console.log("a user connected");
-
   connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
     if (players.length === 2) {
       players.splice(0, 2); // only for easier development testing
