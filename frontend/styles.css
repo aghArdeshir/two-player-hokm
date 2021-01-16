@@ -1,0 +1,110 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+.gameboard-container {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  grid-template-rows: 100px auto auto 80px auto 50px 200px;
+  grid-template-areas:
+    "other-player-cards other-player-cards other-player-cards"
+    "slot10             slot11             other-player-info"
+    "slot20             slot21             other-player-wins"
+    "slot30             slot31             hokm"
+    "slot40             slot41             player-wins"
+    "player-action      player-action      player-info"
+    "player-cards       player-cards       player-cards";
+}
+
+.other-player-cards {
+  grid-area: other-player-cards;
+  display: flex;
+  justify-self: center;
+}
+
+.other-player-info {
+  grid-area: other-player-info;
+}
+
+.other-player-wins {
+  grid-area: other-player-wins;
+}
+
+.hokm {
+  grid-area: hokm;
+}
+
+.player-wins {
+  grid-area: player-wins;
+}
+
+.player-action {
+  grid-area: player-action;
+  height: 50px;
+}
+
+.player-info {
+  grid-area: player-info;
+}
+
+.player-cards {
+  grid-area: player-cards;
+  display: flex;
+  justify-self: center;
+  align-self: end;
+}
+
+.choose-hokm-button {
+  width: 150px;
+  height: 50px;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+
+.choose-hokm-spades {
+  grid-area: 3 / 1;
+  background-color: black;
+  color: white;
+}
+
+.choose-hokm-hearts {
+  grid-area: 3 / 2;
+  background-color: red;
+}
+.choose-hokm-diamonds {
+  grid-area: 4 / 1;
+  background-color: red;
+}
+
+.choose-hokm-clubs {
+  grid-area: 4 / 2;
+  background-color: black;
+  color: white;
+}
+
+.card-to-accept-refuse {
+  grid-area: 2 / 1 / span 3 / span 2;
+}
+
+.accept-card {
+  grid-area: 5 / 1;
+}
+
+.refuse-card {
+  grid-area: 5 / 2;
+}
+
+.played-cards {
+  grid-area: 3 / 1 / span 3 / span 2;
+}
+
+.card-drawer {
+  background-image: url("deck.png");
+  width: 150px;
+  height: 220px;
+  display: inline-block;
+}

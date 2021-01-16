@@ -27,7 +27,7 @@ export default function PlayerCards() {
 
   return (
     <>
-      <div style={{ position: "fixed", bottom: 0, display: "flex" }}>
+      <div className="player-cards">
         {gameState.player.cards
           .sort((cardA, cardB) => {
             if (cardA.format === cardB.format) {
@@ -92,20 +92,13 @@ export default function PlayerCards() {
           ))}
       </div>
       {gameState.nextAction === GAME_ACTION.DROP_TWO ? (
-        <div
-          style={{
-            position: "fixed",
-            top: "calc(50% - 50px)",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-          }}
-        >
+        <div className="player-action">
           {gameState.player.cardsLength === 3 &&
           gameState.otherPlayer.cardsLength > 3 ? (
             <>Waiting for other player to drop cards</>
           ) : (
-            <>
-              <h4>Please choose two cards to drop out</h4>
+            <div>
+              Please choose two cards to drop out
               {cardsToDrop.length === 2 ? (
                 <button
                   onClick={() => {
@@ -119,7 +112,7 @@ export default function PlayerCards() {
               ) : (
                 <></>
               )}
-            </>
+            </div>
           )}
         </div>
       ) : (

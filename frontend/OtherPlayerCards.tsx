@@ -7,15 +7,7 @@ export default function OtherPlayerCards() {
   const gameState = useContext(GameStateContext);
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        display: "flex",
-        left: "50%",
-        transform: "translateX(-50%)",
-      }}
-    >
+    <div className="other-player-cards">
       {Array(gameState.otherPlayer.cardsLength)
         .fill(1)
         .map((_, index: number) => (
@@ -23,7 +15,6 @@ export default function OtherPlayerCards() {
             key={index}
             style={{
               width: 20,
-              boxShadow: "0 0 10px black",
             }}
           >
             <div

@@ -1,6 +1,6 @@
 import { CSSProperties, useContext } from "react";
 import { ICard } from "../common.typings";
-import CardDrawer, { cardWidth } from "./CardDrawer";
+import CardDrawer from "./CardDrawer";
 import { GameStateContext } from "./GameStateContext";
 
 export default function Card(props: {
@@ -17,9 +17,6 @@ export default function Card(props: {
       }}
       className="card"
       style={{
-        width: Math.floor(
-          (window.innerWidth - cardWidth) / (gameState.player.cardsLength - 1)
-        ),
         ...(props.style || {}),
       }}
     >

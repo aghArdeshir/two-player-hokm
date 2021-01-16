@@ -13,73 +13,46 @@ export default function PickingPage() {
     gameState.nextAction === GAME_ACTION.PICK_CARDS &&
     !gameState.player.isTurn
   ) {
-    return (
-      <p
-        style={{
-          top: "calc(50% - 75px)",
-          position: "fixed",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        other player is picking cards
-      </p>
-    );
+    return <p className="player-action">other player is picking cards</p>;
   }
 
   if (gameState.cardsToChoose)
     return (
-      <div
-        style={{
-          display: "flex",
-          position: "fixed",
-          flexDirection: "column",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <div>Click on one card to pick it. The other card will be dropped!</div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+      <>
+        <div className="player-action">
+          Click on one card to pick it. The other card will be dropped!
+        </div>
+        <div className="card-to-accept-refuse">
           {gameState.cardsToChoose.map((card) => (
             <Card
-              style={{
-                transform: "scale(0.72)",
-              }}
               card={card}
               onClick={() => socketService.pickCard(card)}
               key={card.format + card.number}
             />
           ))}
         </div>
-      </div>
+      </>
     );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        top: "calc(50% - 75px)",
-        position: "fixed",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      }}
-    >
-      <Card
-        card={gameState.cardToChoose}
-        style={{ transform: "scale(0.72)", transformOrigin: "bottom" }}
-      />
-      {!gameState.mustRefuseCard && (
-        <button onClick={() => socketService.pickCard()}>I want it</button>
-      )}
-      {!gameState.mustPickCard && (
-        <button onClick={() => socketService.refuseCard()}>
-          I DON'T want it
-        </button>
-      )}
-    </div>
+    <>
+      <div className="card-to-accept-refuse">
+        <Card card={gameState.cardToChoose} />
+      </div>
+      <button
+        disabled={gameState.mustRefuseCard}
+        className="accept-card"
+        onClick={() => socketService.pickCard()}
+      >
+        I want it
+      </button>
+      <button
+        disabled={gameState.mustPickCard}
+        className="refuse-card"
+        onClick={() => socketService.refuseCard()}
+      >
+        I DON'T want it
+      </button>
+    </>
   );
 }

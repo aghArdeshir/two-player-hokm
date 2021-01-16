@@ -21,14 +21,16 @@ export default function App() {
 
   if (gameState) {
     return (
-      <GameStateContext.Provider value={gameState}>
-        <OtherPlayerCards />
-        <ChooseHokm />
-        <ShowHokm />
-        <PickingPage />
-        <PlayingPage />
-        <PlayerCards />
-      </GameStateContext.Provider>
+      <div className="gameboard-container">
+        <GameStateContext.Provider value={gameState}>
+          <OtherPlayerCards />
+          <ChooseHokm />
+          <ShowHokm />
+          <PickingPage />
+          <PlayingPage />
+          <PlayerCards />
+        </GameStateContext.Provider>
+      </div>
     );
   } else if (socketConnected) return <LoginPage />;
   else return <div>Waiting for server</div>;

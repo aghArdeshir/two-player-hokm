@@ -9,14 +9,7 @@ export default function ShowHokm() {
   if (isChooseHokm(gameContext)) return <></>;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: "calc(50% - 50px)",
-        border: "1px solid",
-        right: 0,
-      }}
-    >
+    <div className="hokm">
       Hokm:
       <br />
       <FormatDrawer format={gameContext.hokm} />
