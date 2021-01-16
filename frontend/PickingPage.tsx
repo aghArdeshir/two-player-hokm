@@ -23,13 +23,15 @@ export default function PickingPage() {
           Click on one card to pick it. The other card will be dropped!
         </div>
         <div className="card-to-accept-refuse">
-          {gameState.cardsToChoose.map((card) => (
-            <Card
-              card={card}
-              onClick={() => socketService.pickCard(card)}
-              key={card.format + card.number}
-            />
-          ))}
+          <div style={{ display: "flex" }}>
+            {gameState.cardsToChoose.map((card) => (
+              <Card
+                card={card}
+                onClick={() => socketService.pickCard(card)}
+                key={card.format + card.number}
+              />
+            ))}
+          </div>
         </div>
       </>
     );

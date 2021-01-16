@@ -8,8 +8,6 @@ export default function Card(props: {
   onClick?: (card: ICard) => void;
   style?: CSSProperties;
 }) {
-  const gameState = useContext(GameStateContext);
-
   return (
     <div
       onClick={() => {

@@ -55,6 +55,7 @@ html {
   display: flex;
   justify-self: center;
   align-self: end;
+  width: 100vw;
 }
 
 .choose-hokm-button {
@@ -107,4 +108,8 @@ html {
   width: 150px;
   height: 220px;
   display: inline-block;
+}
+
+.card {
+  width: min(7vw, 70px);
 }
