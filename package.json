@@ -10,7 +10,7 @@
     "build-frontend": "parcel build frontend/index.html",
     "build-backend": "tsc -p tsconfig.json",
     "build": "rm -rf dist; npm run build-frontend; npm run build-backend",
-    "update": "git fetch; git pull; pm2 restart all"
+    "update": "git fetch; git pull; npm i; npm run build; pm2 restart all"
   },
   "author": "",
   "license": "ISC",
