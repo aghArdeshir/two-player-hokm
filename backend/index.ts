@@ -13,7 +13,9 @@ import { Player } from "./Player";
 // TODO retry non-https version  as https version was for trial
 const http = createHttpServer((req, res) => {
   const fileName =
-    __dirname + "/../dist" + (req.url === "/" ? "/index.html" : req.url);
+    __dirname +
+    `/..${process.env.NODE_ENV === "development" ? "/dist" : ""}` +
+    (req.url === "/" ? "/index.html" : req.url);
 
   if (fileName.endsWith(".html")) {
     res.setHeader("Content-Type", "text/html");
