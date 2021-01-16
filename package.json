@@ -9,7 +9,8 @@
     "start": "NODE_ENV=development concurrently \"npm run dev-frontend\" \"npm run dev-backend\"",
     "build-frontend": "parcel build frontend/index.html",
     "build-backend": "tsc -p tsconfig.json",
-    "build": "rm -rf dist; npm run build-frontend; npm run build-backend"
+    "build": "rm -rf dist; npm run build-frontend; npm run build-backend",
+    "update": "git fetch; git pull; pm2 restart all"
   },
   "author": "",
   "license": "ISC",
