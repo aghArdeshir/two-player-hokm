@@ -15,8 +15,8 @@ export default function LoginPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [joined, setJoined] = useBooleanState(false);
 
-  function onFormSubmit(e?: FormEvent) {
-    e?.preventDefault();
+  function onFormSubmit(e: FormEvent) {
+    e.preventDefault();
     setJoined();
     socketService.registerUser(inputRef.current?.value);
   }
@@ -26,15 +26,10 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={onFormSubmit}>
-      <label htmlFor="username">username:</label>
-      <input
-        id="username"
-        ref={inputRef}
-        autoFocus
-        defaultValue={"ali" + Math.random().toFixed(2)} // only for ease of development
-      />
-      <br />
+    <form onSubmit={onFormSubmit} className="login-form">
+      <h1>♥</h1>
+      <h2>hokm</h2>
+      <input ref={inputRef} autoFocus placeholder="Player Name" />
       <button type="submit">Join</button>
     </form>
   );

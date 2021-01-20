@@ -113,3 +113,21 @@ html {
 .card {
   width: min(7vw, 70px);
 }
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.login-form h2 {
+  margin-top: 0;
+  margin-bottom: 100px;
+}
+
+.login-form input {
+  margin-bottom: 50px;
+}
