@@ -1,4 +1,5 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import CenterMessage from "./CenterMessage";
 import { socketService } from "./socket-service";
 
 export function useBooleanState(defaultValue = false): [boolean, () => void] {
@@ -22,7 +23,7 @@ export default function LoginPage() {
   }
 
   if (joined) {
-    return <h4>waiting for other player to join ...</h4>;
+    return <CenterMessage>Looking for Player</CenterMessage>;
   }
 
   return (

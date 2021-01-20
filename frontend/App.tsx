@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { GAME_EVENTS, IGameState } from "../common.typings";
+import CenterMessage from "./CenterMessage";
 import ChooseHokm from "./ChooseHokm";
 import { GameStateContext } from "./GameStateContext";
 import LoginPage, { useBooleanState } from "./LoginPage";
@@ -33,5 +34,5 @@ export default function App() {
       </div>
     );
   } else if (socketConnected) return <LoginPage />;
-  else return <div>Waiting for server</div>;
+  else return <CenterMessage>Waiting for Server</CenterMessage>;
 }
