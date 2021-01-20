@@ -54,7 +54,7 @@ export default function PlayerCards() {
               key={card.format + card.number}
               card={card}
               style={{
-                transform: isChosen(card) ? "translateY(-60px)" : "unset",
+                transform: isChosen(card) ? "translateY(-10px)" : "unset",
                 transition: "all 0.4s",
                 zIndex: index + 1,
                 position: "relative",
@@ -98,7 +98,6 @@ export default function PlayerCards() {
             <>Waiting for other player to drop cards</>
           ) : (
             <div>
-              Please choose two cards to drop out
               {cardsToDrop.length === 2 ? (
                 <button
                   onClick={() => {
@@ -110,7 +109,7 @@ export default function PlayerCards() {
                   DROP
                 </button>
               ) : (
-                <></>
+                <>Please choose two cards to drop out</>
               )}
             </div>
           )}

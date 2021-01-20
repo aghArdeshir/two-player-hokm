@@ -9,6 +9,7 @@ html {
   width: 100vw;
   height: 100vh;
   grid-template-rows: 100px auto auto 80px auto 50px 200px;
+  grid-template-columns: auto auto 100px;
   grid-template-areas:
     "other-player-cards other-player-cards other-player-cards"
     "slot10             slot11             other-player-info"
@@ -27,6 +28,7 @@ html {
 
 .other-player-info {
   grid-area: other-player-info;
+  background-color: aquamarine;
 }
 
 .other-player-wins {
@@ -37,6 +39,14 @@ html {
   grid-area: hokm;
 }
 
+.hokm .hokm-symbol {
+  background-color: cornflowerblue;
+  color: white;
+  border-radius: 5px 0 0 5px;
+  display: flex;
+  align-items: center;
+}
+
 .player-wins {
   grid-area: player-wins;
 }
@@ -44,10 +54,14 @@ html {
 .player-action {
   grid-area: player-action;
   height: 50px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
 }
 
 .player-info {
   grid-area: player-info;
+  background-color: bisque;
 }
 
 .player-cards {
@@ -59,32 +73,40 @@ html {
 }
 
 .choose-hokm-button {
-  width: 150px;
+  width: 120px;
   height: 50px;
   border: none;
   display: flex;
   align-items: center;
+  color: white;
+  align-self: center;
+  margin: auto;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.4s;
+}
+
+.choose-hokm-button:hover {
+  box-shadow: 0 0 10px black;
 }
 
 .choose-hokm-spades {
   grid-area: 3 / 1;
   background-color: black;
-  color: white;
 }
 
 .choose-hokm-hearts {
   grid-area: 3 / 2;
-  background-color: red;
+  background-color: #ff5554;
 }
 .choose-hokm-diamonds {
   grid-area: 4 / 1;
-  background-color: red;
+  background-color: #ff5554;
 }
 
 .choose-hokm-clubs {
   grid-area: 4 / 2;
   background-color: black;
-  color: white;
 }
 
 .card-to-accept-refuse {
@@ -108,6 +130,8 @@ html {
   width: 150px;
   height: 220px;
   display: inline-block;
+  transform: scale(0.72);
+  transform-origin: bottom left;
 }
 
 .card {
@@ -160,4 +184,19 @@ html {
   border-bottom: none;
   border-left: none;
   animation: circular-progress 1s linear infinite;
+}
+
+.crown-mark {
+  margin: 0;
+}
+
+.player-info,
+.other-player-info {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  border-radius: 5px 0 0 5px;
+  box-shadow: -1px 1px 5px black;
 }

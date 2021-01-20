@@ -10,9 +10,11 @@ export default function ShowHokm() {
 
   return (
     <div className="hokm">
-      Hokm:
+      <span style={{ fontSize: 12 }}>Hokm:</span>
       <br />
-      <FormatDrawer format={gameContext.hokm} />
+      <div className="hokm-symbol">
+        <FormatDrawer format={gameContext.hokm} /> {gameContext.hokm}
+      </div>
     </div>
   );
 }

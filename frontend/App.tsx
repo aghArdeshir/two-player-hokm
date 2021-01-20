@@ -5,8 +5,10 @@ import ChooseHokm from "./ChooseHokm";
 import { GameStateContext } from "./GameStateContext";
 import LoginPage, { useBooleanState } from "./LoginPage";
 import OtherPlayerCards from "./OtherPlayerCards";
+import OtherPlayerInfo from "./OtherPlayerInfo";
 import PickingPage from "./PickingPage";
 import PlayerCards from "./PlayerCards";
+import PlayerInfo from "./PlayerInfo";
 import PlayingPage from "./PlayingPage";
 import ShowHokm from "./ShowHokm";
 import { socketService } from "./socket-service";
@@ -25,10 +27,12 @@ export default function App() {
       <div className="gameboard-container">
         <GameStateContext.Provider value={gameState}>
           <OtherPlayerCards />
+          <OtherPlayerInfo />
           <ChooseHokm />
           <ShowHokm />
           <PickingPage />
           <PlayingPage />
+          <PlayerInfo />
           <PlayerCards />
         </GameStateContext.Provider>
       </div>

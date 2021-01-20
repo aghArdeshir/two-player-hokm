@@ -1,24 +1,35 @@
-import { CARD_FORMAT, ICard } from "../common.typings";
-//@ts-ignore
-import deckAsPng from "./deck.png";
+import { CARD_FORMAT } from "../common.typings";
 
 export default function FormatDrawer(props: { format: CARD_FORMAT }) {
-  let height = -28;
-  if (props.format === CARD_FORMAT.HEARTS) height = -252;
-  if (props.format === CARD_FORMAT.CLUBS) height = -699;
-  if (props.format === CARD_FORMAT.DIAMONDS) height = -475;
+  let character: string;
+  let color: "black" | "red";
+
+  switch (props.format) {
+    case CARD_FORMAT.SPADES:
+      character = "♠";
+      color = "black";
+      break;
+    case CARD_FORMAT.HEARTS:
+      character = "♥";
+      color = "red";
+      break;
+    case CARD_FORMAT.CLUBS:
+      character = "♣";
+      color = "black";
+      break;
+    case CARD_FORMAT.DIAMONDS:
+      character = "♦";
+      color = "red";
+      break;
+  }
 
   return (
-    <div
+    <h1
       style={{
-        backgroundImage: `url(${deckAsPng})`,
-        width: 26,
-        height: 38,
-        backgroundSize: 2000,
-        display: "inline-block",
-        backgroundPositionX: -222,
-        backgroundPositionY: height,
+        margin: 0,
       }}
-    />
+    >
+      {character}
+    </h1>
   );
 }
