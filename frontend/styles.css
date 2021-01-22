@@ -1,14 +1,14 @@
-body,
-html {
+body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .gameboard-container {
   display: grid;
   width: 100vw;
   height: 100vh;
-  grid-template-rows: 100px auto auto 80px auto 50px 200px;
+  grid-template-rows: 100px 50px 1fr 50px 1fr 50px 150px;
   grid-template-columns: auto auto 100px;
   grid-template-areas:
     "other-player-cards other-player-cards other-player-cards"
@@ -57,6 +57,7 @@ html {
   display: flex;
   align-items: center;
   font-size: 13px;
+  align-self: center;
 }
 
 .player-info {
@@ -73,8 +74,6 @@ html {
 }
 
 .choose-hokm-button {
-  width: 120px;
-  height: 50px;
   border: none;
   display: flex;
   align-items: center;
@@ -141,15 +140,16 @@ html {
 
 .card-drawer {
   background-image: url("deck.png");
-  width: 150px;
-  height: 220px;
+  width: 102px;
+  height: 150px;
   display: inline-block;
-  transform: scale(0.72);
-  transform-origin: bottom left;
+  background-size: 1350px;
 }
 
 .card {
   width: min(7vw, 70px);
+  scale: 0.72;
+  transform-origin: bottom left;
 }
 
 .login-form {
@@ -250,6 +250,6 @@ html {
   height: 25px;
   position: fixed;
   top: 10px;
-  right: 10px;
+  left: 10px;
   border-radius: 50%;
 }
