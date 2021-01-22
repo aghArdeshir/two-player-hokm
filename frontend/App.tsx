@@ -3,6 +3,7 @@ import { GAME_EVENTS, IGameState } from "../common.typings";
 import CenterMessage from "./CenterMessage";
 import ChooseHokm from "./ChooseHokm";
 import { GameStateContext } from "./GameStateContext";
+import LiveIndicator from "./LiveIndicator";
 import LoginPage, { useBooleanState } from "./LoginPage";
 import OtherPlayerCards from "./OtherPlayerCards";
 import OtherPlayerInfo from "./OtherPlayerInfo";
@@ -26,6 +27,7 @@ export default function App() {
   if (gameState) {
     return (
       <div className="gameboard-container">
+        <LiveIndicator />
         <GameStateContext.Provider value={gameState}>
           <OtherPlayerCards />
           <OtherPlayerInfo />

@@ -244,3 +244,12 @@ html {
 .action-button[disabled]:hover {
   box-shadow: none;
 }
+
+.live-indicator {
+  width: 25px;
+  height: 25px;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  border-radius: 50%;
+}
