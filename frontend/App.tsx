@@ -7,6 +7,7 @@ import LoginPage, { useBooleanState } from "./LoginPage";
 import OtherPlayerCards from "./OtherPlayerCards";
 import OtherPlayerInfo from "./OtherPlayerInfo";
 import PickingPage from "./PickingPage";
+import PlayerAction from "./PlayerAction";
 import PlayerCards from "./PlayerCards";
 import PlayerInfo from "./PlayerInfo";
 import PlayingPage from "./PlayingPage";
@@ -32,6 +33,7 @@ export default function App() {
           <ShowHokm />
           <PickingPage />
           <PlayingPage />
+          <PlayerAction />
           <PlayerInfo />
           <PlayerCards />
         </GameStateContext.Provider>

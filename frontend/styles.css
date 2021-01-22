@@ -111,18 +111,32 @@ html {
 
 .card-to-accept-refuse {
   grid-area: 2 / 1 / span 3 / span 2;
+  align-self: center;
+  margin: auto;
 }
 
 .accept-card {
   grid-area: 5 / 1;
+  background-color: darkgreen;
+  color: white;
 }
 
 .refuse-card {
   grid-area: 5 / 2;
+  background-color: red;
+  color: white;
+}
+
+.winner-announcer {
+  grid-area: slot10;
+  margin: auto;
 }
 
 .played-cards {
   grid-area: 3 / 1 / span 3 / span 2;
+  display: flex;
+  align-self: center;
+  margin: auto;
 }
 
 .card-drawer {
@@ -199,4 +213,34 @@ html {
   height: 50px;
   border-radius: 5px 0 0 5px;
   box-shadow: -1px 1px 5px black;
+}
+
+.drop-cards-button {
+  grid-area: slot20;
+  background-color: yellowgreen;
+}
+
+.action-button {
+  align-self: center;
+  width: 100px;
+  margin: auto;
+  border: none;
+  box-shadow: 0 0 2px black;
+  cursor: pointer;
+  padding: 20px;
+}
+
+.action-button:hover {
+  box-shadow: 0 0 10px black;
+}
+
+.action-button[disabled] {
+  box-shadow: none;
+  cursor: default;
+  background-color: gray;
+  opacity: 0.28;
+}
+
+.action-button[disabled]:hover {
+  box-shadow: none;
 }

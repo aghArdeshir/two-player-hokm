@@ -7,21 +7,16 @@ import { socketService } from "./socket-service";
 export default function PickingPage() {
   const gameState = useContext(GameStateContext);
 
-  if (gameState.nextAction !== GAME_ACTION.PICK_CARDS) return <></>;
-
   if (
-    gameState.nextAction === GAME_ACTION.PICK_CARDS &&
-    !gameState.player.isTurn
-  ) {
-    return <p className="player-action">other player is picking cards</p>;
-  }
+    gameState.nextAction !== GAME_ACTION.PICK_CARDS ||
+    (gameState.nextAction === GAME_ACTION.PICK_CARDS &&
+      !gameState.player.isTurn)
+  )
+    return <></>;
 
   if (gameState.cardsToChoose)
     return (
       <>
-        <div className="player-action">
-          Click on one card to pick it. The other card will be dropped!
-        </div>
         <div className="card-to-accept-refuse">
           <div style={{ display: "flex" }}>
             {gameState.cardsToChoose.map((card) => (
@@ -43,17 +38,17 @@ export default function PickingPage() {
       </div>
       <button
         disabled={gameState.mustRefuseCard}
-        className="accept-card"
+        className="accept-card action-button"
         onClick={() => socketService.pickCard()}
       >
-        I want it
+        👍 I want it
       </button>
       <button
         disabled={gameState.mustPickCard}
-        className="refuse-card"
+        className="refuse-card action-button"
         onClick={() => socketService.refuseCard()}
       >
-        I DON'T want it
+        👎 Pass
       </button>
     </>
   );

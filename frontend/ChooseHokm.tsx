@@ -18,12 +18,7 @@ export function isChooseHokm(
 export default function ChooseHokm() {
   const gameContext = useContext(GameStateContext);
 
-  if (!isChooseHokm(gameContext)) return <></>;
-
-  if (!gameContext.player.isHaakem)
-    return (
-      <div className="player-action">Waiting for Haakem to select Hokm</div>
-    );
+  if (!isChooseHokm(gameContext) || !gameContext.player.isHaakem) return <></>;
 
   return (
     <>

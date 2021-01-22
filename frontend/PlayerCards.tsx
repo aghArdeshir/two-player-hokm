@@ -91,29 +91,18 @@ export default function PlayerCards() {
             />
           ))}
       </div>
-      {gameState.nextAction === GAME_ACTION.DROP_TWO ? (
-        <div className="player-action">
-          {gameState.player.cardsLength === 3 &&
-          gameState.otherPlayer.cardsLength > 3 ? (
-            <>Waiting for other player to drop cards</>
-          ) : (
-            <div>
-              {cardsToDrop.length === 2 ? (
-                <button
-                  onClick={() => {
-                    if (isValidToDrop(cardsToDrop)) {
-                      socketService.dropTwo(cardsToDrop);
-                    }
-                  }}
-                >
-                  DROP
-                </button>
-              ) : (
-                <>Please choose two cards to drop out</>
-              )}
-            </div>
-          )}
-        </div>
+      {cardsToDrop.length === 2 ? (
+        <button
+          className="drop-cards-button action-button"
+          onClick={() => {
+            if (isValidToDrop(cardsToDrop)) {
+              socketService.dropTwo(cardsToDrop);
+              setCardsToDrop([]);
+            }
+          }}
+        >
+          ✓ Drop
+        </button>
       ) : (
         <></>
       )}
