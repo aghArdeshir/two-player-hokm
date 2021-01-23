@@ -227,7 +227,7 @@ body {
   border: none;
   box-shadow: 0 0 2px black;
   cursor: pointer;
-  padding: 20px;
+  padding: 10px;
 }
 
 .action-button:hover {
