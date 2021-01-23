@@ -9,8 +9,8 @@ import {
 } from "../common.typings";
 
 const SOCKET_CONNECTED_EVENT = "SOCKET_CONNECTED";
-const TWO_SECONDS = 2 * 1000;
-const FOUR_SECONDS = 4 * 1000;
+const FIVE_SECONDS = 5 * 1000;
+const TEN_SECONDS = 10 * 1000;
 
 class SocketService {
   private connected = false;
@@ -41,7 +41,7 @@ class SocketService {
         this.socketConnection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
         if (
           new Date().getTime() - SocketService.lastHeartBeatTimestamp >
-          FOUR_SECONDS
+          TEN_SECONDS
         ) {
           config.onDelay();
         } else {
@@ -50,7 +50,7 @@ class SocketService {
       } else {
         config.onDisconnect();
       }
-    }, TWO_SECONDS);
+    }, FIVE_SECONDS);
 
     this.socketConnection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
       SocketService.lastHeartBeatTimestamp = new Date().getTime();
