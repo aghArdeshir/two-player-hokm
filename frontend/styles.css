@@ -33,6 +33,7 @@ body {
 
 .other-player-wins {
   grid-area: other-player-wins;
+  margin-top: 10px;
 }
 
 .hokm {
@@ -49,6 +50,8 @@ body {
 
 .player-wins {
   grid-area: player-wins;
+  align-self: end;
+  margin-bottom: 10px;
 }
 
 .player-action {
