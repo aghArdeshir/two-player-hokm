@@ -4,14 +4,16 @@ import { CARD_FORMAT, ICard } from "../common.typings";
 
 export class Player {
   username: string;
+  uuid: string;
   cards: ICard[] = [];
   isHaakem: boolean = false;
   score = 0;
   isTurn = false;
   isWinner = false;
 
-  constructor(username: string) {
+  constructor(username: string, uuid: string) {
     this.username = username;
+    this.uuid = uuid;
   }
 
   public addCard(card: ICard) {

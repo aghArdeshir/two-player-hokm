@@ -9,9 +9,22 @@ import {
 } from "../common.typings";
 import { Game } from "./Game";
 import { Player } from "./Player";
+import { v4 as uuid4 } from "uuid";
+
+function uuidOf(cookie: string = "") {
+  const uuid = (cookie.split("uuid=uuid-start-")[1] || "").split(
+    "-uuid-end"
+  )[0];
+  return uuid;
+}
 
 // TODO retry non-https version  as https version was for trial
 const http = createHttpServer((req, res) => {
+  let uuid = uuidOf(req.headers.cookie);
+  if (!uuid) {
+    res.setHeader("Set-Cookie", "uuid=uuid-start-" + uuid4() + "-uuid-end");
+  }
+
   const fileName =
     __dirname +
     `/..${process.env.NODE_ENV === "development" ? "/dist" : ""}` +
@@ -35,17 +48,23 @@ http.on("listening", () => {
   console.log(`server listening on port ${GAME_PORT}`);
 });
 
-const players: Player[] = [];
+const playerUuids: string[] = [];
 let game: Game;
 
+const uuidToPlayerMap = new Map<string, Player>();
 const playerToConnectionMap = new Map<Player, Socket>();
 
 const socketServer = new SocketServer(http);
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
+  playerToConnectionMap.set(
+    uuidToPlayerMap.get(uuidOf(connection.request.headers.cookie)),
+    connection
+  );
+
   connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
-    if (players.length === 2) {
-      players.splice(0, 2); // only for easier development testing
+    if (playerUuids.length === 2) {
+      playerUuids.splice(0, 2); // only for easier development testing
       // connection.emit(GAME_EVENTS.ERROR, {
       //   error: "room is full (2 players are joined",
       // });
@@ -56,43 +75,51 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
     });
 
-    const player = new Player(username);
-    players.push(player);
-    playerToConnectionMap.set(player, connection);
+    const playerUuid = new Player(
+      username,
+      uuidOf(connection.request.headers.cookie)
+    );
+    playerUuids.push(playerUuid.uuid);
+    uuidToPlayerMap.set(playerUuid.uuid, playerUuid);
+    playerToConnectionMap.set(playerUuid, connection);
 
-    if (players.length === 2) {
-      game = new Game(players[0], players[1]);
+    if (playerUuids.length === 2) {
+      game = new Game(
+        uuidToPlayerMap.get(playerUuids[0]),
+        uuidToPlayerMap.get(playerUuids[1])
+      );
 
       game.onStateChange((state) => {
         playerToConnectionMap
-          .get(players[0])
+          .get(uuidToPlayerMap.get(playerUuids[0]))
           .emit(GAME_EVENTS.GAME_STATE, state.player1);
         playerToConnectionMap
-          .get(players[1])
+          .get(uuidToPlayerMap.get(playerUuids[1]))
           .emit(GAME_EVENTS.GAME_STATE, state.player2);
       });
     }
   });
 
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
-    const player = players.find(
-      (player) => playerToConnectionMap.get(player) === connection
+    const player = playerUuids.find(
+      (player) =>
+        playerToConnectionMap.get(uuidToPlayerMap.get(player)) === connection
     );
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
       // TODO: check if hokm is valid CARD_FORMAT
       game.setHokm(action.hokm);
     } else if (action.action === GAME_ACTION.DROP_TWO) {
       // check if user has the cards
-      game.dropTwo(action.cardsToDrop, player);
+      game.dropTwo(action.cardsToDrop, uuidToPlayerMap.get(player));
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {
         // TODO: in the game class/instance, check if the card is actually provided
-        game.acceptCard(player, action.card);
+        game.acceptCard(uuidToPlayerMap.get(player), action.card);
       } else {
         game.refuseCard();
       }
     } else if (action.action === GAME_ACTION.PLAY) {
-      game.play(player, action.card);
+      game.play(uuidToPlayerMap.get(player), action.card);
     }
   });
 });
