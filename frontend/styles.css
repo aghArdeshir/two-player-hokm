@@ -194,7 +194,7 @@ body {
   height: 50px;
   border: 5px solid;
   border-radius: 50%;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-bottom: none;
   border-left: none;
   animation: circular-progress 1s linear infinite;
