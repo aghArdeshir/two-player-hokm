@@ -5,15 +5,13 @@ import { CARD_FORMAT, ICard } from "../common.typings";
 export class Player {
   username: string;
   cards: ICard[] = [];
-  connection: Socket; // better to be kept somewhere else
   isHaakem: boolean = false;
   score = 0;
   isTurn = false;
   isWinner = false;
 
-  constructor(username: string, connection: Socket) {
+  constructor(username: string) {
     this.username = username;
-    this.connection = connection;
   }
 
   public addCard(card: ICard) {

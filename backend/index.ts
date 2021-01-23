@@ -38,13 +38,11 @@ http.on("listening", () => {
 const players: Player[] = [];
 let game: Game;
 
+const playerToConnectionMap = new Map<Player, Socket>();
+
 const socketServer = new SocketServer(http);
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
-  connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
-    connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
-  });
-
   connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
     if (players.length === 2) {
       players.splice(0, 2); // only for easier development testing
@@ -54,20 +52,32 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       // connection.disconnect(true);
     }
 
-    players.push(new Player(username, connection));
+    connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
+      connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
+    });
+
+    const player = new Player(username);
+    players.push(player);
+    playerToConnectionMap.set(player, connection);
 
     if (players.length === 2) {
       game = new Game(players[0], players[1]);
 
       game.onStateChange((state) => {
-        players[0].connection.emit(GAME_EVENTS.GAME_STATE, state.player1);
-        players[1].connection.emit(GAME_EVENTS.GAME_STATE, state.player2);
+        playerToConnectionMap
+          .get(players[0])
+          .emit(GAME_EVENTS.GAME_STATE, state.player1);
+        playerToConnectionMap
+          .get(players[1])
+          .emit(GAME_EVENTS.GAME_STATE, state.player2);
       });
     }
   });
 
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
-    const player = players.find((player) => player.connection === connection);
+    const player = players.find(
+      (player) => playerToConnectionMap.get(player) === connection
+    );
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
       // TODO: check if hokm is valid CARD_FORMAT
       game.setHokm(action.hokm);
