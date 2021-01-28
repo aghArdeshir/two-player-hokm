@@ -16,9 +16,9 @@ export function isChooseHokm(
 }
 
 export default function ChooseHokm() {
-  const gameContext = useContext(GameStateContext);
+  const gameState = useContext(GameStateContext);
 
-  if (!isChooseHokm(gameContext) || !gameContext.player.isHaakem) return <></>;
+  if (!isChooseHokm(gameState) || !gameState.player.isHaakem) return <></>;
 
   return (
     <>
