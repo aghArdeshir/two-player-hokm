@@ -78,7 +78,7 @@ type IGameStateForPlayStep = ICommonGameState & {
   nextAction: GAME_ACTION.PLAY;
   cardOnGround?: ICard; // the card that is currently played
   cardsOnGround?: [ICard, ICard]; // for a second, so both players can see what is played
-  winner?: string;
+  winner?: string; // last round winner
 };
 
 export type IGameState =
