@@ -51,7 +51,7 @@ export class Game {
   }
 
   private setHaakem() {
-    this.players[Math.random() > 0.5 ? 0 : 1].setAsHaakem();
+    this.players[Math.random() > 0.5 ? 0 : 1].setHaakem(true);
   }
 
   public setHokm(format: CARD_FORMAT) {

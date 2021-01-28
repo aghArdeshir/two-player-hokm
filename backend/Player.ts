@@ -24,8 +24,8 @@ export class Player {
     this.cards = this.cards.filter((c) => !isEqual(c, card));
   }
 
-  public setAsHaakem() {
-    this.isHaakem = true;
+  public setHaakem(isHaakem: boolean) {
+    this.isHaakem = isHaakem;
   }
 
   public incrementScore() {
