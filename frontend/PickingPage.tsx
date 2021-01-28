@@ -41,7 +41,7 @@ export default function PickingPage() {
         className="accept-card action-button"
         onClick={() => socketService.pickCard()}
       >
-        👍 I want it
+        👍 Pick
       </button>
       <button
         disabled={gameState.mustPickCard}

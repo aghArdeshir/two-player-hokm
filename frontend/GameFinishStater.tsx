@@ -10,8 +10,6 @@ export default function GameFinishStater() {
   return (
     <>
       <h1>Game is FINISHED</h1>
-      <button>click here to refresh game</button>
     </>
   );
 }
-
