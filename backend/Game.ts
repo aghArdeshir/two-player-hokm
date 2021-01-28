@@ -202,6 +202,62 @@ export class Game {
     }
   }
 
+  private mustPickCard: boolean;
+  private mustRefuseCard: boolean;
+  private determinePickingOptions() {
+    this.mustPickCard = false;
+    this.mustRefuseCard = false;
+    if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
+      if (this.player1.isHaakem) {
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player1.cards.length > this.player2.cards.length
+        )
+          this.mustRefuseCard = true;
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player1.cards.length === this.player2.cards.length
+        )
+          this.mustPickCard = true;
+      } else {
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player2.cards.length > this.player1.cards.length
+        )
+          this.mustRefuseCard = true;
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player2.cards.length === this.player1.cards.length
+        )
+          this.mustPickCard = true;
+      }
+    } else {
+      if (this.player2.isHaakem) {
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player1.cards.length === this.player2.cards.length
+        )
+          this.mustRefuseCard = true;
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player1.cards.length < this.player2.cards.length
+        )
+          this.mustPickCard = true;
+      } else {
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player2.cards.length === this.player1.cards.length
+        )
+          this.mustRefuseCard = true;
+        if (
+          this.deck.length % 2 === 1 &&
+          this.player2.cards.length < this.player1.cards.length
+        )
+          this.mustPickCard = true;
+      }
+    }
+  }
+
   private reportGameState(): { player1: IGameState; player2: IGameState } {
     if (this.nextAction === GAME_ACTION.PICK_CARDS && this.deck.length === 0) {
       this.nextAction = GAME_ACTION.PLAY;
@@ -276,57 +332,7 @@ export class Game {
         },
       };
     } else if (this.nextAction === GAME_ACTION.PICK_CARDS) {
-      let mustPickCard = false;
-      let mustRefuseCard = false;
-      if (Math.floor((this.deck.length - 1) / 2) % 2 === 1) {
-        if (gameStateForPlayer1.player.isHaakem) {
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player1.cards.length > this.player2.cards.length
-          )
-            mustRefuseCard = true;
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player1.cards.length === this.player2.cards.length
-          )
-            mustPickCard = true;
-        } else {
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player2.cards.length > this.player1.cards.length
-          )
-            mustRefuseCard = true;
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player2.cards.length === this.player1.cards.length
-          )
-            mustPickCard = true;
-        }
-      } else {
-        if (gameStateForPlayer2.player.isHaakem) {
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player1.cards.length === this.player2.cards.length
-          )
-            mustRefuseCard = true;
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player1.cards.length < this.player2.cards.length
-          )
-            mustPickCard = true;
-        } else {
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player2.cards.length === this.player1.cards.length
-          )
-            mustRefuseCard = true;
-          if (
-            this.deck.length % 2 === 1 &&
-            this.player2.cards.length < this.player1.cards.length
-          )
-            mustPickCard = true;
-        }
-      }
+      this.determinePickingOptions();
 
       const result: {
         player1: IGameStateForPickingStep;
@@ -344,10 +350,12 @@ export class Game {
         },
       };
 
-      if (mustPickCard) result.player1.mustPickCard = mustPickCard;
-      if (mustRefuseCard) result.player1.mustRefuseCard = mustRefuseCard;
-      if (mustPickCard) result.player2.mustPickCard = mustPickCard;
-      if (mustRefuseCard) result.player2.mustRefuseCard = mustRefuseCard;
+      if (this.mustPickCard) result.player1.mustPickCard = this.mustPickCard;
+      if (this.mustRefuseCard)
+        result.player1.mustRefuseCard = this.mustRefuseCard;
+      if (this.mustPickCard) result.player2.mustPickCard = this.mustPickCard;
+      if (this.mustRefuseCard)
+        result.player2.mustRefuseCard = this.mustRefuseCard;
 
       if (this.deck.length === 2) {
         this.cardsToChoose = [this.deck.shift(), this.deck.shift()];
