@@ -5,7 +5,7 @@ export enum GAME_EVENTS {
   GAME_STATE = "game-state", // Backend tells UI that I'm emitting a game state
   ACTION = "action", // UI tells Backend that I am emitting a game/plyer action
   CONNECTION = "connection",
-  MANUAL_HEARTBEAT = 'manual-heartbeat'
+  MANUAL_HEARTBEAT = "manual-heartbeat",
 }
 
 export const GAME_PORT = 3000;
@@ -31,6 +31,7 @@ export enum GAME_ACTION {
   DROP_TWO = "DROP_TWO", // each player must drop two cards out at the beginning
   PICK_CARDS = "PICK_CARDS", // `cardToChoose` is shown to user with (optionally) two options to pick or refuse
   PLAY = "PLAY", // if player `isTurn`, then should play (optionally there is a `cardOnGround` which is the card that other player has played)
+  FINISHED = "FINISHED",
 }
 
 // ============================================================================
@@ -81,11 +82,17 @@ type IGameStateForPlayStep = ICommonGameState & {
   winner?: string; // last round winner
 };
 
+type IGameStateForFinishedState = ICommonGameState & {
+  nextAction: GAME_ACTION.FINISHED;
+  finished: true;
+};
+
 export type IGameState =
   | IGameStateForHokmChoosing
   | IGameStateForDroppingTwo
   | IGameStateForPickingStep
-  | IGameStateForPlayStep;
+  | IGameStateForPlayStep
+  | IGameStateForFinishedState;
 
 // ============================================================================
 

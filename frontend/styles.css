@@ -256,3 +256,10 @@ body {
   left: 10px;
   border-radius: 50%;
 }
+
+.game-finish-stater {
+  grid-area: slot30;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}

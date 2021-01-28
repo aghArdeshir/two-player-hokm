@@ -40,7 +40,7 @@ export class Player {
     return !!this.cards.find((c) => c.format === format);
   }
 
-  public setWinner() {
-    this.isWinner = true;
+  public setWinner(state: boolean) {
+    this.isWinner = state;
   }
 }

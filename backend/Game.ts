@@ -130,6 +130,14 @@ export class Game {
     if (this.cardsOnGround) {
       // stall 2 seconds so both players see what cards are played
       setTimeout(() => {
+        if (this.player1.score === 7) {
+          this.player1.setWinner(true);
+          this.nextAction = GAME_ACTION.FINISHED;
+        } else if (this.player2.score === 7) {
+          this.player2.setWinner(true);
+          this.nextAction = GAME_ACTION.FINISHED;
+        }
+
         this.cardsOnGround = null;
         this.emitGameState();
       }, 2000);
@@ -395,6 +403,21 @@ export class Game {
           cardOnGround: this.cardOnGround,
           cardsOnGround: this.cardsOnGround,
           winner: this.lastWinner?.username,
+        },
+      };
+    } else if (this.nextAction === GAME_ACTION.FINISHED) {
+      return {
+        player1: {
+          ...gameStateForPlayer1,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+          finished: true,
+        },
+        player2: {
+          ...gameStateForPlayer2,
+          nextAction: this.nextAction,
+          hokm: this.hokm,
+          finished: true,
         },
       };
     }

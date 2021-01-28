@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { GAME_EVENTS, IGameState } from "../common.typings";
 import CenterMessage from "./CenterMessage";
 import ChooseHokm from "./ChooseHokm";
+import GameFinishStater from "./GameFinishStater";
 import { GameStateContext } from "./GameStateContext";
 import LiveIndicator from "./LiveIndicator";
 import LoginPage, { useBooleanState } from "./LoginPage";
@@ -35,6 +36,7 @@ export default function App() {
           <ShowHokm />
           <PickingPage />
           <PlayingPage />
+          <GameFinishStater />
           <PlayerAction />
           <PlayerInfo />
           <PlayerCards />
