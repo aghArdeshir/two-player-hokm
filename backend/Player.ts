@@ -32,6 +32,10 @@ export class Player {
     this.score++;
   }
 
+  public resetScore() {
+    this.score = 0;
+  }
+
   public hasCard(card: ICard) {
     return this.cards.findIndex((c) => isEqual(c, card)) > -1;
   }
