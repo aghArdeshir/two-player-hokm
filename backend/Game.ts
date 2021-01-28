@@ -16,7 +16,7 @@ export class Game {
   private player2: Player;
   private lastWinner: Player;
 
-  private deck = new Deck();
+  private deck: Deck;
   private hokm: CARD_FORMAT;
 
   private cardToChoose: ICard;
@@ -24,7 +24,7 @@ export class Game {
   private cardOnGround: ICard | null;
   private cardsOnGround: [ICard, ICard] | null;
 
-  private nextAction: GAME_ACTION = GAME_ACTION.CHOOSE_HOKM;
+  private nextAction: GAME_ACTION;
 
   private EventEmitter = new EventEmitter();
 
@@ -32,10 +32,26 @@ export class Game {
     this.player1 = player1;
     this.player2 = player2;
 
-    this.giveEachPlayerFive();
     this.setHaakem();
+    this.initiateNewGame();
 
     this.emitGameState();
+  }
+
+  private initiateNewGame() {
+    this.deck = new Deck();
+    this.hokm = null;
+    this.nextAction = GAME_ACTION.CHOOSE_HOKM;
+
+    this.player1.resetScore();
+    this.player2.resetScore();
+
+    this.player1.cards = [];
+    this.player2.cards = [];
+
+    this.lastWinner = undefined;
+
+    this.giveEachPlayerFive();
   }
 
   private get players() {
@@ -139,6 +155,27 @@ export class Game {
         }
 
         this.cardsOnGround = null;
+
+        this.emitGameState();
+      }, 2000);
+    }
+
+    if (this.nextAction === GAME_ACTION.FINISHED) {
+      setTimeout(() => {
+        if (this.player1.isWinner) {
+          this.player1.setHaakem(true);
+          this.player2.setHaakem(false);
+        } else {
+          // so player2 isWinner, because game is finished
+          this.player1.setHaakem(false);
+          this.player2.setHaakem(true);
+        }
+
+        this.player1.setWinner(false);
+        this.player2.setWinner(false);
+
+        this.initiateNewGame();
+
         this.emitGameState();
       }, 2000);
     }
