@@ -110,16 +110,20 @@ export class Game {
         this.cardsToChoose.findIndex((ctd) => isEqual(ctd, card)) > -1
       ) {
         player.addCard(card);
+        this.emitGameState();
       } else {
-        player.addCard(this.cardToChoose);
+        if (!this.mustRefuseCard) {
+          player.addCard(this.cardToChoose);
+          this.emitGameState();
+        }
       }
-
-      this.emitGameState();
     }
   }
 
   public refuseCard() {
-    this.emitGameState();
+    if (!this.mustPickCard) {
+      this.emitGameState();
+    }
   }
 
   private emitGameState() {
