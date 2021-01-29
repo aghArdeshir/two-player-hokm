@@ -109,7 +109,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       // TODO: check if hokm is valid CARD_FORMAT
       game.setHokm(action.hokm);
     } else if (action.action === GAME_ACTION.DROP_TWO) {
-      // check if user has the cards
+      // TODO: check if user has the cards
       game.dropTwo(action.cardsToDrop, uuidToPlayerMap.get(player));
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {

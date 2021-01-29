@@ -78,16 +78,17 @@ export class Game {
   }
 
   public dropTwo(cards: [ICard, ICard], player: Player) {
-    cards.forEach((card) => {
-      if (player.hasCard(card)) {
+    if (cards.every((card) => player.hasCard(card))) {
+      cards.forEach((card) => {
         player.removeCard(card);
-      }
-    });
-    if (this.players.every((player) => player.cards.length === 3)) {
-      this.nextAction = GAME_ACTION.PICK_CARDS;
-    }
+      });
 
-    this.emitGameState();
+      if (this.players.every((player) => player.cards.length === 3)) {
+        this.nextAction = GAME_ACTION.PICK_CARDS;
+      }
+
+      this.emitGameState();
+    }
   }
 
   public play(player: Player, card: ICard) {
