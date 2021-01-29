@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { GAME_EVENTS, IGameState } from "../common.typings";
 import CenterMessage from "./CenterMessage";
 import ChooseHokm from "./ChooseHokm";
-import { useDeveloperOptions } from "./developer-options";
+import { useDeveloperOptions } from "./use-developer-options";
 import GameFinishStater from "./GameFinishStater";
 import { GameStateContext } from "./GameStateContext";
 import LiveIndicator from "./LiveIndicator";
