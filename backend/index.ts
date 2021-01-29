@@ -11,7 +11,7 @@ import { Game } from "./Game";
 import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
 
-function uuidOf(cookie: string = "") {
+function uuidOf(cookie = "") {
   const uuid = (cookie.split("uuid=uuid-start-")[1] || "").split(
     "-uuid-end"
   )[0];
@@ -20,7 +20,7 @@ function uuidOf(cookie: string = "") {
 
 // TODO retry non-https version  as https version was for trial
 const http = createHttpServer((req, res) => {
-  let uuid = uuidOf(req.headers.cookie);
+  const uuid = uuidOf(req.headers.cookie);
   if (!uuid) {
     res.setHeader("Set-Cookie", "uuid=uuid-start-" + uuid4() + "-uuid-end");
   }

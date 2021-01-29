@@ -1,12 +1,11 @@
 import { isEqual } from "lodash";
-import { Socket } from "socket.io";
 import { CARD_FORMAT, ICard } from "../common.typings";
 
 export class Player {
   username: string;
   uuid: string;
   cards: ICard[] = [];
-  isHaakem: boolean = false;
+  isHaakem = false;
   score = 0;
   isTurn = false;
   isWinner = false;

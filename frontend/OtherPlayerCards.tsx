@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { GameStateContext } from "./GameStateContext";
-//@ts-ignore
 import cardBackAsPng from "./card-back.png";
 
 export default function OtherPlayerCards() {

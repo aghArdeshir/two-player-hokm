@@ -23,7 +23,7 @@ export default function App() {
   useEffect(() => {
     socketService.onConnected(() => toggleSocketConnected());
     socketService.on(GAME_EVENTS.GAME_STATE, setGameState);
-  }, []);
+  }, [toggleSocketConnected]);
 
   if (gameState) {
     return (

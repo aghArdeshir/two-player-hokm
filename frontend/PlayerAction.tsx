@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { GAME_ACTION } from "../common.typings";
 import { GameStateContext } from "./GameStateContext";
 
-export default function () {
+export default function PlayerAction() {
   const gameState = useContext(GameStateContext);
   let message = "";
 

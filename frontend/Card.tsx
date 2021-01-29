@@ -1,7 +1,6 @@
-import { CSSProperties, useContext } from "react";
+import { CSSProperties } from "react";
 import { ICard } from "../common.typings";
 import CardDrawer from "./CardDrawer";
-import { GameStateContext } from "./GameStateContext";
 
 export default function Card(props: {
   card: ICard;
