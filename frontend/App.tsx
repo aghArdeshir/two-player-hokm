@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { GAME_EVENTS, IGameState } from "../common.typings";
 import CenterMessage from "./CenterMessage";
 import ChooseHokm from "./ChooseHokm";
+import { useDeveloperOptions } from "./developer-options";
 import GameFinishStater from "./GameFinishStater";
 import { GameStateContext } from "./GameStateContext";
 import LiveIndicator from "./LiveIndicator";
@@ -24,6 +25,8 @@ export default function App() {
     socketService.onConnected(() => toggleSocketConnected());
     socketService.on(GAME_EVENTS.GAME_STATE, setGameState);
   }, [toggleSocketConnected]);
+
+  useDeveloperOptions(gameState);
 
   if (gameState) {
     return (
