@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { GameStateContext } from "./GameStateContext";
-import { CARD_FORMAT, GAME_ACTION, ICard } from "../common.typings";
+import { CARD_FORMAT_SUIT_ORDER, GAME_ACTION, ICard } from "../common.typings";
 import Card from "./Card";
 import { isEqual } from "lodash";
 import { socketService } from "./socket-service";
@@ -9,13 +9,6 @@ function isValidToDrop(cards: ICard[]): cards is [ICard, ICard] {
   if (cards.length === 2) return true;
   return false;
 }
-
-const CARD_FORMAT_SUIT_ORDER = [
-  CARD_FORMAT.SPADES,
-  CARD_FORMAT.HEARTS,
-  CARD_FORMAT.CLUBS,
-  CARD_FORMAT.DIAMONDS,
-];
 
 export default function PlayerCards() {
   const gameState = useContext(GameStateContext);

@@ -19,6 +19,13 @@ export enum CARD_FORMAT {
   DIAMONDS = "Diamonds",
 }
 
+export const CARD_FORMAT_SUIT_ORDER = [
+  CARD_FORMAT.SPADES,
+  CARD_FORMAT.HEARTS,
+  CARD_FORMAT.CLUBS,
+  CARD_FORMAT.DIAMONDS,
+];
+
 export type ICard = {
   number: ICardNumber;
   format: CARD_FORMAT;
