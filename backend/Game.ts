@@ -119,6 +119,15 @@ export class Game {
   }
 
   public acceptCard(player: Player, card?: ICard) {
+    if (
+      player.cards.length === 12 &&
+      !player.isHaakem &&
+      !card &&
+      this.deck.length === 0
+    ) {
+      return;
+    }
+
     if (player.isTurn) {
       // TODO: check if it is valid to accept card (e.g. do not accept both cards, count them)
       if (
@@ -138,6 +147,10 @@ export class Game {
   }
 
   public refuseCard() {
+    if (this.cardsToChoose) {
+      return;
+    }
+
     if (!this.mustPickCard) {
       this.emitGameState();
     }
@@ -309,7 +322,12 @@ export class Game {
   }
 
   private reportGameState(): { player1: IGameState; player2: IGameState } {
-    if (this.nextAction === GAME_ACTION.PICK_CARDS && this.deck.length === 0) {
+    if (
+      this.nextAction === GAME_ACTION.PICK_CARDS &&
+      this.deck.length === 0 &&
+      this.player1.cards.length === 13 &&
+      this.player2.cards.length === 13
+    ) {
       this.nextAction = GAME_ACTION.PLAY;
     }
 
