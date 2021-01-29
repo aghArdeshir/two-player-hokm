@@ -43,9 +43,15 @@ export function useDeveloperOptions(gameState: IGameState | null) {
       } else if (gameState?.mustRefuseCard) {
         socketService.refuseCard();
       } else {
-        Math.random() > 0.5
-          ? socketService.pickCard()
-          : socketService.refuseCard();
+        if (gameState.cardsToChoose) {
+          socketService.pickCard(
+            gameState.cardsToChoose[Math.random() > 0.5 ? 0 : 1]
+          );
+        } else {
+          Math.random() > 0.5
+            ? socketService.pickCard()
+            : socketService.refuseCard();
+        }
       }
     }
 

@@ -43,6 +43,11 @@ export class Game {
     this.hokm = null;
     this.nextAction = GAME_ACTION.CHOOSE_HOKM;
 
+    this.cardOnGround = undefined;
+    this.cardsOnGround = undefined;
+    this.cardToChoose = undefined;
+    this.cardsToChoose = undefined;
+
     this.player1.resetScore();
     this.player2.resetScore();
 
