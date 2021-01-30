@@ -38,7 +38,7 @@ export enum GAME_ACTION {
   DROP_TWO = "DROP_TWO", // each player must drop two cards out at the beginning
   PICK_CARDS = "PICK_CARDS", // `cardToChoose` is shown to user with (optionally) two options to pick or refuse
   PLAY = "PLAY", // if player `isTurn`, then should play (optionally there is a `cardOnGround` which is the card that other player has played)
-  FINISHED = "FINISHED",
+  WAITING_FOR_NEXT_ROUND = "WAITING_FOR_NEXT_ROUND",
 }
 
 // ============================================================================
@@ -90,7 +90,7 @@ type IGameStateForPlayStep = ICommonGameState & {
 };
 
 type IGameStateForFinishedState = ICommonGameState & {
-  nextAction: GAME_ACTION.FINISHED;
+  nextAction: GAME_ACTION.WAITING_FOR_NEXT_ROUND;
   finished: true;
 };
 

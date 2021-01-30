@@ -5,11 +5,19 @@ import { GameStateContext } from "./GameStateContext";
 export default function GameFinishStater() {
   const gameState = useContext(GameStateContext);
 
-  if (gameState.nextAction !== GAME_ACTION.FINISHED) return <></>;
+  if (gameState.nextAction !== GAME_ACTION.WAITING_FOR_NEXT_ROUND) return <></>;
 
   return (
     <>
-      <h1>Game is FINISHED</h1>
+      <h4 className="game-finish-stater">
+        🎉🎉🎉Winner is{" "}
+        {
+          [gameState.player, gameState.otherPlayer].find(
+            (player) => player.isWinner
+          ).name
+        }
+        🎉🎉🎉
+      </h4>
     </>
   );
 }

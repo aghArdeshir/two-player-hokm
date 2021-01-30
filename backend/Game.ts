@@ -11,7 +11,7 @@ import { isEqual } from "lodash";
 import { Deck } from "./Deck";
 import { Player } from "./Player";
 
-const TWO_SECONDS = 0;
+const TWO_SECONDS = 2000;
 
 export class Game {
   private player1: Player;
@@ -170,11 +170,11 @@ export class Game {
         if (this.player1.score === 7) {
           this.player1.setWinner(true);
           this.player1.wins++;
-          this.nextAction = GAME_ACTION.FINISHED;
+          this.nextAction = GAME_ACTION.WAITING_FOR_NEXT_ROUND;
         } else if (this.player2.score === 7) {
           this.player2.setWinner(true);
           this.player2.wins++;
-          this.nextAction = GAME_ACTION.FINISHED;
+          this.nextAction = GAME_ACTION.WAITING_FOR_NEXT_ROUND;
         }
 
         this.cardsOnGround = null;
@@ -183,7 +183,7 @@ export class Game {
       }, TWO_SECONDS);
     }
 
-    if (this.nextAction === GAME_ACTION.FINISHED) {
+    if (this.nextAction === GAME_ACTION.WAITING_FOR_NEXT_ROUND) {
       setTimeout(() => {
         if (this.player1.isWinner) {
           this.player1.setHaakem(true);
@@ -474,7 +474,7 @@ export class Game {
           winner: this.lastWinner?.username,
         },
       };
-    } else if (this.nextAction === GAME_ACTION.FINISHED) {
+    } else if (this.nextAction === GAME_ACTION.WAITING_FOR_NEXT_ROUND) {
       return {
         player1: {
           ...gameStateForPlayer1,
