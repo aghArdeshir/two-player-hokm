@@ -11,6 +11,8 @@ import { isEqual } from "lodash";
 import { Deck } from "./Deck";
 import { Player } from "./Player";
 
+const TWO_SECONDS = 0;
+
 export class Game {
   private player1: Player;
   private player2: Player;
@@ -178,7 +180,7 @@ export class Game {
         this.cardsOnGround = null;
 
         this.emitGameState();
-      }, 2000);
+      }, TWO_SECONDS);
     }
 
     if (this.nextAction === GAME_ACTION.FINISHED) {
@@ -198,7 +200,7 @@ export class Game {
         this.initiateNewGame();
 
         this.emitGameState();
-      }, 2000);
+      }, TWO_SECONDS);
     }
 
     const result = this.reportGameState();
