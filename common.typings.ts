@@ -49,7 +49,8 @@ type IOtherPlayer = {
   isHaakem: boolean; // chose randomly when game begins
   isTurn: boolean; // if it is player's turn to do action (one of below) or not
   score: number; // or maybe just 0 to 13!
-  isWinner?: boolean; // only is set when both players have empty hand
+  wins: number; // or maybe just 0 to 7!
+  isWinner?: boolean; // only is set when one of players have reached seven in score
 };
 
 type IPlayer = IOtherPlayer & {
@@ -79,7 +80,6 @@ export type IGameStateForPickingStep = ICommonGameState & {
   cardsToChoose?: [ICard, ICard];
   mustPickCard?: true; // because has refused the earlier card
   mustRefuseCard?: true; // because has picked the earlier card
-  isLastPickStep?: true; // so player can see both cards at the same time
 };
 
 type IGameStateForPlayStep = ICommonGameState & {

@@ -167,9 +167,11 @@ export class Game {
       setTimeout(() => {
         if (this.player1.score === 7) {
           this.player1.setWinner(true);
+          this.player1.wins++;
           this.nextAction = GAME_ACTION.FINISHED;
         } else if (this.player2.score === 7) {
           this.player2.setWinner(true);
+          this.player2.wins++;
           this.nextAction = GAME_ACTION.FINISHED;
         }
 
@@ -345,6 +347,7 @@ export class Game {
         isTurn: this.player1.isTurn,
         name: this.player1.username,
         score: this.player1.score,
+        wins: this.player1.wins,
         cards: this.player1.cards,
         isWinner: this.player1.isWinner,
       },
@@ -354,6 +357,7 @@ export class Game {
         isTurn: this.player2.isTurn,
         name: this.player2.username,
         score: this.player2.score,
+        wins: this.player2.wins,
         isWinner: this.player2.isWinner,
       },
     };
@@ -366,6 +370,7 @@ export class Game {
         name: this.player2.username,
         score: this.player2.score,
         cards: this.player2.cards,
+        wins: this.player2.wins,
         isWinner: this.player2.isWinner,
       },
       otherPlayer: {
@@ -374,6 +379,7 @@ export class Game {
         isTurn: this.player1.isTurn,
         name: this.player1.username,
         score: this.player1.score,
+        wins: this.player1.wins,
         isWinner: this.player1.isWinner,
       },
     };

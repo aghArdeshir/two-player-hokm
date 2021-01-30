@@ -11,7 +11,7 @@ export default function OtherPlayerInfo() {
       ) : (
         <></>
       )}
-      {gameState.otherPlayer.name}: {gameState.otherPlayer.score}
+      {gameState.otherPlayer.name}: {gameState.otherPlayer.wins}
     </div>
   );
 }

@@ -7,6 +7,7 @@ export class Player {
   cards: ICard[] = [];
   isHaakem = false;
   score = 0;
+  wins = 0;
   isTurn = false;
   isWinner = false;
 
@@ -29,6 +30,10 @@ export class Player {
 
   public incrementScore() {
     this.score++;
+  }
+
+  public incrementWins() {
+    this.wins++;
   }
 
   public resetScore() {

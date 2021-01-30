@@ -7,7 +7,7 @@ export default function PlayerInfo() {
   return (
     <div className="player-info">
       {gameState.player.isHaakem ? <h1 className="crown-mark">♔</h1> : <></>}
-      {gameState.player.name}: {gameState.player.score}
+      {gameState.player.name}: {gameState.player.wins}
     </div>
   );
 }
