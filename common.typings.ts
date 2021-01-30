@@ -39,6 +39,7 @@ export enum GAME_ACTION {
   PICK_CARDS = "PICK_CARDS", // `cardToChoose` is shown to user with (optionally) two options to pick or refuse
   PLAY = "PLAY", // if player `isTurn`, then should play (optionally there is a `cardOnGround` which is the card that other player has played)
   WAITING_FOR_NEXT_ROUND = "WAITING_FOR_NEXT_ROUND",
+  FINISHED = "FINISHED",
 }
 
 // ============================================================================
@@ -89,9 +90,12 @@ type IGameStateForPlayStep = ICommonGameState & {
   winner?: string; // last round winner
 };
 
-type IGameStateForFinishedState = ICommonGameState & {
+type IGameStateForWaitingForNextRoundState = ICommonGameState & {
   nextAction: GAME_ACTION.WAITING_FOR_NEXT_ROUND;
-  finished: true;
+};
+
+type IGameStateForFinishedState = ICommonGameState & {
+  nextAction: GAME_ACTION.FINISHED;
 };
 
 export type IGameState =
@@ -99,6 +103,7 @@ export type IGameState =
   | IGameStateForDroppingTwo
   | IGameStateForPickingStep
   | IGameStateForPlayStep
+  | IGameStateForWaitingForNextRoundState
   | IGameStateForFinishedState;
 
 // ============================================================================

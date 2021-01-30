@@ -189,16 +189,18 @@ export class Game {
           this.player1.setHaakem(true);
           this.player2.setHaakem(false);
         } else {
-          // so player2 isWinner, because game is finished
           this.player1.setHaakem(false);
           this.player2.setHaakem(true);
         }
 
-        this.player1.setWinner(false);
-        this.player2.setWinner(false);
+        if (this.player1.wins === 7 || this.player2.wins === 7) {
+          this.nextAction = GAME_ACTION.FINISHED;
+        } else {
+          this.player1.setWinner(false);
+          this.player2.setWinner(false);
 
-        this.initiateNewGame();
-
+          this.initiateNewGame();
+        }
         this.emitGameState();
       }, TWO_SECONDS);
     }
@@ -480,13 +482,24 @@ export class Game {
           ...gameStateForPlayer1,
           nextAction: this.nextAction,
           hokm: this.hokm,
-          finished: true,
         },
         player2: {
           ...gameStateForPlayer2,
           nextAction: this.nextAction,
           hokm: this.hokm,
-          finished: true,
+        },
+      };
+    } else if (this.nextAction === GAME_ACTION.FINISHED) {
+      return {
+        player1: {
+          ...gameStateForPlayer1,
+          nextAction: this.nextAction,
+          hokm: null,
+        },
+        player2: {
+          ...gameStateForPlayer2,
+          nextAction: this.nextAction,
+          hokm: null,
         },
       };
     }
