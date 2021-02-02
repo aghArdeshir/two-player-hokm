@@ -51,14 +51,14 @@ http.on("listening", () => {
 const playerUuids: string[] = [];
 let game: Game;
 
-const uuidToPlayerMap = new Map<string, Player>();
+const uuidToPlayerMap: { [uuid: string]: Player } = {};
 const playerToConnectionMap = new Map<Player, Socket>();
 
 const socketServer = new SocketServer(http);
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   playerToConnectionMap.set(
-    uuidToPlayerMap.get(uuidOf(connection.request.headers.cookie)),
+    uuidToPlayerMap[uuidOf(connection.request.headers.cookie)],
     connection
   );
 
@@ -79,47 +79,48 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       username,
       uuidOf(connection.request.headers.cookie)
     );
+    uuidToPlayerMap[player.uuid] = player;
     playerUuids.push(player.uuid);
-    uuidToPlayerMap.set(player.uuid, player);
+    uuidToPlayerMap[player.uuid] = player;
     playerToConnectionMap.set(player, connection);
 
     if (playerUuids.length === 2) {
       game = new Game(
-        uuidToPlayerMap.get(playerUuids[0]),
-        uuidToPlayerMap.get(playerUuids[1])
+        uuidToPlayerMap[playerUuids[0]],
+        uuidToPlayerMap[playerUuids[1]]
       );
 
       game.onStateChange((state) => {
         playerToConnectionMap
-          .get(uuidToPlayerMap.get(playerUuids[0]))
+          .get(uuidToPlayerMap[playerUuids[0]])
           .emit(GAME_EVENTS.GAME_STATE, state.player1);
         playerToConnectionMap
-          .get(uuidToPlayerMap.get(playerUuids[1]))
+          .get(uuidToPlayerMap[playerUuids[1]])
           .emit(GAME_EVENTS.GAME_STATE, state.player2);
       });
     }
   });
 
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
-    const player = playerUuids.find(
-      (player) =>
-        playerToConnectionMap.get(uuidToPlayerMap.get(player)) === connection
+    const playerUuid = playerUuids.find(
+      (p_uuid) =>
+        playerToConnectionMap.get(uuidToPlayerMap[p_uuid]) === connection
     );
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
       // TODO: check if hokm is valid CARD_FORMAT
       game.setHokm(action.hokm);
     } else if (action.action === GAME_ACTION.DROP_TWO) {
       // TODO: check if user has the cards
-      game.dropTwo(action.cardsToDrop, uuidToPlayerMap.get(player));
+      game.dropTwo(action.cardsToDrop, uuidToPlayerMap[playerUuid]);
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {
         // TODO: in the game class/instance, check if the card is actually provided
-        game.acceptCard(uuidToPlayerMap.get(player), action.card);
+        game.acceptCard(uuidToPlayerMap[playerUuid], action.card);
       } else {
         game.refuseCard();
       }
     } else if (action.action === GAME_ACTION.PLAY) {
-      game.play(uuidToPlayerMap.get(player), action.card);
+      game.play(uuidToPlayerMap[playerUuid], action.card);
     }
   });
 });
