@@ -75,13 +75,13 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
     });
 
-    const playerUuid = new Player(
+    const player = new Player(
       username,
       uuidOf(connection.request.headers.cookie)
     );
-    playerUuids.push(playerUuid.uuid);
-    uuidToPlayerMap.set(playerUuid.uuid, playerUuid);
-    playerToConnectionMap.set(playerUuid, connection);
+    playerUuids.push(player.uuid);
+    uuidToPlayerMap.set(player.uuid, player);
+    playerToConnectionMap.set(player, connection);
 
     if (playerUuids.length === 2) {
       game = new Game(
