@@ -11,7 +11,7 @@ import { Game } from "./Game";
 import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
 
-function uuidOf(cookie = "") {
+function getUuidOfCookie(cookie = "") {
   const uuid = (cookie.split("uuid=uuid-start-")[1] || "").split(
     "-uuid-end"
   )[0];
@@ -20,7 +20,7 @@ function uuidOf(cookie = "") {
 
 // TODO retry non-https version  as https version was for trial
 const http = createHttpServer((req, res) => {
-  const uuid = uuidOf(req.headers.cookie);
+  const uuid = getUuidOfCookie(req.headers.cookie);
   if (!uuid) {
     res.setHeader("Set-Cookie", "uuid=uuid-start-" + uuid4() + "-uuid-end");
   }
@@ -58,7 +58,7 @@ const socketServer = new SocketServer(http);
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   playerToConnectionMap.set(
-    uuidToPlayerMap[uuidOf(connection.request.headers.cookie)],
+    uuidToPlayerMap[getUuidOfCookie(connection.request.headers.cookie)],
     connection
   );
 
@@ -77,7 +77,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     const player = new Player(
       username,
-      uuidOf(connection.request.headers.cookie)
+      getUuidOfCookie(connection.request.headers.cookie)
     );
     uuidToPlayerMap[player.uuid] = player;
     playerUuids.push(player.uuid);
