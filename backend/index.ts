@@ -10,19 +10,17 @@ import {
 import { Game } from "./Game";
 import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
+import { parse as parseCookies } from "cookie";
 
-function getUuidOfCookie(cookie = "") {
-  const uuid = (cookie.split("uuid=uuid-start-")[1] || "").split(
-    "-uuid-end"
-  )[0];
-  return uuid;
+function getUuidOfCookie(cookieAsString = "") {
+  return parseCookies(cookieAsString).uuid;
 }
 
 // TODO retry non-https version  as https version was for trial
 const http = createHttpServer((req, res) => {
   const uuid = getUuidOfCookie(req.headers.cookie);
   if (!uuid) {
-    res.setHeader("Set-Cookie", "uuid=uuid-start-" + uuid4() + "-uuid-end");
+    res.setHeader("Set-Cookie", "uuid=" + uuid4());
   }
 
   const fileName =
