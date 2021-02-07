@@ -6,13 +6,12 @@ import {
   ICard,
   IGameState,
   IPlayerAction,
+  __uuid__,
 } from "../common.typings";
 
 const SOCKET_CONNECTED_EVENT = "SOCKET_CONNECTED";
 const FIVE_SECONDS = 5 * 1000;
 const TEN_SECONDS = 10 * 1000;
-
-type __uuid__ = string;
 
 class SocketService {
   private connected = false;

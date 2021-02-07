@@ -129,3 +129,7 @@ export type IPlayerAction =
       action: GAME_ACTION.PLAY;
       card: ICard;
     };
+
+// ============================================================================
+
+export type __uuid__ = string;

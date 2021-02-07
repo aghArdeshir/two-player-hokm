@@ -6,13 +6,12 @@ import {
   GAME_EVENTS,
   GAME_PORT,
   IPlayerAction,
+  __uuid__,
 } from "../common.typings";
 import { Game } from "./Game";
 import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
 import { ConnectedPlayer } from "./ConnectedPlayer";
-
-type __uuid__ = string;
 
 const http = createHttpServer((req, res) => {
   const fileName =
