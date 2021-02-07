@@ -13,8 +13,10 @@ export default function LiveIndicator() {
       },
       onDelay: () => {
         setDelayed(true);
+        setDisconnected(false);
       },
       onDisconnect: () => {
+        setDelayed(false);
         setDisconnected(true);
       },
     });
