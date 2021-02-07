@@ -21,17 +21,19 @@ class SocketService {
     this.socketConnection = io({ port: "3000" });
 
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
-      this.connected = true;
-      this.setupListeners();
+      setTimeout(() => {
+        this.connected = true;
+        this.setupListeners();
 
-      const storedUuid = localStorage.getItem("uuid");
-      if (storedUuid) {
-        this.socketConnection.emit(GAME_EVENTS.UUID, storedUuid);
-      } else {
-        this.socketConnection.emit(GAME_EVENTS.REQUEST_UUID);
-      }
+        const storedUuid = localStorage.getItem("uuid");
+        if (storedUuid) {
+          this.socketConnection.emit(GAME_EVENTS.UUID, storedUuid);
+        } else {
+          this.socketConnection.emit(GAME_EVENTS.REQUEST_UUID);
+        }
 
-      document.body.dispatchEvent(new CustomEvent(SOCKET_CONNECTED_EVENT));
+        document.body.dispatchEvent(new CustomEvent(SOCKET_CONNECTED_EVENT));
+      }, 2000); //TODO: this is a bug, find out why this happens
     });
   }
 
