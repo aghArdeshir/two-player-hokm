@@ -30,6 +30,8 @@ export class Game {
 
   private EventEmitter = new EventEmitter();
 
+  private gameIsTerminated = false;
+
   constructor(player1: Player, player2: Player) {
     this.player1 = player1;
     this.player2 = player2;
@@ -59,6 +61,11 @@ export class Game {
     this.lastWinner = undefined;
 
     this.giveEachPlayerFive();
+  }
+
+  public terminate() {
+    this.gameIsTerminated = true;
+    this.emitGameState();
   }
 
   private get players() {
@@ -163,7 +170,12 @@ export class Game {
     }
   }
 
-  private emitGameState() {
+  emitGameState() {
+    if (this.gameIsTerminated) {
+      this.EventEmitter.emit(GAME_EVENTS.END_GAME);
+      return;
+    }
+
     if (this.cardsOnGround) {
       // stall 2 seconds so both players see what cards are played
       setTimeout(() => {
@@ -215,6 +227,10 @@ export class Game {
   ) {
     this.EventEmitter.addListener(GAME_EVENTS.GAME_STATE, listener);
     this.emitGameState();
+  }
+
+  public onEnd(listener: () => void) {
+    this.EventEmitter.addListener(GAME_EVENTS.END_GAME, listener);
   }
 
   // TODO: add a game destroyer to add some manual cleanups

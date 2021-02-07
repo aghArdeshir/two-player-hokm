@@ -66,6 +66,10 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   if (existingPlayer) {
     connectedPlayer = existingPlayer;
     connectedPlayer.setConnection(connection);
+
+    if (connectedPlayer.getGame()) {
+      connectedPlayer.getGame().emitGameState();
+    }
   } else {
     // do nothing, later create a new ConnectedPlayer upon register
   }
@@ -96,14 +100,21 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       players.get(currentGamePlayersUuids[1]).setGame(game);
 
       game.onStateChange((state) => {
-        players
-          .get(currentGamePlayersUuids[0])
-          .getConnection()
-          .emit(GAME_EVENTS.GAME_STATE, state.player1);
-        players
-          .get(currentGamePlayersUuids[1])
-          .getConnection()
-          .emit(GAME_EVENTS.GAME_STATE, state.player2);
+        const player1 = players.get(currentGamePlayersUuids[0]);
+        player1.getConnection().emit(GAME_EVENTS.GAME_STATE, state.player1);
+
+        const player2 = players.get(currentGamePlayersUuids[1]);
+        player2.getConnection().emit(GAME_EVENTS.GAME_STATE, state.player2);
+      });
+
+      game.onEnd(() => {
+        const player1 = players.get(currentGamePlayersUuids[0]);
+        player1.getConnection().emit(GAME_EVENTS.END_GAME);
+        player1.unsetGame();
+
+        const player2 = players.get(currentGamePlayersUuids[1]);
+        player2.getConnection().emit(GAME_EVENTS.END_GAME);
+        player2.unsetGame();
       });
     }
   });
@@ -123,6 +134,12 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     } else if (action.action === GAME_ACTION.PLAY) {
       game.play(players.get(uuid).getPlayer(), action.card);
     }
+  });
+
+  connection.on(GAME_EVENTS.END_GAME, () => {
+    players.get(uuid).getGame().terminate();
+    players.get(uuid).unsetGame();
+    connection.emit(GAME_EVENTS.END_GAME);
   });
 });
 

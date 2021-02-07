@@ -81,6 +81,9 @@ class SocketService {
 
   setupListeners() {
     this.socketConnection.on(GAME_EVENTS.ERROR, console.error);
+    this.socketConnection.on(GAME_EVENTS.END_GAME, () => {
+      window.location.reload();
+    });
   }
 
   on(eventName: GAME_EVENTS, listener: (data: IGameState) => void) {
@@ -132,6 +135,10 @@ class SocketService {
     };
 
     this.socketConnection.emit(GAME_EVENTS.ACTION, action);
+  }
+
+  endGame() {
+    this.socketConnection.emit(GAME_EVENTS.END_GAME);
   }
 }
 

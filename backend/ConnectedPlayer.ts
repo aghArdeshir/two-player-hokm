@@ -30,4 +30,8 @@ export class ConnectedPlayer {
   getGame() {
     return this.game;
   }
+
+  unsetGame() {
+    this.game = undefined;
+  }
 }

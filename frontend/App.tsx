@@ -16,6 +16,7 @@ import PlayerInfo from "./PlayerInfo";
 import PlayingPage from "./PlayingPage";
 import ShowHokm from "./ShowHokm";
 import { socketService } from "./socket-service";
+import GameTerminator from "./GameTerminator";
 
 export default function App() {
   const [socketConnected, toggleSocketConnected] = useBooleanState(false);
@@ -34,6 +35,7 @@ export default function App() {
         <LiveIndicator />
         <GameStateContext.Provider value={gameState}>
           <OtherPlayerCards />
+          <GameTerminator />
           <OtherPlayerInfo />
           <ChooseHokm />
           <ShowHokm />
