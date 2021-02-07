@@ -11,12 +11,14 @@ import { Game } from "./Game";
 import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
 import { parse as parseCookies } from "cookie";
+import { ConnectedPlayer } from "./ConnectedPlayer";
 
-function getUuidOfCookie(cookieAsString = "") {
+type __uuid__ = string;
+
+function getUuidOfCookie(cookieAsString = ""): __uuid__ {
   return parseCookies(cookieAsString).uuid;
 }
 
-// TODO retry non-https version  as https version was for trial
 const http = createHttpServer((req, res) => {
   const uuid = getUuidOfCookie(req.headers.cookie);
   if (!uuid) {
@@ -37,88 +39,89 @@ const http = createHttpServer((req, res) => {
   }
 
   readFile(fileName, (error, data) => {
-    if (error) console.log({ error });
-    if (error) res.end();
-    else res.end(data);
+    if (error) {
+      console.log({ error });
+      res.end();
+    } else {
+      res.end(data);
+    }
   });
 });
+
 http.on("listening", () => {
   console.log(`server listening on port ${GAME_PORT}`);
 });
 
-const playerUuids: string[] = [];
-let game: Game;
-
-const uuidToPlayerMap: { [uuid: string]: Player } = {};
-const playerToConnectionMap = new Map<Player, Socket>();
-
 const socketServer = new SocketServer(http);
 
+const players = new Map<__uuid__, ConnectedPlayer>();
+const readyPlayerUuids: __uuid__[] = [];
+
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
-  playerToConnectionMap.set(
-    uuidToPlayerMap[getUuidOfCookie(connection.request.headers.cookie)],
-    connection
-  );
+  const uuid = getUuidOfCookie(connection.request.headers.cookie);
+
+  let connectedPlayer: ConnectedPlayer;
+
+  const existingPlayer = players.get(uuid);
+  if (existingPlayer) {
+    connectedPlayer = existingPlayer;
+    connectedPlayer.setConnection(connection);
+  } else {
+    // do nothing, later create a new ConnectedPlayer upon register
+  }
+
+  connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
+    connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
+  });
 
   connection.on(GAME_EVENTS.REGISTER, ({ username }: { username: string }) => {
-    if (playerUuids.length === 2) {
-      playerUuids.splice(0, 2); // only for easier development testing
-      // connection.emit(GAME_EVENTS.ERROR, {
-      //   error: "room is full (2 players are joined",
-      // });
-      // connection.disconnect(true);
-    }
+    const player = new Player(username);
+    connectedPlayer = new ConnectedPlayer(player);
+    connectedPlayer.setConnection(connection);
+    players.set(uuid, connectedPlayer);
 
-    connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
-      connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
-    });
+    readyPlayerUuids.push(uuid);
 
-    const player = new Player(
-      username,
-      getUuidOfCookie(connection.request.headers.cookie)
-    );
-    uuidToPlayerMap[player.uuid] = player;
-    playerUuids.push(player.uuid);
-    uuidToPlayerMap[player.uuid] = player;
-    playerToConnectionMap.set(player, connection);
-
-    if (playerUuids.length === 2) {
-      game = new Game(
-        uuidToPlayerMap[playerUuids[0]],
-        uuidToPlayerMap[playerUuids[1]]
+    if (readyPlayerUuids.length === 2) {
+      const currentGamePlayersUuids = [
+        readyPlayerUuids[0],
+        readyPlayerUuids[1],
+      ];
+      readyPlayerUuids.splice(0, 2); // make room for next players to join
+      const game = new Game(
+        players.get(currentGamePlayersUuids[0]).getPlayer(),
+        players.get(currentGamePlayersUuids[1]).getPlayer()
       );
+      players.get(currentGamePlayersUuids[0]).setGame(game);
+      players.get(currentGamePlayersUuids[1]).setGame(game);
 
       game.onStateChange((state) => {
-        playerToConnectionMap
-          .get(uuidToPlayerMap[playerUuids[0]])
+        players
+          .get(currentGamePlayersUuids[0])
+          .getConnection()
           .emit(GAME_EVENTS.GAME_STATE, state.player1);
-        playerToConnectionMap
-          .get(uuidToPlayerMap[playerUuids[1]])
+        players
+          .get(currentGamePlayersUuids[1])
+          .getConnection()
           .emit(GAME_EVENTS.GAME_STATE, state.player2);
       });
     }
   });
 
   connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
-    const playerUuid = playerUuids.find(
-      (p_uuid) =>
-        playerToConnectionMap.get(uuidToPlayerMap[p_uuid]) === connection
-    );
+    const game = players.get(uuid).getGame();
     if (action.action === GAME_ACTION.CHOOSE_HOKM) {
-      // TODO: check if hokm is valid CARD_FORMAT
       game.setHokm(action.hokm);
     } else if (action.action === GAME_ACTION.DROP_TWO) {
-      // TODO: check if user has the cards
-      game.dropTwo(action.cardsToDrop, uuidToPlayerMap[playerUuid]);
+      game.dropTwo(action.cardsToDrop, players.get(uuid).getPlayer());
     } else if (action.action === GAME_ACTION.PICK_CARDS) {
       if (action.picks) {
-        // TODO: in the game class/instance, check if the card is actually provided
-        game.acceptCard(uuidToPlayerMap[playerUuid], action.card);
+        game.acceptCard(players.get(uuid).getPlayer(), action.card);
       } else {
         game.refuseCard();
       }
     } else if (action.action === GAME_ACTION.PLAY) {
-      game.play(uuidToPlayerMap[playerUuid], action.card);
+      game.play(players.get(uuid).getPlayer(), action.card);
     }
   });
 });
