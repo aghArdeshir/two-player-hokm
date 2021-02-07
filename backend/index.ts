@@ -48,8 +48,9 @@ const readyPlayerUuids: __uuid__[] = [];
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   connection.on(GAME_EVENTS.REQUEST_UUID, () => {
-    connection.emit(uuid4());
+    connection.emit(GAME_EVENTS.UUID, uuid4());
   });
+
   connection.on(GAME_EVENTS.UUID, (_uuid: __uuid__) => {
     const uuid = _uuid;
 
