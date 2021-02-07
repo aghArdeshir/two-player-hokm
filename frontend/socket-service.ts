@@ -12,6 +12,8 @@ const SOCKET_CONNECTED_EVENT = "SOCKET_CONNECTED";
 const FIVE_SECONDS = 5 * 1000;
 const TEN_SECONDS = 10 * 1000;
 
+type __uuid__ = string;
+
 class SocketService {
   private connected = false;
   private socketConnection: Socket;
@@ -22,6 +24,14 @@ class SocketService {
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       this.connected = true;
       this.setupListeners();
+
+      const storedUuid = localStorage.getItem("uuid");
+      if (storedUuid) {
+        this.socketConnection.emit(GAME_EVENTS.UUID, storedUuid);
+      } else {
+        this.socketConnection.emit(GAME_EVENTS.REQUEST_UUID);
+      }
+
       document.body.dispatchEvent(new CustomEvent(SOCKET_CONNECTED_EVENT));
     });
   }
@@ -83,6 +93,9 @@ class SocketService {
     this.socketConnection.on(GAME_EVENTS.ERROR, console.error);
     this.socketConnection.on(GAME_EVENTS.END_GAME, () => {
       window.location.reload();
+    });
+    this.socketConnection.on(GAME_EVENTS.UUID, (uuid: __uuid__) => {
+      localStorage.setItem("uuid", uuid);
     });
   }
 

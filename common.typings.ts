@@ -7,6 +7,8 @@ export enum GAME_EVENTS {
   CONNECTION = "connection",
   MANUAL_HEARTBEAT = "manual-heartbeat",
   END_GAME = "end-game",
+  UUID = "uuid",
+  REQUEST_UUID = "request-uuid",
 }
 
 export const GAME_PORT = 3000;
