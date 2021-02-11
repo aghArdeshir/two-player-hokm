@@ -41,7 +41,7 @@ http.on("listening", () => {
   console.log(`server listening on port ${GAME_PORT}`);
 });
 
-const socketServer = new SocketServer(http, { path: "/hokm/" });
+const socketServer = new SocketServer(http);
 
 const players = new Map<__uuid__, ConnectedPlayer>();
 const readyPlayerUuids: __uuid__[] = [];
