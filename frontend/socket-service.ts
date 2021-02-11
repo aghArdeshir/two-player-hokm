@@ -18,8 +18,8 @@ class SocketService {
   private socketConnection: Socket;
 
   constructor() {
-    const path = process.env.NODE_ENV === "development" ? "" : "/hokm/";
-    this.socketConnection = io({ port: "3000", path });
+    const pathPrefix = process.env.NODE_ENV === "development" ? "" : "/hokm";
+    this.socketConnection = io({ port: "3000", path: pathPrefix + "/server" });
 
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       setTimeout(() => {
