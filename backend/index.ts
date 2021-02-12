@@ -15,9 +15,7 @@ import { ConnectedPlayer } from "./ConnectedPlayer";
 
 const http = createHttpServer((req, res) => {
   const fileName =
-    __dirname +
-    `/..${process.env.NODE_ENV === "development" ? "/dist" : ""}` +
-    (req.url === "/" ? "/index.html" : req.url);
+    __dirname + (req.url === "/hokm/" ? "/hokm/index.html" : req.url);
 
   if (fileName.endsWith(".html")) {
     res.setHeader("Content-Type", "text/html");
@@ -41,7 +39,7 @@ http.on("listening", () => {
   console.log(`server listening on port ${GAME_PORT}`);
 });
 
-const socketServer = new SocketServer(http, { path: "/server" });
+const socketServer = new SocketServer(http, { path: "/hokm/server" });
 
 const players = new Map<__uuid__, ConnectedPlayer>();
 const readyPlayerUuids: __uuid__[] = [];
