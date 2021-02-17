@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+    <script>
+        const width = 150;
+        const height = 250;
+
+        function createCanvas() {
+            const newCanvas = document.createElement('canvas');
+
+            newCanvas.style.border = '1px solid black';
+            newCanvas.style.margin = '5px';
+            newCanvas.width = width;
+            newCanvas.height = height;
+            document.body.appendChild(newCanvas);
+
+            return newCanvas.getContext('2d');
+        }
+
+        function addTextToCanvas(ctx, text, color) {
+            ctx.fillStyle = color;
+            ctx.lineWidth = 1;
+            ctx.font = '50px sans-serif';
+            ctx.fillText(text, 2, 40);
+            ctx.fillText(text, width - 30, height - 2);
+        }
+
+        function drawDiamondsOnCanvas(ctx) {
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(width / 2, height / 4);
+            ctx.lineTo(width * 3 / 4, height / 2);
+            ctx.lineTo(width / 2, height * 3 / 4);
+            ctx.lineTo(width / 4, height / 2);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        function drawSpadesOnCanvas(ctx) {
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(width / 2, height / 4);
+            ctx.quadraticCurveTo(width, height * 3 / 5, width / 2 + 10, height * 3 / 5);
+            ctx.quadraticCurveTo(width / 2 + 10, height * 4 / 5 - 10, width / 2 + 20, height * 4 / 5 - 10);
+            ctx.lineTo(width / 2 - 20, height * 4 / 5 - 10);
+            ctx.quadraticCurveTo(width / 2 - 10, height * 4 / 5 - 10, width / 2 - 10, height * 3 / 5);
+            ctx.quadraticCurveTo(0, height * 3 / 5, width / 2, height / 4);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        function drawClubsOnCanvas(ctx) {
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(width / 2 + 10, height * 3 / 5 - 20);
+            ctx.bezierCurveTo(width, height * 1 / 5, 0, height * 1 / 5, width / 2 - 10, height * 3 / 5 - 20);
+            ctx.bezierCurveTo(0, height * 2 / 5 - 50, 0, height * 3 / 5 + 50, width / 2 - 10, height * 3 / 5);
+            ctx.quadraticCurveTo(width / 2 - 10, height * 4 / 5 - 10, width / 2 - 20, height * 4 / 5 - 10);
+            ctx.lineTo(width / 2 + 20, height * 4 / 5 - 10);
+            ctx.quadraticCurveTo(width / 2 + 10, height * 4 / 5 - 10, width / 2 + 10, height * 3 / 5);
+            ctx.bezierCurveTo(width, height * 3 / 5 + 50, width, height * 2 / 5 - 50, width / 2 + 10, height * 3 / 5 - 20);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        function drawHeartsOnCanvas(ctx) {
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+
+            ctx.moveTo(width / 2, height * 2 / 5);
+            ctx.bezierCurveTo(width * 2 / 3, height / 8, width * 7 / 6, height * 2 / 5, width / 2, height * 3 / 4);
+            ctx.bezierCurveTo(width / 6 * -1, height * 2 / 5, width / 3, height / 8, width / 2, height * 2 / 5)
+
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        // 1 of hearts
+        const h1x = createCanvas();
+        drawHeartsOnCanvas(h1x)
+        addTextToCanvas(h1x, '1', 'red');
+
+        // 2 of spades
+        const s2x = createCanvas();
+        drawSpadesOnCanvas(s2x)
+        addTextToCanvas(s2x, '2', 'black');
+
+        // 3 of Diamonds
+        const d3x = createCanvas();
+        drawDiamondsOnCanvas(d3x)
+        addTextToCanvas(d3x, '3', 'red');
+
+        // 4 of clubs
+        const c4x = createCanvas();
+        drawClubsOnCanvas(c4x)
+        addTextToCanvas(c4x, '4', 'black');
+    </script>
+</body>
+
+</html>
