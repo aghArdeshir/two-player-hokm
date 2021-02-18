@@ -14,8 +14,16 @@ import { v4 as uuid4 } from "uuid";
 import { ConnectedPlayer } from "./ConnectedPlayer";
 
 const http = createHttpServer((req, res) => {
-  const fileName =
+  let fileName =
     __dirname + (req.url === "/hokm/" ? "/hokm/index.html" : req.url);
+
+  if (process.env.NODE_ENV === "development") {
+    fileName =
+      __dirname +
+      (req.url === "/hokm/"
+        ? "/../dist/backend/hokm/index.html"
+        : "/../dist/backend" + req.url);
+  }
 
   if (fileName.endsWith(".html")) {
     res.setHeader("Content-Type", "text/html");

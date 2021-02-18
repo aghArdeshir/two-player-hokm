@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev-frontend": "parcel frontend/index.html",
+    "dev-frontend": "parcel frontend/index.html --public-url . --out-dir dist/backend/hokm/",
     "dev-backend": "ts-node-dev backend/index.ts",
     "start": "NODE_ENV=development concurrently \"npm run dev-frontend\" \"npm run dev-backend\"",
     "build-frontend": "parcel build frontend/index.html --public-url . --out-dir dist/backend/hokm/",
