@@ -68,7 +68,6 @@ Then open two browsers, both at `localhost:3000`.
 
 # TODO
 
-- winning 7-0 counts as 2 scores if the winner is haakem or 3 scores if the winner is not haakem
 - on player inactivity for almost 10 minutes maybe, remove the uuid and the player and corresponding game and close connection
 - accept card, refuse card, pick one of both should not be vulnerable to cheating and turn-corruption. secially refusing card that relies on cards being removed from the deck.
 - there is a bug: in picking stage, on refresh of the page, the behavior is recognized as to pass/refuse the card. solve it
