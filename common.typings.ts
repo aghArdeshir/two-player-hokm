@@ -12,6 +12,7 @@ export enum GAME_EVENTS {
 }
 
 export const GAME_PORT = 3000;
+export const SERVER_PATH = "/hokm/server";
 
 export type ICardNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 

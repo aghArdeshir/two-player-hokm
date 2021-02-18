@@ -3,9 +3,11 @@ import {
   CARD_FORMAT,
   GAME_ACTION,
   GAME_EVENTS,
+  GAME_PORT,
   ICard,
   IGameState,
   IPlayerAction,
+  SERVER_PATH,
   __uuid__,
 } from "../common.typings";
 
@@ -18,7 +20,10 @@ class SocketService {
   private socketConnection: Socket;
 
   constructor() {
-    this.socketConnection = io({ port: "3000", path: "/hokm/server" });
+    this.socketConnection = io({
+      port: GAME_PORT.toString(),
+      path: SERVER_PATH,
+    });
 
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       setTimeout(() => {
