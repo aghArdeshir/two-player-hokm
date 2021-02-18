@@ -182,10 +182,29 @@ export class Game {
         if (this.player1.score === 7) {
           this.player1.setWinner(true);
           this.player1.wins++;
+
+          if (this.player2.score === 0) {
+            this.player1.wins++;
+
+            if (this.player2.isHaakem) {
+              this.player1.wins++;
+            }
+          }
+
           this.nextAction = GAME_ACTION.WAITING_FOR_NEXT_ROUND;
         } else if (this.player2.score === 7) {
           this.player2.setWinner(true);
           this.player2.wins++;
+
+
+          if (this.player1.score === 0) {
+            this.player2.wins++;
+
+            if (this.player1.isHaakem) {
+              this.player2.wins++;
+            }
+          }
+
           this.nextAction = GAME_ACTION.WAITING_FOR_NEXT_ROUND;
         }
 
