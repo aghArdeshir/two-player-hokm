@@ -34,6 +34,16 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     let connectedPlayer: ConnectedPlayer;
 
+    function terminatePlayer(player: ConnectedPlayer) {
+      const game = player.getGame();
+      if (game) game.terminate();
+      player.unsetGame();
+      connection.emit(GAME_EVENTS.END_GAME);
+      setTimeout(() => {
+        connection.disconnect();
+      }, 2000);
+    }
+
     const existingPlayer = players.get(uuid);
     if (existingPlayer) {
       connectedPlayer = existingPlayer;
@@ -51,6 +61,10 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           connectedPlayer.setConnection(connection);
           players.set(uuid, connectedPlayer);
           connectedPlayer.setActive();
+
+          connectedPlayer.onDead((player: ConnectedPlayer) => {
+            terminatePlayer(player);
+          });
 
           readyPlayersUuids.push(uuid);
 
@@ -87,22 +101,6 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           }
         }
       );
-    }
-
-    function terminatePlayer(player: ConnectedPlayer) {
-      const game = player.getGame();
-      if (game) game.terminate();
-      player.unsetGame();
-      connection.emit(GAME_EVENTS.END_GAME);
-      setTimeout(() => {
-        connection.disconnect();
-      }, 2000);
-    }
-
-    if (connectedPlayer) {
-      connectedPlayer.onDead((player: ConnectedPlayer) => {
-        terminatePlayer(player);
-      });
     }
 
     connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
