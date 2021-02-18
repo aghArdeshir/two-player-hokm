@@ -6,6 +6,7 @@ import {
   GAME_EVENTS,
   GAME_PORT,
   IPlayerAction,
+  SERVER_PATH,
   __uuid__,
 } from "../common.typings";
 import { Game } from "./Game";
@@ -14,15 +15,14 @@ import { v4 as uuid4 } from "uuid";
 import { ConnectedPlayer } from "./ConnectedPlayer";
 
 const http = createHttpServer(staticFileServerRouter);
-
 http.on("listening", () => {
   console.log(`server listening on port ${GAME_PORT}`);
 });
 
-const socketServer = new SocketServer(http, { path: "/hokm/server" });
+const socketServer = new SocketServer(http, { path: SERVER_PATH });
 
 const players = new Map<__uuid__, ConnectedPlayer>();
-const readyPlayerUuids: __uuid__[] = [];
+const readyPlayersUuids: __uuid__[] = [];
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   connection.on(GAME_EVENTS.REQUEST_UUID, () => {
@@ -43,79 +43,92 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
         connectedPlayer.getGame().emitGameState();
       }
     } else {
-      // do nothing, later create a new ConnectedPlayer upon register
+      connection.on(
+        GAME_EVENTS.REGISTER,
+        ({ username }: { username: string }) => {
+          const player = new Player(username);
+          connectedPlayer = new ConnectedPlayer(player);
+          connectedPlayer.setConnection(connection);
+          players.set(uuid, connectedPlayer);
+          connectedPlayer.setActive();
+
+          readyPlayersUuids.push(uuid);
+
+          if (readyPlayersUuids.length === 2) {
+            const currentGamePlayersUuids = [
+              readyPlayersUuids[0],
+              readyPlayersUuids[1],
+            ];
+            readyPlayersUuids.splice(0, 2); // make room for next players to join
+
+            const player1 = players.get(currentGamePlayersUuids[0]);
+            const player2 = players.get(currentGamePlayersUuids[1]);
+
+            const game = new Game(player1.getPlayer(), player2.getPlayer());
+            player1.setGame(game);
+            player2.setGame(game);
+
+            game.onStateChange((state) => {
+              player1
+                .getConnection()
+                .emit(GAME_EVENTS.GAME_STATE, state.player1);
+              player2
+                .getConnection()
+                .emit(GAME_EVENTS.GAME_STATE, state.player2);
+            });
+
+            game.onEnd(() => {
+              player1.getConnection().emit(GAME_EVENTS.END_GAME);
+              player1.unsetGame();
+
+              player2.getConnection().emit(GAME_EVENTS.END_GAME);
+              player2.unsetGame();
+            });
+          }
+        }
+      );
+    }
+
+    if (connectedPlayer) {
+      connectedPlayer.onDead(() => {
+        console.log("TODO: A PLAYER MUST BE DEAD");
+      });
     }
 
     connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
+      if (connectedPlayer) connectedPlayer.setActive();
       connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
     });
 
-    connection.on(
-      GAME_EVENTS.REGISTER,
-      ({ username }: { username: string }) => {
-        const player = new Player(username);
-        connectedPlayer = new ConnectedPlayer(player);
-        connectedPlayer.setConnection(connection);
-        players.set(uuid, connectedPlayer);
-
-        readyPlayerUuids.push(uuid);
-
-        if (readyPlayerUuids.length === 2) {
-          const currentGamePlayersUuids = [
-            readyPlayerUuids[0],
-            readyPlayerUuids[1],
-          ];
-          readyPlayerUuids.splice(0, 2); // make room for next players to join
-          const game = new Game(
-            players.get(currentGamePlayersUuids[0]).getPlayer(),
-            players.get(currentGamePlayersUuids[1]).getPlayer()
-          );
-          players.get(currentGamePlayersUuids[0]).setGame(game);
-          players.get(currentGamePlayersUuids[1]).setGame(game);
-
-          game.onStateChange((state) => {
-            const player1 = players.get(currentGamePlayersUuids[0]);
-            player1.getConnection().emit(GAME_EVENTS.GAME_STATE, state.player1);
-
-            const player2 = players.get(currentGamePlayersUuids[1]);
-            player2.getConnection().emit(GAME_EVENTS.GAME_STATE, state.player2);
-          });
-
-          game.onEnd(() => {
-            const player1 = players.get(currentGamePlayersUuids[0]);
-            player1.getConnection().emit(GAME_EVENTS.END_GAME);
-            player1.unsetGame();
-
-            const player2 = players.get(currentGamePlayersUuids[1]);
-            player2.getConnection().emit(GAME_EVENTS.END_GAME);
-            player2.unsetGame();
-          });
-        }
-      }
-    );
-
     connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
-      const game = players.get(uuid).getGame();
+      const player = players.get(uuid);
+      player.setActive();
+      const game = player.getGame();
       if (action.action === GAME_ACTION.CHOOSE_HOKM) {
         game.setHokm(action.hokm);
       } else if (action.action === GAME_ACTION.DROP_TWO) {
-        game.dropTwo(action.cardsToDrop, players.get(uuid).getPlayer());
+        game.dropTwo(action.cardsToDrop, player.getPlayer());
       } else if (action.action === GAME_ACTION.PICK_CARDS) {
         if (action.picks) {
-          game.acceptCard(players.get(uuid).getPlayer(), action.card);
+          game.acceptCard(player.getPlayer(), action.card);
         } else {
           game.refuseCard();
         }
       } else if (action.action === GAME_ACTION.PLAY) {
-        game.play(players.get(uuid).getPlayer(), action.card);
+        game.play(player.getPlayer(), action.card);
       }
     });
 
     connection.on(GAME_EVENTS.END_GAME, () => {
-      const game = players.get(uuid).getGame();
+      const player = players.get(uuid);
+      player.setActive();
+      const game = player.getGame();
       if (game) game.terminate();
-      players.get(uuid).unsetGame();
+      player.unsetGame();
       connection.emit(GAME_EVENTS.END_GAME);
+      setTimeout(() => {
+        connection.disconnect();
+      }, 2000);
     });
   });
 });
