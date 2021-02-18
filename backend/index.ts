@@ -140,7 +140,8 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     });
 
     connection.on(GAME_EVENTS.END_GAME, () => {
-      players.get(uuid).getGame().terminate();
+      const game = players.get(uuid).getGame();
+      if (game) game.terminate();
       players.get(uuid).unsetGame();
       connection.emit(GAME_EVENTS.END_GAME);
     });
