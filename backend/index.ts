@@ -114,14 +114,14 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       player.setActive();
       const game = player.getGame();
       if (action.action === GAME_ACTION.CHOOSE_HOKM) {
-        game.setHokm(action.hokm);
+        game.setHokm(player.getPlayer(), action.hokm);
       } else if (action.action === GAME_ACTION.DROP_TWO) {
-        game.dropTwo(action.cardsToDrop, player.getPlayer());
+        game.dropTwo(player.getPlayer(), action.cardsToDrop);
       } else if (action.action === GAME_ACTION.PICK_CARDS) {
         if (action.picks) {
           game.acceptCard(player.getPlayer(), action.card);
         } else {
-          game.refuseCard();
+          game.refuseCard(player.getPlayer());
         }
       } else if (action.action === GAME_ACTION.PLAY) {
         game.play(player.getPlayer(), action.card);

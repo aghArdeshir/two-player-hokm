@@ -84,14 +84,16 @@ export class Game {
     this.players[Math.random() > 0.5 ? 0 : 1].setHaakem(true);
   }
 
-  public setHokm(format: CARD_FORMAT) {
-    this.hokm = format;
-    this.nextAction = GAME_ACTION.DROP_TWO;
+  public setHokm(player: Player, format: CARD_FORMAT) {
+    if (player.isHaakem) {
+      this.hokm = format;
+      this.nextAction = GAME_ACTION.DROP_TWO;
 
-    this.emitGameState();
+      this.emitGameState();
+    }
   }
 
-  public dropTwo(cards: [ICard, ICard], player: Player) {
+  public dropTwo(player: Player, cards: [ICard, ICard]) {
     if (cards.every((card) => player.hasCard(card))) {
       cards.forEach((card) => {
         player.removeCard(card);
@@ -160,13 +162,15 @@ export class Game {
     }
   }
 
-  public refuseCard() {
-    if (this.cardsToChoose) {
-      return;
-    }
+  public refuseCard(player: Player) {
+    if (player.isTurn) {
+      if (this.cardsToChoose) {
+        return;
+      }
 
-    if (!this.mustPickCard) {
-      this.emitGameState();
+      if (!this.mustPickCard) {
+        this.emitGameState();
+      }
     }
   }
 
@@ -195,7 +199,6 @@ export class Game {
         } else if (this.player2.score === 7) {
           this.player2.setWinner(true);
           this.player2.wins++;
-
 
           if (this.player1.score === 0) {
             this.player2.wins++;
