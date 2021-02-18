@@ -42,6 +42,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       setTimeout(() => {
         connection.disconnect();
       }, 2000);
+      players.delete(uuid);
     }
 
     const existingPlayer = players.get(uuid);
