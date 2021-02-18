@@ -89,9 +89,19 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       );
     }
 
+    function terminatePlayer(player: ConnectedPlayer) {
+      const game = player.getGame();
+      if (game) game.terminate();
+      player.unsetGame();
+      connection.emit(GAME_EVENTS.END_GAME);
+      setTimeout(() => {
+        connection.disconnect();
+      }, 2000);
+    }
+
     if (connectedPlayer) {
-      connectedPlayer.onDead(() => {
-        console.log("TODO: A PLAYER MUST BE DEAD");
+      connectedPlayer.onDead((player: ConnectedPlayer) => {
+        terminatePlayer(player);
       });
     }
 
@@ -122,13 +132,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     connection.on(GAME_EVENTS.END_GAME, () => {
       const player = players.get(uuid);
       player.setActive();
-      const game = player.getGame();
-      if (game) game.terminate();
-      player.unsetGame();
-      connection.emit(GAME_EVENTS.END_GAME);
-      setTimeout(() => {
-        connection.disconnect();
-      }, 2000);
+      terminatePlayer(player);
     });
   });
 });

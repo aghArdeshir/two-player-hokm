@@ -9,6 +9,7 @@ export class ConnectedPlayer {
   private game: Game;
   private lastActiveTime: Date;
   private EventEmitter = new EventEmitter();
+  private intervalRef: NodeJS.Timeout;
 
   constructor(player: Player) {
     this.player = player;
@@ -18,15 +19,16 @@ export class ConnectedPlayer {
   }
 
   init() {
-    setInterval(() => {
+    this.intervalRef = setInterval(() => {
       if (new Date().getTime() - this.lastActiveTime.getTime() > 10000) {
         this.EventEmitter.emit("dead");
+        clearInterval(this.intervalRef);
       }
     }, 1000);
   }
 
-  onDead(callback: () => void) {
-    this.EventEmitter.on("dead", () => callback());
+  onDead(callback: (player: ConnectedPlayer) => void) {
+    this.EventEmitter.on("dead", () => callback(this));
   }
 
   setConnection(connection: Socket) {
