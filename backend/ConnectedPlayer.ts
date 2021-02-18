@@ -3,6 +3,9 @@ import { Socket } from "socket.io";
 import { Game } from "./Game";
 import { Player } from "./Player";
 
+const ONE_MINUTE = 60000;
+const ONE_HOUR = 60 * 60 * 1000;
+
 export class ConnectedPlayer {
   private player: Player;
   private connection: Socket;
@@ -20,11 +23,11 @@ export class ConnectedPlayer {
 
   init() {
     this.intervalRef = setInterval(() => {
-      if (new Date().getTime() - this.lastActiveTime.getTime() > 10000) {
+      if (new Date().getTime() - this.lastActiveTime.getTime() > ONE_HOUR) {
         this.EventEmitter.emit("dead");
         clearInterval(this.intervalRef);
       }
-    }, 1000);
+    }, ONE_MINUTE);
   }
 
   onDead(callback: (player: ConnectedPlayer) => void) {
