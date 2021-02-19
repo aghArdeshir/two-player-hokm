@@ -4,7 +4,6 @@ export enum GAME_EVENTS {
   ERROR = "error",
   GAME_STATE = "game-state", // Backend tells UI that I'm emitting a game state
   ACTION = "action", // UI tells Backend that I am emitting a game/plyer action
-  CONNECTION = "connection",
   MANUAL_HEARTBEAT = "manual-heartbeat",
   END_GAME = "end-game",
   UUID = "uuid",
