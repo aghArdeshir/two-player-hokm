@@ -1,4 +1,4 @@
-import { staticFileServerRouter } from "./fileServerRouter";
+import { staticFileServer } from "./fileServerRouter";
 import { createServer as createHttpServer } from "http";
 import { Server as SocketServer, Socket } from "socket.io";
 import {
@@ -14,7 +14,7 @@ import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
 import { ConnectedPlayer } from "./ConnectedPlayer";
 
-const http = createHttpServer(staticFileServerRouter);
+const http = createHttpServer(staticFileServer);
 http.on("listening", () => {
   console.log(`server listening on port ${GAME_PORT}`);
 });

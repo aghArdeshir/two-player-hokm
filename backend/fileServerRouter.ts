@@ -1,6 +1,6 @@
 import { readFile } from "fs";
 
-export const staticFileServerRouter = (req, res) => {
+export const staticFileServer = (req, res) => {
   let fileName =
     __dirname + (req.url === "/hokm/" ? "/hokm/index.html" : req.url);
 
