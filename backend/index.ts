@@ -78,6 +78,8 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       if (connectedPlayer.getGame()) {
         devLog("emitting game state for existing player");
         connectedPlayer.getGame().emitGameState();
+      } else {
+        readyPlayersUuids.push(uuid);
       }
     } else {
       connection.on(
