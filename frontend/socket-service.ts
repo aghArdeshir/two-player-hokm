@@ -14,6 +14,7 @@ import {
 const SOCKET_CONNECTED_EVENT = "SOCKET_CONNECTED";
 const FIVE_SECONDS = 5 * 1000;
 const TEN_SECONDS = 10 * 1000;
+const TWO_SECONDS = 2000;
 
 class SocketService {
   private connected = false;
@@ -38,7 +39,7 @@ class SocketService {
         }
 
         document.body.dispatchEvent(new CustomEvent(SOCKET_CONNECTED_EVENT));
-      }, 2000); //TODO: this is a bug, find out why this happens
+      }, TWO_SECONDS); //TODO: this is a bug, find out why this happens
     });
   }
 

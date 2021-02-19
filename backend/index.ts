@@ -14,6 +14,8 @@ import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
 import { ConnectedPlayer } from "./ConnectedPlayer";
 
+const TWO_SECONDS = 2000;
+
 function DEV_LOG(...args) {
   console.log(
     " --- ",
@@ -64,7 +66,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           DEV_LOG("disconnecting a connection");
 
           playerConnection.disconnect();
-        }, 2000);
+        }, TWO_SECONDS);
       }
 
       connection.emit(GAME_EVENTS.END_GAME);
@@ -72,7 +74,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
         DEV_LOG("disconnecting a connection");
 
         connection.disconnect();
-      }, 2000);
+      }, TWO_SECONDS);
       players.delete(uuid);
     }
 
