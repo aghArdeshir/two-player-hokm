@@ -16,7 +16,7 @@ import { ConnectedPlayer } from "./ConnectedPlayer";
 
 const http = createHttpServer(staticFileServer);
 http.on("listening", () => {
-  console.log(`server listening on port ${GAME_PORT}`);
+  console.log(" --- ", new Date(), " --- server listening on port", GAME_PORT);
 });
 
 const socketServer = new SocketServer(http, { path: SERVER_PATH });
@@ -25,21 +25,25 @@ const players = new Map<__uuid__, ConnectedPlayer>();
 const readyPlayersUuids: __uuid__[] = [];
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
+  console.log(" --- ", new Date(), " --- someone joined");
   connection.on(GAME_EVENTS.REQUEST_UUID, () => {
+    console.log(" --- ", new Date(), " --- a new uuid is assigned");
     connection.emit(GAME_EVENTS.UUID, uuid4());
   });
 
   connection.on(GAME_EVENTS.UUID, (_uuid: __uuid__) => {
+    console.log(" --- ", new Date(), " --- a player with uuid joined");
     const uuid = _uuid;
-
     let connectedPlayer: ConnectedPlayer;
 
     function terminatePlayer(player: ConnectedPlayer) {
+      console.log(" --- ", new Date(), " --- terminating game and player");
       const game = player.getGame();
       if (game) game.terminate();
       player.unsetGame();
       connection.emit(GAME_EVENTS.END_GAME);
       setTimeout(() => {
+        console.log(" --- ", new Date(), " --- disconnecting a connection");
         connection.disconnect();
       }, 2000);
       players.delete(uuid);
@@ -47,16 +51,28 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     const existingPlayer = players.get(uuid);
     if (existingPlayer) {
+      console.log(" --- ", new Date(), " --- existing player joined");
       connectedPlayer = existingPlayer;
       connectedPlayer.setConnection(connection);
 
       if (connectedPlayer.getGame()) {
+        console.log(
+          " --- ",
+          new Date(),
+          " --- emitting game state for existing player"
+        );
         connectedPlayer.getGame().emitGameState();
       }
     } else {
       connection.on(
         GAME_EVENTS.REGISTER,
         ({ username }: { username: string }) => {
+          console.log(
+            " --- ",
+            new Date(),
+            " --- a new player registered:",
+            username
+          );
           const player = new Player(username);
           connectedPlayer = new ConnectedPlayer(player);
           connectedPlayer.setConnection(connection);
@@ -64,12 +80,18 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           connectedPlayer.setActive();
 
           connectedPlayer.onDead((player: ConnectedPlayer) => {
+            console.log(" --- ", new Date(), " --- a player is dead");
             terminatePlayer(player);
           });
 
           readyPlayersUuids.push(uuid);
 
           if (readyPlayersUuids.length === 2) {
+            console.log(
+              " --- ",
+              new Date(),
+              " --- readyPlayers reached 2, startinga new game"
+            );
             const currentGamePlayersUuids = [
               readyPlayersUuids[0],
               readyPlayersUuids[1],
@@ -84,6 +106,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
             player2.setGame(game);
 
             game.onStateChange((state) => {
+              console.log(" --- ", new Date(), " --- emitting game state");
               player1
                 .getConnection()
                 .emit(GAME_EVENTS.GAME_STATE, state.player1);
@@ -93,6 +116,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
             });
 
             game.onEnd(() => {
+              console.log(" --- ", new Date(), " --- a game ended");
               player1.getConnection().emit(GAME_EVENTS.END_GAME);
               player1.unsetGame();
 
@@ -104,13 +128,35 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       );
     }
 
-    connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, () => {
+    connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, (uuid: __uuid__) => {
       if (connectedPlayer) connectedPlayer.setActive();
-      connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
+      if (players.get(uuid)) {
+        connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
+      } else {
+        connection.emit(GAME_EVENTS.END_GAME);
+        connection.disconnect();
+      }
     });
 
     connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
+      console.log(
+        " --- ",
+        new Date(),
+        " --- a player action received:",
+        action.action
+      );
       const player = players.get(uuid);
+      if (!player) {
+        console.log(
+          " --- ",
+          new Date(),
+          " --- disconnecting an obsolete connection"
+        );
+        connection.emit(GAME_EVENTS.END_GAME);
+        connection.disconnect();
+        return;
+      }
+
       player.setActive();
       const game = player.getGame();
       if (action.action === GAME_ACTION.CHOOSE_HOKM) {
@@ -129,6 +175,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     });
 
     connection.on(GAME_EVENTS.END_GAME, () => {
+      console.log(" --- ", new Date(), " --- end game requested");
       const player = players.get(uuid);
       player.setActive();
       terminatePlayer(player);
