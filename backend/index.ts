@@ -35,18 +35,22 @@ const readyPlayersUuids: __uuid__[] = [];
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
   devLog("someone joined");
+
   connection.on(GAME_EVENTS.REQUEST_UUID, () => {
     devLog("a new uuid is assigned");
+
     connection.emit(GAME_EVENTS.UUID, uuid4());
   });
 
   connection.on(GAME_EVENTS.UUID, (_uuid: __uuid__) => {
     devLog("a player with uuid joined");
+
     const uuid = _uuid;
     let connectedPlayer: ConnectedPlayer;
 
     function terminatePlayer(player: ConnectedPlayer) {
       devLog("terminating game and player");
+
       const game = player.getGame();
       if (game) game.terminate();
       player.unsetGame();
@@ -54,9 +58,11 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       const playerConnection = player.getConnection();
       if (playerConnection !== connection) {
         devLog("WARNING: playerConnection differs from connection");
+
         playerConnection.emit(GAME_EVENTS.END_GAME);
         setTimeout(() => {
           devLog("disconnecting a connection");
+
           playerConnection.disconnect();
         }, 2000);
       }
@@ -64,6 +70,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       connection.emit(GAME_EVENTS.END_GAME);
       setTimeout(() => {
         devLog("disconnecting a connection");
+
         connection.disconnect();
       }, 2000);
       players.delete(uuid);
@@ -72,11 +79,13 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     const existingPlayer = players.get(uuid);
     if (existingPlayer) {
       devLog("existing player joined");
+
       connectedPlayer = existingPlayer;
       connectedPlayer.setConnection(connection);
 
       if (connectedPlayer.getGame()) {
         devLog("emitting game state for existing player");
+
         connectedPlayer.getGame().emitGameState();
       } else {
         readyPlayersUuids.push(uuid);
@@ -86,6 +95,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
         GAME_EVENTS.REGISTER,
         ({ username }: { username: string }) => {
           devLog("a new player registered:", username);
+
           const player = new Player(username);
           connectedPlayer = new ConnectedPlayer(player);
           connectedPlayer.setConnection(connection);
@@ -94,6 +104,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
           connectedPlayer.onDead((player: ConnectedPlayer) => {
             devLog("a player is dead");
+
             terminatePlayer(player);
           });
 
@@ -101,6 +112,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
           if (readyPlayersUuids.length === 2) {
             devLog("readyPlayers reached 2, startinga new game");
+
             const currentGamePlayersUuids = [
               readyPlayersUuids[0],
               readyPlayersUuids[1],
@@ -116,6 +128,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
             game.onStateChange((state) => {
               devLog("emitting game state");
+
               player1
                 .getConnection()
                 .emit(GAME_EVENTS.GAME_STATE, state.player1);
@@ -126,6 +139,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
             game.onEnd(() => {
               devLog("a game ended");
+
               player1.getConnection().emit(GAME_EVENTS.END_GAME);
               player1.unsetGame();
 
@@ -149,9 +163,11 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
       devLog("a player action received:", action.action);
+
       const player = players.get(uuid);
       if (!player) {
         devLog("disconnecting an obsolete connection");
+
         connection.emit(GAME_EVENTS.END_GAME);
         connection.disconnect();
         return;
@@ -176,6 +192,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     connection.on(GAME_EVENTS.END_GAME, () => {
       devLog("end game requested");
+
       const player = players.get(uuid);
       player.setIsAlive();
       terminatePlayer(player);
