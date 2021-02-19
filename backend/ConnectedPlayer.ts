@@ -16,7 +16,7 @@ export class ConnectedPlayer {
 
   constructor(player: Player) {
     this.player = player;
-    this.setActive();
+    this.setIsAlive();
 
     this.init();
   }
@@ -36,7 +36,7 @@ export class ConnectedPlayer {
 
   setConnection(connection: Socket) {
     this.connection = connection;
-    this.setActive();
+    this.setIsAlive();
   }
 
   getPlayer() {
@@ -59,7 +59,7 @@ export class ConnectedPlayer {
     this.game = undefined;
   }
 
-  setActive() {
+  setIsAlive() {
     this.lastActiveTime = new Date();
   }
 }

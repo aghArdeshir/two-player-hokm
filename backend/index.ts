@@ -90,7 +90,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           connectedPlayer = new ConnectedPlayer(player);
           connectedPlayer.setConnection(connection);
           players.set(uuid, connectedPlayer);
-          connectedPlayer.setActive();
+          connectedPlayer.setIsAlive();
 
           connectedPlayer.onDead((player: ConnectedPlayer) => {
             devLog("a player is dead");
@@ -138,7 +138,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     }
 
     connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, (uuid: __uuid__) => {
-      if (connectedPlayer) connectedPlayer.setActive();
+      if (connectedPlayer) connectedPlayer.setIsAlive();
       if (players.get(uuid)) {
         connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
       } else {
@@ -157,7 +157,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
         return;
       }
 
-      player.setActive();
+      player.setIsAlive();
       const game = player.getGame();
       if (action.action === GAME_ACTION.CHOOSE_HOKM) {
         game.setHokm(player.getPlayer(), action.hokm);
@@ -177,7 +177,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     connection.on(GAME_EVENTS.END_GAME, () => {
       devLog("end game requested");
       const player = players.get(uuid);
-      player.setActive();
+      player.setIsAlive();
       terminatePlayer(player);
     });
   });
