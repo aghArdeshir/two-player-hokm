@@ -78,21 +78,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       players.delete(uuid);
     }
 
-    const existingPlayer = players.get(uuid);
-    if (existingPlayer) {
-      DEV_LOG("existing player joined");
-
-      connectedPlayer = existingPlayer;
-      connectedPlayer.setConnection(connection);
-
-      if (connectedPlayer.getGame()) {
-        DEV_LOG("emitting game state for existing player");
-
-        connectedPlayer.getGame().emitGameState();
-      } else {
-        readyPlayersUuids.push(uuid);
-      }
-    } else {
+    function listenForUserRegister() {
       connection.on(
         GAME_EVENTS.REGISTER,
         ({ username }: { username: string }) => {
@@ -151,6 +137,24 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           }
         }
       );
+    }
+
+    const existingPlayer = players.get(uuid);
+    if (existingPlayer) {
+      DEV_LOG("existing player joined");
+
+      connectedPlayer = existingPlayer;
+      connectedPlayer.setConnection(connection);
+
+      if (connectedPlayer.getGame()) {
+        DEV_LOG("emitting game state for existing player");
+
+        connectedPlayer.getGame().emitGameState();
+      } else {
+        listenForUserRegister();
+      }
+    } else {
+      listenForUserRegister();
     }
 
     connection.on(GAME_EVENTS.MANUAL_HEARTBEAT, (uuid: __uuid__) => {
