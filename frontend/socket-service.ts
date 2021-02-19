@@ -54,7 +54,10 @@ class SocketService {
 
     setInterval(() => {
       if (this.socketConnection.connected) {
-        this.socketConnection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
+        this.socketConnection.emit(
+          GAME_EVENTS.MANUAL_HEARTBEAT,
+          localStorage.getItem("uuid")
+        );
         if (
           new Date().getTime() - SocketService.lastHeartBeatTimestamp >
           TEN_SECONDS
@@ -102,6 +105,7 @@ class SocketService {
     });
     this.socketConnection.on(GAME_EVENTS.UUID, (uuid: __uuid__) => {
       localStorage.setItem("uuid", uuid);
+      this.socketConnection.emit(GAME_EVENTS.UUID, uuid);
     });
   }
 
