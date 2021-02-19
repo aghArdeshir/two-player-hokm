@@ -72,6 +72,8 @@ Then open two browsers, both at `localhost:3000/hokm/`.
 
 # TODO
 
+- make the connection all predictable and stable
+- play some card games to gain ideas about how the ui should be
 - two-level card play. Click on a card prepare it, on clicking again, play it.
 - set max-width to 560 or so... . emulating a mobile
 - draw cards in canvas by yourself and publish as web-components
