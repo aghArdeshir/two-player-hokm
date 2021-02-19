@@ -82,3 +82,4 @@ Then open two browsers, both at `localhost:3000/hokm/`.
 - remoe game deployment stuff from project. things like obligating serve from `/hokm/` prefix and usage of `pm2`
 - sanitize `staticFileServer` to serve only valid files. no security hole!
 - show other player's cards on finish on each round
+- show if otherplayer is offline or has a weak connection
