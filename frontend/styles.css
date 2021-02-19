@@ -212,10 +212,11 @@ body {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   height: 50px;
   border-radius: 5px 0 0 5px;
   box-shadow: -1px 1px 5px black;
+  position: relative;
 }
 
 .drop-cards-button {
@@ -249,12 +250,12 @@ body {
 }
 
 .live-indicator {
-  width: 25px;
-  height: 25px;
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 5px 0 5px 0;
 }
 
 .game-finish-stater {

@@ -5,7 +5,6 @@ import ChooseHokm from "./ChooseHokm";
 import { useDeveloperOptions } from "./use-developer-options";
 import GameFinishStater from "./GameFinishStater";
 import { GameStateContext } from "./GameStateContext";
-import LiveIndicator from "./LiveIndicator";
 import LoginPage, { useBooleanState } from "./LoginPage";
 import OtherPlayerCards from "./OtherPlayerCards";
 import OtherPlayerInfo from "./OtherPlayerInfo";
@@ -32,7 +31,6 @@ export default function App() {
   if (gameState) {
     return (
       <div className="gameboard-container">
-        <LiveIndicator />
         <GameStateContext.Provider value={gameState}>
           <OtherPlayerCards />
           <GameTerminator />
