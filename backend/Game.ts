@@ -145,17 +145,18 @@ export class Game {
     }
 
     if (player.isTurn) {
-      // TODO: check if it is valid to accept card (e.g. do not accept both cards, count them)
       if (
-        player.cards.length === 12 &&
         card &&
+        player.cards.length === 12 &&
         this.cardsToChoose.findIndex((ctd) => isEqual(ctd, card)) > -1
       ) {
         player.addCard(card);
+        this.deck.shift();
+        this.deck.shift();
         this.emitGameState();
       } else {
         if (!this.mustRefuseCard) {
-          player.addCard(this.cardToChoose);
+          player.addCard(this.deck.shift());
           this.emitGameState();
         }
       }
@@ -169,6 +170,7 @@ export class Game {
       }
 
       if (!this.mustPickCard) {
+        this.deck.shift();
         this.emitGameState();
       }
     }
@@ -479,14 +481,14 @@ export class Game {
         result.player2.mustRefuseCard = this.mustRefuseCard;
 
       if (this.deck.length === 2) {
-        this.cardsToChoose = [this.deck.shift(), this.deck.shift()];
+        this.cardsToChoose = [this.deck.cards[0], this.deck.cards[1]];
         if (this.player1.isTurn) {
           result.player1.cardsToChoose = this.cardsToChoose;
         } else {
           result.player2.cardsToChoose = this.cardsToChoose;
         }
       } else {
-        this.cardToChoose = this.deck.shift();
+        this.cardToChoose = this.deck.cards[0];
         if (this.player1.isTurn) {
           result.player1.cardToChoose = this.cardToChoose;
         } else {

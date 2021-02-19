@@ -1,7 +1,7 @@
 import { CARD_FORMAT, ICard, ICardNumber } from "../common.typings";
 
 export class Deck {
-  private cards: ICard[] = [];
+  public cards: ICard[] = [];
 
   constructor() {
     this.fillDeck();
