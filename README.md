@@ -81,3 +81,4 @@ Then open two browsers, both at `localhost:3000/hokm/`.
 - decide: making componenets know themselves if they should be rendered and then rendering all of them ??? VERSUS ::: decide if to render components or not ? and render them with cleaner code inside. and write about it in `Clean Code` section.
 - remoe game deployment stuff from project. things like obligating serve from `/hokm/` prefix and usage of `pm2`
 - sanitize `staticFileServer` to serve only valid files. no security hole!
+- show other player's cards on finish on each round
