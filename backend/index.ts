@@ -14,7 +14,7 @@ import { Player } from "./Player";
 import { v4 as uuid4 } from "uuid";
 import { ConnectedPlayer } from "./ConnectedPlayer";
 
-function devLog(...args) {
+function DEV_LOG(...args) {
   console.log(
     " --- ",
     new Date().toLocaleTimeString(),
@@ -25,7 +25,7 @@ function devLog(...args) {
 
 const http = createHttpServer(staticFileServer);
 http.on("listening", () => {
-  devLog("server listening on port", GAME_PORT);
+  DEV_LOG("server listening on port", GAME_PORT);
 });
 
 const socketServer = new SocketServer(http, { path: SERVER_PATH });
@@ -34,22 +34,22 @@ const players = new Map<__uuid__, ConnectedPlayer>();
 const readyPlayersUuids: __uuid__[] = [];
 
 socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
-  devLog("someone joined");
+  DEV_LOG("someone joined");
 
   connection.on(GAME_EVENTS.REQUEST_UUID, () => {
-    devLog("a new uuid is assigned");
+    DEV_LOG("a new uuid is assigned");
 
     connection.emit(GAME_EVENTS.UUID, uuid4());
   });
 
   connection.on(GAME_EVENTS.UUID, (_uuid: __uuid__) => {
-    devLog("a player with uuid joined");
+    DEV_LOG("a player with uuid joined");
 
     const uuid = _uuid;
     let connectedPlayer: ConnectedPlayer;
 
     function terminatePlayer(player: ConnectedPlayer) {
-      devLog("terminating game and player");
+      DEV_LOG("terminating game and player");
 
       const game = player.getGame();
       if (game) game.terminate();
@@ -57,11 +57,11 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
       const playerConnection = player.getConnection();
       if (playerConnection !== connection) {
-        devLog("WARNING: playerConnection differs from connection");
+        DEV_LOG("WARNING: playerConnection differs from connection");
 
         playerConnection.emit(GAME_EVENTS.END_GAME);
         setTimeout(() => {
-          devLog("disconnecting a connection");
+          DEV_LOG("disconnecting a connection");
 
           playerConnection.disconnect();
         }, 2000);
@@ -69,7 +69,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
       connection.emit(GAME_EVENTS.END_GAME);
       setTimeout(() => {
-        devLog("disconnecting a connection");
+        DEV_LOG("disconnecting a connection");
 
         connection.disconnect();
       }, 2000);
@@ -78,13 +78,13 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
 
     const existingPlayer = players.get(uuid);
     if (existingPlayer) {
-      devLog("existing player joined");
+      DEV_LOG("existing player joined");
 
       connectedPlayer = existingPlayer;
       connectedPlayer.setConnection(connection);
 
       if (connectedPlayer.getGame()) {
-        devLog("emitting game state for existing player");
+        DEV_LOG("emitting game state for existing player");
 
         connectedPlayer.getGame().emitGameState();
       } else {
@@ -94,7 +94,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       connection.on(
         GAME_EVENTS.REGISTER,
         ({ username }: { username: string }) => {
-          devLog("a new player registered:", username);
+          DEV_LOG("a new player registered:", username);
 
           const player = new Player(username);
           connectedPlayer = new ConnectedPlayer(player);
@@ -103,7 +103,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           connectedPlayer.setIsAlive();
 
           connectedPlayer.onDead((player: ConnectedPlayer) => {
-            devLog("a player is dead");
+            DEV_LOG("a player is dead");
 
             terminatePlayer(player);
           });
@@ -111,7 +111,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
           readyPlayersUuids.push(uuid);
 
           if (readyPlayersUuids.length === 2) {
-            devLog("readyPlayers reached 2, startinga new game");
+            DEV_LOG("readyPlayers reached 2, startinga new game");
 
             const currentGamePlayersUuids = [
               readyPlayersUuids[0],
@@ -127,7 +127,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
             player2.setGame(game);
 
             game.onStateChange((state) => {
-              devLog("emitting game state");
+              DEV_LOG("emitting game state");
 
               player1
                 .getConnection()
@@ -138,7 +138,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
             });
 
             game.onEnd(() => {
-              devLog("a game ended");
+              DEV_LOG("a game ended");
 
               player1.getConnection().emit(GAME_EVENTS.END_GAME);
               player1.unsetGame();
@@ -162,11 +162,11 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     });
 
     connection.on(GAME_EVENTS.ACTION, (action: IPlayerAction) => {
-      devLog("a player action received:", action.action);
+      DEV_LOG("a player action received:", action.action);
 
       const player = players.get(uuid);
       if (!player) {
-        devLog("disconnecting an obsolete connection");
+        DEV_LOG("disconnecting an obsolete connection");
 
         connection.emit(GAME_EVENTS.END_GAME);
         connection.disconnect();
@@ -191,7 +191,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
     });
 
     connection.on(GAME_EVENTS.END_GAME, () => {
-      devLog("end game requested");
+      DEV_LOG("end game requested");
 
       const player = players.get(uuid);
       player.setIsAlive();
