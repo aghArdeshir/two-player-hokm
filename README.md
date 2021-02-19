@@ -32,7 +32,7 @@ I faced different easy & hard challenges. I list the ones that I personally foun
 ## Drawing Cards on Screen
 
 - Haha! This one is a cool one. In the early days of development I just wrote everything inside a box with a border, and it was either black or red. e.g.: `1 of Hearts`, `J of Spades`, `4 of Clubs`, etc... .
-- Later I found a single [large-sized `png` image of a deck of cards](https://github.com/Ardeshir81/self-hosted-hokm/blob/master/frontend/deck.png) and I served it to the user. The image was like `a-few-thousands x a-few-thousands` pixels. I used it as background image of every card user had, and calculated `backgorund-position` css property based on the value of the card. I really loved this challenge.
+- Later I found a single [large-sized `png` image of a deck of cards](https://github.com/Ardeshir81/two-player-hokm/blob/master/frontend/deck.png) and I served it to the user. The image was like `a-few-thousands x a-few-thousands` pixels. I used it as background image of every card user had, and calculated `backgorund-position` css property based on the value of the card. I really loved this challenge.
 - Later I found out the standard unicode characters of cards was available and introduced in Unicode 7.0+. Making each card just a few bytes in size. I found good support for those unicode characters almost everywhere.
 - But where is the fun in using unicode characters? I later started designing game cards myself using HTML5 Canvas and published them as Web-Component.
 
@@ -61,7 +61,7 @@ I faced different easy & hard challenges. I list the ones that I personally foun
 to test this:
 
 ```
-git clone https://github.com/Ardeshir81/self-hosted-hokm.git ; cd self-hosted-hokm ; npm install ; npm start
+git clone https://github.com/Ardeshir81/two-player-hokm.git ; cd two-player-hokm ; npm install ; npm start
 ```
 
 Then open two browsers, both at `localhost:3000`.
