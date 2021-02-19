@@ -65,7 +65,7 @@ body {
 }
 
 .hokm .hokm-symbol {
-  font-size: 50vw;
+  font-size: min(50vw, 50vh);
 }
 
 .player-wins {
