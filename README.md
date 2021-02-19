@@ -64,7 +64,7 @@ to test this:
 git clone https://github.com/Ardeshir81/two-player-hokm.git ; cd two-player-hokm ; npm install ; npm start
 ```
 
-Then open two browsers, both at `localhost:3000`.
+Then open two browsers, both at `localhost:3000/hokm/`.
 
 # TODO
 
