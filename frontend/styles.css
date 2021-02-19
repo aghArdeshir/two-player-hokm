@@ -14,7 +14,7 @@ body {
     "other-player-cards other-player-cards other-player-cards"
     "slot10             slot11             other-player-info"
     "slot20             slot21             other-player-wins"
-    "slot30             slot31             hokm"
+    "slot30             slot31             slot32"
     "slot40             slot41             player-wins"
     "player-action      player-action      player-info"
     "player-cards       player-cards       player-cards";
@@ -37,15 +37,35 @@ body {
 }
 
 .hokm {
-  grid-area: hokm;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: -2;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.hokm p {
+  margin: 0;
+}
+
+.hokm .hokm-word {
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  color: white;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
 }
 
 .hokm .hokm-symbol {
-  background-color: cornflowerblue;
-  color: white;
-  border-radius: 5px 0 0 5px;
-  display: flex;
-  align-items: center;
+  font-size: 50vw;
 }
 
 .player-wins {
