@@ -68,8 +68,6 @@ Then open two browsers, both at `localhost:3000/hokm/`.
 
 # TODO
 
-- accept card, refuse card, pick one of both should not be vulnerable to cheating and turn-corruption. secially refusing card that relies on cards being removed from the deck.
-- there is a bug: in picking stage, on refresh of the page, the behavior is recognized as to pass/refuse the card. solve it
 - two-level card play. Click on a card prepare it, on clicking again, play it.
 - set max-width to 560 or so... . emulating a mobile
 - draw cards in canvas by yourself and publish as web-components
