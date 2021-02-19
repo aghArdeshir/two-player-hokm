@@ -156,6 +156,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       if (players.get(uuid)) {
         connection.emit(GAME_EVENTS.MANUAL_HEARTBEAT);
       } else {
+        // occurs when server is re-started but a player/game was in place
         connection.emit(GAME_EVENTS.END_GAME);
         connection.disconnect();
       }
@@ -165,7 +166,9 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       DEV_LOG("a player action received:", action.action);
 
       const player = players.get(uuid);
+
       if (!player) {
+        // occurs when server is re-started, but an ongoing game was in place
         DEV_LOG("disconnecting an obsolete connection");
 
         connection.emit(GAME_EVENTS.END_GAME);
