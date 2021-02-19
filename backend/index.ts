@@ -50,6 +50,17 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       const game = player.getGame();
       if (game) game.terminate();
       player.unsetGame();
+
+      const playerConnection = player.getConnection();
+      if (playerConnection !== connection) {
+        devLog("WARNING: playerConnection differs from connection");
+        playerConnection.emit(GAME_EVENTS.END_GAME);
+        setTimeout(() => {
+          devLog("disconnecting a connection");
+          playerConnection.disconnect();
+        }, 2000);
+      }
+
       connection.emit(GAME_EVENTS.END_GAME);
       setTimeout(() => {
         devLog("disconnecting a connection");
