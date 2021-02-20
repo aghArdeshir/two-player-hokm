@@ -72,9 +72,9 @@ Then open two browsers, both at `localhost:3000/hokm/`.
 
 # TODO
 
-- play some card games to gain ideas about how the ui should be
+- play some card games to gather ideas about how the ui should look like
 - two-level card play. Click on a card prepare it, on clicking again, play it.
-- set max-width to 560 or so... . emulating a mobile
+- set max-width to 560 or so... . emulating a mobile ???
 - draw cards in canvas by yourself and publish as web-components
 - pwa
 - decide: making componenets know themselves if they should be rendered and then rendering all of them ??? VERSUS ::: decide if to render components or not ? and render them with cleaner code inside. and write about it in `Clean Code` section.
