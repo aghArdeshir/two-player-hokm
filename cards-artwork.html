@@ -5,7 +5,7 @@
 </head>
 
 <body style="opacity: 0.5; background-color: gray;">
-    <img src="deck.png" style="position: fixed; opacity: 0.3; height: 1940px; left: -87px; top:-126px;" />
+    <img src="deck.png" style="position: fixed; opacity: 0.3; height: 1940px; left: -87px; top:-600px;" />
     <script>
         const width = 150;
         const height = width * 3 / 2;
@@ -86,21 +86,6 @@
             ctx.fill();
         }
 
-        function drawClubsOnCanvas(ctx) {
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 5;
-            ctx.beginPath();
-            ctx.moveTo(width / 2 + 10, height * 3 / 5 - 20);
-            ctx.bezierCurveTo(width, height * 1 / 5, 0, height * 1 / 5, width / 2 - 10, height * 3 / 5 - 20);
-            ctx.bezierCurveTo(0, height * 2 / 5 - 50, 0, height * 3 / 5 + 50, width / 2 - 10, height * 3 / 5);
-            ctx.quadraticCurveTo(width / 2 - 10, height * 4 / 5 - 10, width / 2 - 20, height * 4 / 5 - 10);
-            ctx.lineTo(width / 2 + 20, height * 4 / 5 - 10);
-            ctx.quadraticCurveTo(width / 2 + 10, height * 4 / 5 - 10, width / 2 + 10, height * 3 / 5);
-            ctx.bezierCurveTo(width, height * 3 / 5 + 50, width, height * 2 / 5 - 50, width / 2 + 10, height * 3 / 5 - 20);
-            ctx.closePath();
-            ctx.stroke();
-        }
-
         function drawHeartsOnCanvas(ctx) {
             ctx.lineCap = 'round';
             ctx.strokeStyle = 'red';
@@ -117,16 +102,32 @@
             ctx.stroke();
         }
 
-        // 2 of spades
-        const s2x = createCanvas();
-        drawSpadesOnCanvas(s2x)
-        addTextToCanvas(s2x, '2', 'black');
+        function drawClubsOnCanvas(ctx) {
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(width / 2 + 10, height * 3 / 5 - 20);
+            ctx.bezierCurveTo(width, height * 1 / 5, 0, height * 1 / 5, width / 2 - 10, height * 3 / 5 - 20);
+            ctx.bezierCurveTo(0, height * 2 / 5 - 50, 0, height * 3 / 5 + 50, width / 2 - 10, height * 3 / 5);
+            ctx.quadraticCurveTo(width / 2 - 10, height * 4 / 5 - 10, width / 2 - 20, height * 4 / 5 - 10);
+            ctx.lineTo(width / 2 + 20, height * 4 / 5 - 10);
+            ctx.quadraticCurveTo(width / 2 + 10, height * 4 / 5 - 10, width / 2 + 10, height * 3 / 5);
+            ctx.bezierCurveTo(width, height * 3 / 5 + 50, width, height * 2 / 5 - 50, width / 2 + 10, height * 3 / 5 - 20);
+            ctx.closePath();
+            ctx.stroke();
+        }
 
 
         // 1 of hearts
         const h1x = createCanvas();
         drawHeartsOnCanvas(h1x)
         addTextToCanvas(h1x, '1', 'red');
+        // 2 of spades
+        const s2x = createCanvas();
+        drawSpadesOnCanvas(s2x)
+        addTextToCanvas(s2x, '2', 'black');
+
+
 
         // 4 of clubs
         const c4x = createCanvas();
