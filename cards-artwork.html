@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html style="background-color: gray;">
 
 <head>
 </head>
 
-<body>
+<body style="opacity: 0.5; background-color: gray;">
+    <img src="deck.png" style="position: fixed; opacity: 0.3; height: 1940px; left: -87px; top:-126px;" />
     <script>
         const width = 150;
-        const height = 250;
+        const height = width * 3 / 2;
+        const tenth = width / 10;
+        const twentieth = width / 20;
 
         function createCanvas() {
             const newCanvas = document.createElement('canvas');
@@ -41,18 +44,46 @@
             ctx.stroke();
         }
 
+        class Point {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
         function drawSpadesOnCanvas(ctx) {
-            ctx.strokeStyle = 'black';
+            ctx.strokeStyle = '#00000000';
             ctx.lineWidth = 5;
             ctx.beginPath();
-            ctx.moveTo(width / 2, height / 4);
-            ctx.quadraticCurveTo(width, height * 3 / 5, width / 2 + 10, height * 3 / 5);
-            ctx.quadraticCurveTo(width / 2 + 10, height * 4 / 5 - 10, width / 2 + 20, height * 4 / 5 - 10);
-            ctx.lineTo(width / 2 - 20, height * 4 / 5 - 10);
-            ctx.quadraticCurveTo(width / 2 - 10, height * 4 / 5 - 10, width / 2 - 10, height * 3 / 5);
-            ctx.quadraticCurveTo(0, height * 3 / 5, width / 2, height / 4);
+
+            const start = new Point(width / 2, width / 2);
+            const startCp1 = new Point(width - 25, width - 25);
+            const startCp2 = new Point(width - startCp1.x, startCp1.y);
+            ctx.moveTo(start.x, start.y);
+
+            const inRight = new Point(width / 2 + 5, height / 2)
+            const inRightCp1 = new Point(width / 2 + 5, width + 5);
+            const inRightCp2 = new Point(width / 2 + 3, height / 2);
+            ctx.bezierCurveTo(startCp1.x, startCp1.y, inRightCp1.x, inRightCp1.y, inRight.x, inRight.y);
+
+            const baseRight = new Point(width / 2 + 10, width);
+            const baseRightCp = new Point(width / 2, width);
+            ctx.bezierCurveTo(inRightCp2.x, inRightCp2.y, baseRightCp.x, baseRightCp.y, baseRight.x, baseRight.y);
+
+            const baseLeft = new Point(width - baseRight.x, baseRight.y)
+            const baseLeftCp = new Point(width - baseRightCp.x, baseRightCp.y)
+            ctx.lineTo(baseLeft.x, baseLeft.y);
+
+            const inLeft = new Point(width - inRight.x, inRight.y)
+            const inLeftCp1 = new Point(width - inRightCp2.x, inRightCp2.y)
+            const inLeftCp2 = new Point(width - inRightCp1.x, inRightCp1.y)
+            ctx.bezierCurveTo(baseLeftCp.x, baseLeftCp.y, inLeftCp1.x, inLeftCp1.y, inLeft.x, inLeft.y);
+
+
+            ctx.bezierCurveTo(inLeftCp2.x, inLeftCp2.y, startCp2.x, startCp2.y, start.x, start.y);
+
             ctx.closePath();
-            ctx.stroke();
+            ctx.fill();
         }
 
         function drawClubsOnCanvas(ctx) {
@@ -71,37 +102,41 @@
         }
 
         function drawHeartsOnCanvas(ctx) {
+            ctx.lineCap = 'round';
             ctx.strokeStyle = 'red';
+            ctx.lineJoin = 'miter';
             ctx.lineWidth = 5;
             ctx.beginPath();
+            window.ctx = ctx;
 
             ctx.moveTo(width / 2, height * 2 / 5);
-            ctx.bezierCurveTo(width * 2 / 3, height / 8, width * 7 / 6, height * 2 / 5, width / 2, height * 3 / 4);
-            ctx.bezierCurveTo(width / 6 * -1, height * 2 / 5, width / 3, height / 8, width / 2, height * 2 / 5)
+            ctx.bezierCurveTo(width * 3 / 5, height / 15, width + width / 4, height * 2 / 5, width / 2, height * 3 / 4 - height / 20);
+            ctx.moveTo(width / 2, height * 2 / 5);
+            ctx.bezierCurveTo(width * 2 / 5, height / 15, - width / 4, height * 2 / 5, width / 2, height * 3 / 4 - height / 20);
 
-            ctx.closePath();
             ctx.stroke();
         }
-
-        // 1 of hearts
-        const h1x = createCanvas();
-        drawHeartsOnCanvas(h1x)
-        addTextToCanvas(h1x, '1', 'red');
 
         // 2 of spades
         const s2x = createCanvas();
         drawSpadesOnCanvas(s2x)
         addTextToCanvas(s2x, '2', 'black');
 
-        // 3 of Diamonds
-        const d3x = createCanvas();
-        drawDiamondsOnCanvas(d3x)
-        addTextToCanvas(d3x, '3', 'red');
+
+        // 1 of hearts
+        const h1x = createCanvas();
+        drawHeartsOnCanvas(h1x)
+        addTextToCanvas(h1x, '1', 'red');
 
         // 4 of clubs
         const c4x = createCanvas();
         drawClubsOnCanvas(c4x)
         addTextToCanvas(c4x, '4', 'black');
+
+        // 3 of Diamonds
+        const d3x = createCanvas();
+        drawDiamondsOnCanvas(d3x)
+        addTextToCanvas(d3x, '3', 'red');
     </script>
 </body>
 
