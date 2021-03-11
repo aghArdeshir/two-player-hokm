@@ -33,18 +33,6 @@
             ctx.fillText(text, width - 30, height - 2);
         }
 
-        function drawDiamondsOnCanvas(ctx) {
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 5;
-            ctx.beginPath();
-            ctx.moveTo(width / 2, height / 4);
-            ctx.lineTo(width * 3 / 4, height / 2);
-            ctx.lineTo(width / 2, height * 3 / 4);
-            ctx.lineTo(width / 4, height / 2);
-            ctx.closePath();
-            ctx.stroke();
-        }
-
         class Point {
             constructor(x, y) {
                 this.x = x;
@@ -52,12 +40,32 @@
             }
         }
 
+        function drawDiamondsOnCanvas(ctx) {
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+
+            const start = new Point(width / 2, width / 2)
+            ctx.moveTo(start.x, start.y);
+
+            const right = new Point(height / 2 - 10, height / 2)
+            ctx.lineTo(right.x, right.y);
+
+            const bottom = new Point(width / 2, width)
+            ctx.lineTo(bottom.x, bottom.y);
+
+            const left = new Point(width - right.x, height / 2);
+            ctx.lineTo(left.x, left.y);
+
+            ctx.closePath();
+            ctx.fill();
+        }
+
         function drawSpadesOnCanvas(ctx) {
             ctx.fillStyle = 'black';
             ctx.beginPath();
 
             const start = new Point(width / 2, width / 2);
-            const startCp1 = new Point(width - 25, width - 25);
+            const startCp1 = new Point(width - 10, width - 25);
             const startCp2 = new Point(width - startCp1.x, startCp1.y);
             ctx.moveTo(start.x, start.y);
 
@@ -96,7 +104,7 @@
             ctx.moveTo(start.x, start.y);
 
             const bottom = new Point(width / 2, width)
-            const bottomCp1 = new Point(width - 20, height / 4)
+            const bottomCp1 = new Point(width - 10, height / 4)
             const bottomCp2 = new Point(width - bottomCp1.x, bottomCp1.y)
             ctx.bezierCurveTo(startCp1.x, startCp1.y, bottomCp1.x, bottomCp1.y, bottom.x, bottom.y);
 
@@ -168,7 +176,7 @@
         // 3 of Diamonds
         const d3x = createCanvas();
         drawDiamondsOnCanvas(d3x)
-        addTextToCanvas(d3x, '3', 'red');
+        // addTextToCanvas(d3x, '3', 'red');
     </script>
 </body>
 
