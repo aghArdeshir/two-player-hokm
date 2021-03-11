@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html style="background-color: gray;">
+<html>
 
 <head>
 </head>
 
-<body style="opacity: 0.5; background-color: gray;">
-    <img src="deck.png" style="position: fixed; opacity: 0.3; height: 1940px; left: -87px; top:-600px;" />
+<body>
+    <img src="deck.png"
+        style="position: fixed; opacity: 0.3; height: 1940px; left: -87px; top:-600px; display: none;" />
     <script>
         const width = 150;
         const height = width * 3 / 2;
@@ -52,8 +53,7 @@
         }
 
         function drawSpadesOnCanvas(ctx) {
-            ctx.strokeStyle = '#00000000';
-            ctx.lineWidth = 5;
+            ctx.fillStyle = 'black';
             ctx.beginPath();
 
             const start = new Point(width / 2, width / 2);
@@ -87,52 +87,83 @@
         }
 
         function drawHeartsOnCanvas(ctx) {
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = 'red';
-            ctx.lineJoin = 'miter';
-            ctx.lineWidth = 5;
+            ctx.fillStyle = 'red';
             ctx.beginPath();
-            window.ctx = ctx;
 
-            ctx.moveTo(width / 2, height * 2 / 5);
-            ctx.bezierCurveTo(width * 3 / 5, height / 15, width + width / 4, height * 2 / 5, width / 2, height * 3 / 4 - height / 20);
-            ctx.moveTo(width / 2, height * 2 / 5);
-            ctx.bezierCurveTo(width * 2 / 5, height / 15, - width / 4, height * 2 / 5, width / 2, height * 3 / 4 - height / 20);
+            const start = new Point(width / 2, width * 2 / 3)
+            const startCp1 = new Point(width / 2 - 5, height / 4)
+            const startCp2 = new Point(width - startCp1.x, startCp1.y)
+            ctx.moveTo(start.x, start.y);
 
-            ctx.stroke();
+            const bottom = new Point(width / 2, width)
+            const bottomCp1 = new Point(width - 20, height / 4)
+            const bottomCp2 = new Point(width - bottomCp1.x, bottomCp1.y)
+            ctx.bezierCurveTo(startCp1.x, startCp1.y, bottomCp1.x, bottomCp1.y, bottom.x, bottom.y);
+
+            ctx.bezierCurveTo(bottomCp2.x, bottomCp2.y, startCp2.x, startCp2.y, start.x, start.y);
+
+            ctx.closePath();
+            ctx.fill();
         }
 
         function drawClubsOnCanvas(ctx) {
             ctx.strokeStyle = 'black';
-            ctx.lineWidth = 5;
             ctx.beginPath();
-            ctx.moveTo(width / 2 + 10, height * 3 / 5 - 20);
-            ctx.bezierCurveTo(width, height * 1 / 5, 0, height * 1 / 5, width / 2 - 10, height * 3 / 5 - 20);
-            ctx.bezierCurveTo(0, height * 2 / 5 - 50, 0, height * 3 / 5 + 50, width / 2 - 10, height * 3 / 5);
-            ctx.quadraticCurveTo(width / 2 - 10, height * 4 / 5 - 10, width / 2 - 20, height * 4 / 5 - 10);
-            ctx.lineTo(width / 2 + 20, height * 4 / 5 - 10);
-            ctx.quadraticCurveTo(width / 2 + 10, height * 4 / 5 - 10, width / 2 + 10, height * 3 / 5);
-            ctx.bezierCurveTo(width, height * 3 / 5 + 50, width, height * 2 / 5 - 50, width / 2 + 10, height * 3 / 5 - 20);
-            ctx.closePath();
-            ctx.stroke();
+
+            const inUpRight = new Point(width / 2 + 5, height / 2 - 5);
+            const inUpRightCp1 = new Point(height / 2, width / 2 - 10);
+            const inUpRightCp2 = new Point(height / 2, width / 2 - 10);
+            ctx.moveTo(inUpRight.x, inUpRight.y)
+
+            const inDownRight = new Point(width / 2 + 5, height / 2 + 5);
+            const inDownRightCp1 = new Point(height / 2, width + 10);
+            const inDownRightCp2 = new Point(width / 2 + 5, height / 2);
+            ctx.bezierCurveTo(inUpRightCp1.x, inUpRightCp1.y, inDownRightCp1.x, inDownRightCp1.y, inDownRight.x, inDownRight.y)
+
+            const baseRight = new Point(width / 2 + 10, width);
+            const baseRightCp = new Point(width / 2, width);
+            ctx.bezierCurveTo(inDownRightCp2.x, inDownRightCp2.y, baseRightCp.x, baseRightCp.y, baseRight.x, baseRight.y)
+
+            const baseLeft = new Point(width - baseRight.x, baseRight.y);
+            const baseLeftCp = new Point(width / 2, width);
+            ctx.lineTo(baseLeft.x, baseLeft.y)
+
+            const inDownLeft = new Point(width - inDownRight.x, inDownRight.y);
+            const inDownLeftCp1 = new Point(width / 2 - 5, height / 2);
+            const inDownLeftCp2 = new Point(width - inDownRightCp1.x, inDownRightCp1.y);
+            ctx.bezierCurveTo(baseLeftCp.x, baseLeftCp.y, inDownLeftCp1.x, inDownLeftCp1.y, inDownLeft.x, inDownLeft.y)
+
+            const inUpLeft = new Point(width - inUpRight.x, inUpRight.y);
+            const inUpLeftCp1 = new Point(width - inUpRightCp1.x, inUpRightCp1.y);
+            const inUpLeftCp2 = new Point(height / 5 - 10, width / 2 - 10);
+            ctx.bezierCurveTo(inDownLeftCp2.x, inDownLeftCp2.y, inUpLeftCp1.x, inUpLeftCp1.y, inUpLeft.x, inUpLeft.y);
+
+
+            ctx.bezierCurveTo(inUpLeftCp2.x, inUpLeftCp2.y, inUpRightCp2.x, inUpRightCp2.y, inUpRight.x, inUpRight.y);
+
+
+
+
+            ctx.closePath()
+            ctx.fill();
         }
 
 
         // 1 of hearts
         const h1x = createCanvas();
         drawHeartsOnCanvas(h1x)
-        addTextToCanvas(h1x, '1', 'red');
+        // addTextToCanvas(h1x, '1', 'red');
         // 2 of spades
         const s2x = createCanvas();
         drawSpadesOnCanvas(s2x)
-        addTextToCanvas(s2x, '2', 'black');
+        // addTextToCanvas(s2x, '2', 'black');
 
 
 
         // 4 of clubs
         const c4x = createCanvas();
         drawClubsOnCanvas(c4x)
-        addTextToCanvas(c4x, '4', 'black');
+        // addTextToCanvas(c4x, '4', 'black');
 
         // 3 of Diamonds
         const d3x = createCanvas();
