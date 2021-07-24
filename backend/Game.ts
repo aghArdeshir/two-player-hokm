@@ -11,7 +11,10 @@ import { isEqual } from "lodash";
 import { Deck } from "./Deck";
 import { Player } from "./Player";
 
-const TWO_SECONDS = 2000;
+// After players play, we stall for an amount of time so both players can see
+// what cards are played and who is the winner. This time is shorter in
+// development mode
+const STALL_DELAY = process.env.NODE_ENV === "development" ? 500 : 2000;
 
 export class Game {
   private player1: Player;
@@ -107,6 +110,28 @@ export class Game {
     }
   }
 
+  /**
+   * returns `true` if `firstPlayedCard` (first input) is more valuable card
+   *   than `secondPlayedCard` (second input) regarding game's `hokm`
+   * @param firstPlayedCard the card that is played first
+   * @param secondPlayedCard the card that is played second
+   */
+  compareCards(firstPlayedCard: ICard, secondPlayedCard: ICard) {
+    if (secondPlayedCard.format === firstPlayedCard.format) {
+      if (secondPlayedCard.number === 1) return true;
+      if (firstPlayedCard.number === 1) return false;
+      return secondPlayedCard.number > firstPlayedCard.number;
+    } else if (
+      secondPlayedCard.format === this.hokm ||
+      firstPlayedCard.format === this.hokm
+    ) {
+      return secondPlayedCard.format === this.hokm;
+    } else {
+      // the new played card has other (non-hokm) format
+      return false;
+    }
+  }
+
   public play(player: Player, card: ICard) {
     if (player.isTurn && player.hasCard(card)) {
       if (this.cardOnGround) {
@@ -116,7 +141,7 @@ export class Game {
         ) {
           return; // the card format is not as the `cardOnGround` format
         }
-        if (Deck.compareCards(this.cardOnGround, card, this.hokm)) {
+        if (this.compareCards(this.cardOnGround, card)) {
           this.lastWinner = player;
         } else {
           this.lastWinner = this.players.find((p) => p !== player);
@@ -216,7 +241,7 @@ export class Game {
         this.cardsOnGround = null;
 
         this.emitGameState();
-      }, TWO_SECONDS);
+      }, STALL_DELAY);
     }
 
     if (this.nextAction === GAME_ACTION.WAITING_FOR_NEXT_ROUND) {
@@ -238,7 +263,7 @@ export class Game {
           this.initiateNewGame();
         }
         this.emitGameState();
-      }, TWO_SECONDS);
+      }, STALL_DELAY);
     }
 
     const result = this.reportGameState();

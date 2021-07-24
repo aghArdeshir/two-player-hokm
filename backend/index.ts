@@ -1,10 +1,8 @@
-import { staticFileServer } from "./fileServerRouter";
 import { createServer as createHttpServer } from "http";
 import { Server as SocketServer, Socket } from "socket.io";
 import {
   GAME_ACTION,
   GAME_EVENTS,
-  GAME_PORT,
   IPlayerAction,
   SERVER_PATH,
   __uuid__,
@@ -15,6 +13,7 @@ import { v4 as uuid4 } from "uuid";
 import { ConnectedPlayer } from "./ConnectedPlayer";
 
 const TWO_SECONDS = 2000;
+const GAME_PORT = 3000;
 
 function DEV_LOG(...args) {
   console.log(
@@ -25,12 +24,20 @@ function DEV_LOG(...args) {
   );
 }
 
-const http = createHttpServer(staticFileServer);
+const http = createHttpServer();
 http.on("listening", () => {
   DEV_LOG("server listening on port", GAME_PORT);
 });
 
-const socketServer = new SocketServer(http, { path: SERVER_PATH });
+const IO_CORS_OPTIONS =
+  process.env.NODE_ENV === "development"
+    ? { origin: "*", methods: "*" }
+    : undefined;
+
+const socketServer = new SocketServer(http, {
+  path: SERVER_PATH,
+  cors: IO_CORS_OPTIONS,
+});
 
 const players = new Map<__uuid__, ConnectedPlayer>();
 const readyPlayersUuids: __uuid__[] = [];

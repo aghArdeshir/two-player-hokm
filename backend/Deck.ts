@@ -44,32 +44,4 @@ export class Deck {
   get length() {
     return this.cards.length;
   }
-
-  /**
-   * returns `true` if `firstPlayedCard` (first input) is more valuable card
-   *   than `secondPlayedCard` (second input) regarding game's `hokm` (third)
-   *   input
-   * @param firstPlayedCard the card that is played first
-   * @param secondPlayedCard the card that is played second
-   * @param hokm
-   */
-  static compareCards(
-    firstPlayedCard: ICard,
-    secondPlayedCard: ICard,
-    hokm: CARD_FORMAT
-  ) {
-    if (secondPlayedCard.format === firstPlayedCard.format) {
-      if (secondPlayedCard.number === 1) return true;
-      if (firstPlayedCard.number === 1) return false;
-      return secondPlayedCard.number > firstPlayedCard.number;
-    } else if (
-      secondPlayedCard.format === hokm ||
-      firstPlayedCard.format === hokm
-    ) {
-      return secondPlayedCard.format === hokm;
-    } else {
-      // the new played card has other (non-hokm) format
-      return false;
-    }
-  }
 }

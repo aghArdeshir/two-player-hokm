@@ -3,7 +3,6 @@ import {
   CARD_FORMAT,
   GAME_ACTION,
   GAME_EVENTS,
-  GAME_PORT,
   ICard,
   IGameState,
   IPlayerAction,
@@ -21,10 +20,7 @@ class SocketService {
   private socketConnection: Socket;
 
   constructor() {
-    this.socketConnection = io({
-      port: GAME_PORT.toString(),
-      path: SERVER_PATH,
-    });
+    this.socketConnection = this.createConnection();
 
     this.socketConnection.on(GAME_EVENTS.CONNECT, () => {
       setTimeout(() => {
@@ -41,6 +37,18 @@ class SocketService {
         document.body.dispatchEvent(new CustomEvent(SOCKET_CONNECTED_EVENT));
       }, TWO_SECONDS); //TODO: this is a bug, find out why this happens
     });
+  }
+
+  private createConnection() {
+    if (process.env.NODE_ENV === "development") {
+      return io("http://localhost:3000", {
+        path: SERVER_PATH,
+      });
+    } else {
+      return io({
+        path: SERVER_PATH,
+      });
+    }
   }
 
   static lastHeartBeatTimestamp = null;
