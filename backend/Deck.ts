@@ -30,11 +30,9 @@ export class Deck {
   }
 
   private shuffle() {
-    Array(100)
-      .fill(1)
-      .forEach(() => {
-        this.cards.sort(() => (Math.random() > 0.5 ? -1 : 1));
-      });
+    for (let i = 0; i < 100; i++) {
+      this.cards.sort(() => (Math.random() > 0.5 ? -1 : 1));
+    }
   }
 
   shift() {

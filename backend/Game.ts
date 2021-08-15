@@ -24,10 +24,10 @@ export class Game {
   private deck: Deck;
   private hokm: CARD_SYMBOL;
 
-  private cardToChoose: ICard;
-  private cardsToChoose: [ICard, ICard];
-  private cardOnGround: ICard | null;
-  private cardsOnGround: [ICard, ICard] | null;
+  private cardToChoose: ICard | undefined;
+  private cardsToChoose: [ICard, ICard] | undefined;
+  private cardOnGround: ICard | undefined;
+  private cardsOnGround: [ICard, ICard] | undefined;
 
   private nextAction: GAME_ACTION;
 
@@ -42,10 +42,14 @@ export class Game {
     this.setHaakem();
     this.initiateNewGame();
 
-    this.emitGameState();
+    this.emitCurrentGameState();
   }
 
   private initiateNewGame() {
+    this.resetGame();
+  }
+
+  private resetGame() {
     this.deck = new Deck();
     this.hokm = null;
     this.nextAction = GAME_ACTION.CHOOSE_HOKM;
@@ -68,7 +72,7 @@ export class Game {
 
   public terminate() {
     this.gameIsTerminated = true;
-    this.emitGameState();
+    this.emitCurrentGameState();
   }
 
   private get players() {
@@ -92,7 +96,7 @@ export class Game {
       this.hokm = symbol;
       this.nextAction = GAME_ACTION.DROP_TWO;
 
-      this.emitGameState();
+      this.emitCurrentGameState();
     }
   }
 
@@ -106,7 +110,7 @@ export class Game {
         this.nextAction = GAME_ACTION.PICK_CARDS;
       }
 
-      this.emitGameState();
+      this.emitCurrentGameState();
     }
   }
 
@@ -156,7 +160,7 @@ export class Game {
       }
     }
 
-    this.emitGameState();
+    this.emitCurrentGameState();
   }
 
   public acceptCard(player: Player, card?: ICard) {
@@ -178,11 +182,11 @@ export class Game {
         player.addCard(card);
         this.deck.shift();
         this.deck.shift();
-        this.emitGameState();
+        this.emitCurrentGameState();
       } else {
         if (!this.mustRefuseCard) {
           player.addCard(this.deck.shift());
-          this.emitGameState();
+          this.emitCurrentGameState();
         }
       }
     }
@@ -196,12 +200,12 @@ export class Game {
 
       if (!this.mustPickCard) {
         this.deck.shift();
-        this.emitGameState();
+        this.emitCurrentGameState();
       }
     }
   }
 
-  emitGameState() {
+  emitCurrentGameState() {
     if (this.gameIsTerminated) {
       this.EventEmitter.emit(GAME_EVENTS.END_GAME);
       return;
@@ -240,7 +244,7 @@ export class Game {
 
         this.cardsOnGround = null;
 
-        this.emitGameState();
+        this.emitCurrentGameState();
       }, STALL_DELAY);
     }
 
@@ -260,9 +264,9 @@ export class Game {
           this.player1.setWinner(false);
           this.player2.setWinner(false);
 
-          this.initiateNewGame();
+          this.resetGame();
         }
-        this.emitGameState();
+        this.emitCurrentGameState();
       }, STALL_DELAY);
     }
 
@@ -275,7 +279,7 @@ export class Game {
     listener: (state: { player1: IGameState; player2: IGameState }) => void
   ) {
     this.EventEmitter.addListener(GAME_EVENTS.GAME_STATE, listener);
-    this.emitGameState();
+    this.emitCurrentGameState();
   }
 
   public onEnd(listener: () => void) {

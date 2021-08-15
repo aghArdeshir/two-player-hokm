@@ -156,7 +156,7 @@ socketServer.on(GAME_EVENTS.CONNECT, (connection: Socket) => {
       if (connectedPlayer.getGame()) {
         DEV_LOG("emitting game state for existing player");
 
-        connectedPlayer.getGame().emitGameState();
+        connectedPlayer.getGame().emitCurrentGameState();
       } else {
         listenForUserRegister();
       }
