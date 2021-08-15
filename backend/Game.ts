@@ -39,7 +39,7 @@ export class Game {
     this.player1 = player1;
     this.player2 = player2;
 
-    this.setHaakem();
+    this.setHaakemRandomly();
     this.initiateNewGame();
 
     this.emitCurrentGameState();
@@ -87,7 +87,7 @@ export class Game {
     });
   }
 
-  private setHaakem() {
+  private setHaakemRandomly() {
     this.players[Math.random() > 0.5 ? 0 : 1].setHaakem(true);
   }
 
