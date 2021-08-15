@@ -12,7 +12,7 @@
     "build": "rm -rf dist; npm run build-frontend; npm run build-backend",
     "update": "git fetch; git pull; npm i; npm run build; pm2 restart all"
   },
-  "author": "",
+  "author": "Ardeshir Izadi (https://github.com/aghArdeshir)",
   "license": "ISC",
   "devDependencies": {
     "@types/lodash": "^4.14.168",
