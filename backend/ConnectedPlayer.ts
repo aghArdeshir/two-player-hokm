@@ -4,9 +4,11 @@ import { Game } from "./Game";
 import { Player } from "./Player";
 
 const ONE_MINUTE = 60000;
-const ONE_HOUR = 60 * 60 * 1000;
+const ONE_HOUR = ONE_MINUTE * 60;
 
 export class ConnectedPlayer {
+  static DEAD = "dead";
+
   private player: Player;
   private connection: Socket;
   private game: Game;
@@ -24,14 +26,14 @@ export class ConnectedPlayer {
   init() {
     this.intervalRef = setInterval(() => {
       if (new Date().getTime() - this.lastActiveTime.getTime() > ONE_HOUR) {
-        this.EventEmitter.emit("dead");
+        this.EventEmitter.emit(ConnectedPlayer.DEAD);
         clearInterval(this.intervalRef);
       }
     }, ONE_MINUTE);
   }
 
   onDead(callback: (player: ConnectedPlayer) => void) {
-    this.EventEmitter.on("dead", () => callback(this));
+    this.EventEmitter.on(ConnectedPlayer.DEAD, () => callback(this));
   }
 
   setConnection(connection: Socket) {

@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-import { CARD_FORMAT, ICard } from "../common.typings";
+import { CARD_SYMBOL, ICard } from "../common.typings";
 
 export class Player {
   username: string;
@@ -42,8 +42,8 @@ export class Player {
     return this.cards.findIndex((c) => isEqual(c, card)) > -1;
   }
 
-  public hasCardOf(format: CARD_FORMAT) {
-    return !!this.cards.find((c) => c.format === format);
+  public hasCardOf(symbol: CARD_SYMBOL) {
+    return !!this.cards.find((c) => c.symbol === symbol);
   }
 
   public setWinner(state: boolean) {

@@ -1,4 +1,4 @@
-import { CARD_FORMAT, ICard, ICardNumber } from "../common.typings";
+import { CARD_SYMBOL, ICard, ICardNumber } from "../common.typings";
 
 export class Deck {
   public cards: ICard[] = [];
@@ -10,18 +10,18 @@ export class Deck {
   private fillDeck() {
     for (let i: ICardNumber = 1; i !== 14; i++) {
       [
-        CARD_FORMAT.SPADES,
-        CARD_FORMAT.HEARTS,
-        CARD_FORMAT.CLUBS,
-        CARD_FORMAT.DIAMONDS,
-      ].forEach((format) => {
+        CARD_SYMBOL.SPADES,
+        CARD_SYMBOL.HEARTS,
+        CARD_SYMBOL.CLUBS,
+        CARD_SYMBOL.DIAMONDS,
+      ].forEach((symbol) => {
         if (
           i === 2 &&
-          (format === CARD_FORMAT.DIAMONDS || format === CARD_FORMAT.CLUBS)
+          (symbol === CARD_SYMBOL.DIAMONDS || symbol === CARD_SYMBOL.CLUBS)
         ) {
-          // do nothing, we don't want these 2 cards in our deck
+          // do nothing, we don't want these 2 cards in our deck for 2 player hokm
         } else {
-          this.cards.push({ number: i, format });
+          this.cards.push({ number: i, symbol });
         }
       });
     }

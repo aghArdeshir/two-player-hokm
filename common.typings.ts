@@ -1,7 +1,6 @@
 export enum GAME_EVENTS {
   CONNECT = "connect",
   REGISTER = "register",
-  ERROR = "error",
   GAME_STATE = "game-state", // Backend tells UI that I'm emitting a game state
   ACTION = "action", // UI tells Backend that I am emitting a game/plyer action
   MANUAL_HEARTBEAT = "manual-heartbeat",
@@ -14,29 +13,29 @@ export const SERVER_PATH = "/hokm/server";
 
 export type ICardNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 
-export enum CARD_FORMAT {
+export enum CARD_SYMBOL {
   SPADES = "Spades",
   HEARTS = "Hearts",
   CLUBS = "Clubs",
   DIAMONDS = "Diamonds",
 }
 
-export const CARD_FORMAT_SUIT_ORDER = [
-  CARD_FORMAT.SPADES,
-  CARD_FORMAT.HEARTS,
-  CARD_FORMAT.CLUBS,
-  CARD_FORMAT.DIAMONDS,
+export const CARD_SYMBOL_SUIT_ORDER = [
+  CARD_SYMBOL.SPADES,
+  CARD_SYMBOL.HEARTS,
+  CARD_SYMBOL.CLUBS,
+  CARD_SYMBOL.DIAMONDS,
 ];
 
 export type ICard = {
   number: ICardNumber;
-  format: CARD_FORMAT;
+  symbol: CARD_SYMBOL;
 };
 
 // ============================================================================
 
 export enum GAME_ACTION {
-  CHOOSE_HOKM = "CHOOSE_HOKM", // the player who `isHaakem` should choose one format as hokm
+  CHOOSE_HOKM = "CHOOSE_HOKM", // the player who `isHaakem` should choose one symbol as hokm
   DROP_TWO = "DROP_TWO", // each player must drop two cards out at the beginning
   PICK_CARDS = "PICK_CARDS", // `cardToChoose` is shown to user with (optionally) two options to pick or refuse
   PLAY = "PLAY", // if player `isTurn`, then should play (optionally there is a `cardOnGround` which is the card that other player has played)
@@ -65,7 +64,7 @@ type IPlayer = IOtherPlayer & {
 export type ICommonGameState = {
   player: IPlayer;
   otherPlayer: IOtherPlayer;
-  hokm: CARD_FORMAT | null;
+  hokm: CARD_SYMBOL | null;
   nextAction: GAME_ACTION;
 };
 
@@ -113,7 +112,7 @@ export type IGameState =
 export type IPlayerAction =
   | {
       action: GAME_ACTION.CHOOSE_HOKM;
-      hokm: CARD_FORMAT;
+      hokm: CARD_SYMBOL;
     }
   | {
       action: GAME_ACTION.DROP_TWO;

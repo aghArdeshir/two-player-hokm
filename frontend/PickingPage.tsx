@@ -68,7 +68,7 @@ export default function PickingPage() {
               <Card
                 card={card}
                 onClick={() => socketService.pickCard(card)}
-                key={card.format + card.number}
+                key={card.symbol + card.number}
               />
             ))}
           </div>

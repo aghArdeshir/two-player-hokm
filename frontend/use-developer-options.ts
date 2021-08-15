@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import {
-  CARD_FORMAT_SUIT_ORDER,
+  CARD_SYMBOL_SUIT_ORDER,
   GAME_ACTION,
   IGameState,
 } from "../common.typings";
@@ -19,7 +19,7 @@ export function useDeveloperOptions(gameState: IGameState | null) {
       gameState?.player.isHaakem
     ) {
       const hokmIndex = Math.floor(Math.random() * 4);
-      socketService.selectHokm(CARD_FORMAT_SUIT_ORDER[hokmIndex]);
+      socketService.selectHokm(CARD_SYMBOL_SUIT_ORDER[hokmIndex]);
     }
 
     if (
@@ -61,11 +61,11 @@ export function useDeveloperOptions(gameState: IGameState | null) {
       gameState?.player.isTurn
     ) {
       if (gameState?.cardOnGround) {
-        const cardWithTheSameFormat = gameState?.player.cards.find(
-          (card) => card.format === gameState?.cardOnGround.format
+        const cardWithTheSameSymbol = gameState?.player.cards.find(
+          (card) => card.symbol === gameState?.cardOnGround.symbol
         );
-        if (cardWithTheSameFormat) {
-          socketService.play(cardWithTheSameFormat);
+        if (cardWithTheSameSymbol) {
+          socketService.play(cardWithTheSameSymbol);
         } else {
           socketService.play(gameState?.player.cards[0]);
         }

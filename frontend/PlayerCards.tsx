@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { GameStateContext } from "./GameStateContext";
-import { CARD_FORMAT_SUIT_ORDER, GAME_ACTION, ICard } from "../common.typings";
+import { CARD_SYMBOL_SUIT_ORDER, GAME_ACTION, ICard } from "../common.typings";
 import Card from "./Card";
 import { isEqual } from "lodash";
 import { socketService } from "./socket-service";
@@ -23,20 +23,20 @@ export default function PlayerCards() {
       <div className="player-cards">
         {gameState.player.cards
           .sort((cardA, cardB) => {
-            if (cardA.format === cardB.format) {
+            if (cardA.symbol === cardB.symbol) {
               if (cardA.number === 1) return -1;
               if (cardB.number === 1) return 1;
               return cardA.number > cardB.number ? -1 : 1;
             } else {
               if (
-                CARD_FORMAT_SUIT_ORDER.indexOf(cardA.format) <
-                CARD_FORMAT_SUIT_ORDER.indexOf(cardB.format)
+                CARD_SYMBOL_SUIT_ORDER.indexOf(cardA.symbol) <
+                CARD_SYMBOL_SUIT_ORDER.indexOf(cardB.symbol)
               ) {
                 return -1;
               }
               if (
-                CARD_FORMAT_SUIT_ORDER.indexOf(cardB.format) <
-                CARD_FORMAT_SUIT_ORDER.indexOf(cardA.format)
+                CARD_SYMBOL_SUIT_ORDER.indexOf(cardB.symbol) <
+                CARD_SYMBOL_SUIT_ORDER.indexOf(cardA.symbol)
               ) {
                 return 1;
               }
@@ -44,7 +44,7 @@ export default function PlayerCards() {
           })
           .map((card: ICard, index: number) => (
             <Card
-              key={card.format + card.number}
+              key={card.symbol + card.number}
               card={card}
               style={{
                 transform: isChosen(card) ? "translateY(-10px)" : "unset",
@@ -72,9 +72,9 @@ export default function PlayerCards() {
                 if (
                   gameState.nextAction === GAME_ACTION.PLAY &&
                   gameState.player.isTurn &&
-                  (card.format === gameState.cardOnGround?.format ||
+                  (card.symbol === gameState.cardOnGround?.symbol ||
                     !gameState.player.cards.find(
-                      (c) => c.format === gameState.cardOnGround?.format
+                      (c) => c.symbol === gameState.cardOnGround?.symbol
                     ) ||
                     !gameState.cardOnGround)
                 ) {

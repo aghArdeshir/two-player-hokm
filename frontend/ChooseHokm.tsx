@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import {
-  CARD_FORMAT,
+  CARD_SYMBOL,
   GAME_ACTION,
   IGameState,
   IGameStateForHokmChoosing,
 } from "../common.typings";
-import FormatDrawer from "./FormatDrawer";
+import SymbolDrawer from "./SymbolDrawer";
 import { GameStateContext } from "./GameStateContext";
 import { socketService } from "./socket-service";
 
@@ -23,19 +23,19 @@ export default function ChooseHokm() {
   return (
     <>
       {[
-        CARD_FORMAT.SPADES,
-        CARD_FORMAT.HEARTS,
-        CARD_FORMAT.CLUBS,
-        CARD_FORMAT.DIAMONDS,
-      ].map((format) => (
+        CARD_SYMBOL.SPADES,
+        CARD_SYMBOL.HEARTS,
+        CARD_SYMBOL.CLUBS,
+        CARD_SYMBOL.DIAMONDS,
+      ].map((symbol) => (
         <button
-          key={format}
-          onClick={() => socketService.selectHokm(format)}
-          className={"choose-hokm-button choose-hokm-" + format.toLowerCase()}
+          key={symbol}
+          onClick={() => socketService.selectHokm(symbol)}
+          className={"choose-hokm-button choose-hokm-" + symbol.toLowerCase()}
         >
-          <FormatDrawer format={format} />
+          <SymbolDrawer symbol={symbol} />
           <span style={{ width: 10 }}>{/* divider */}</span>
-          {format}
+          {symbol}
         </button>
       ))}
     </>

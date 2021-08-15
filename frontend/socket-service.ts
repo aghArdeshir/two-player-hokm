@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import {
-  CARD_FORMAT,
+  CARD_SYMBOL,
   GAME_ACTION,
   GAME_EVENTS,
   ICard,
@@ -108,7 +108,6 @@ class SocketService {
   }
 
   setupListeners() {
-    this.socketConnection.on(GAME_EVENTS.ERROR, console.error);
     this.socketConnection.on(GAME_EVENTS.END_GAME, () => {
       window.location.reload();
     });
@@ -122,10 +121,10 @@ class SocketService {
     this.socketConnection.on(eventName, listener);
   }
 
-  selectHokm(format: CARD_FORMAT) {
+  selectHokm(symbol: CARD_SYMBOL) {
     const action: IPlayerAction = {
       action: GAME_ACTION.CHOOSE_HOKM,
-      hokm: format,
+      hokm: symbol,
     };
     this.socketConnection.emit(GAME_EVENTS.ACTION, action);
   }

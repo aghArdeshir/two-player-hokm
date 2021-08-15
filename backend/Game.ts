@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import {
-  CARD_FORMAT,
+  CARD_SYMBOL,
   GAME_EVENTS,
   ICard,
   GAME_ACTION,
@@ -22,7 +22,7 @@ export class Game {
   private lastWinner: Player;
 
   private deck: Deck;
-  private hokm: CARD_FORMAT;
+  private hokm: CARD_SYMBOL;
 
   private cardToChoose: ICard;
   private cardsToChoose: [ICard, ICard];
@@ -87,9 +87,9 @@ export class Game {
     this.players[Math.random() > 0.5 ? 0 : 1].setHaakem(true);
   }
 
-  public setHokm(player: Player, format: CARD_FORMAT) {
+  public setHokm(player: Player, symbol: CARD_SYMBOL) {
     if (player.isHaakem) {
-      this.hokm = format;
+      this.hokm = symbol;
       this.nextAction = GAME_ACTION.DROP_TWO;
 
       this.emitGameState();
@@ -117,17 +117,17 @@ export class Game {
    * @param secondPlayedCard the card that is played second
    */
   compareCards(firstPlayedCard: ICard, secondPlayedCard: ICard) {
-    if (secondPlayedCard.format === firstPlayedCard.format) {
+    if (secondPlayedCard.symbol === firstPlayedCard.symbol) {
       if (secondPlayedCard.number === 1) return true;
       if (firstPlayedCard.number === 1) return false;
       return secondPlayedCard.number > firstPlayedCard.number;
     } else if (
-      secondPlayedCard.format === this.hokm ||
-      firstPlayedCard.format === this.hokm
+      secondPlayedCard.symbol === this.hokm ||
+      firstPlayedCard.symbol === this.hokm
     ) {
-      return secondPlayedCard.format === this.hokm;
+      return secondPlayedCard.symbol === this.hokm;
     } else {
-      // the new played card has other (non-hokm) format
+      // the new played card has other (non-hokm) symbol
       return false;
     }
   }
@@ -136,10 +136,10 @@ export class Game {
     if (player.isTurn && player.hasCard(card)) {
       if (this.cardOnGround) {
         if (
-          card.format !== this.cardOnGround.format && // is this condition necessary?
-          player.hasCardOf(this.cardOnGround.format)
+          card.symbol !== this.cardOnGround.symbol && // is this condition necessary?
+          player.hasCardOf(this.cardOnGround.symbol)
         ) {
-          return; // the card format is not as the `cardOnGround` format
+          return; // the card symbol is not as the `cardOnGround` symbol
         }
         if (this.compareCards(this.cardOnGround, card)) {
           this.lastWinner = player;

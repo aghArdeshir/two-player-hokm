@@ -1,19 +1,19 @@
-import { CARD_FORMAT } from "../common.typings";
+import { CARD_SYMBOL } from "../common.typings";
 
-export default function FormatDrawer(props: { format: CARD_FORMAT }) {
+export default function SymbolDrawer(props: { symbol: CARD_SYMBOL }) {
   let character: string;
 
-  switch (props.format) {
-    case CARD_FORMAT.SPADES:
+  switch (props.symbol) {
+    case CARD_SYMBOL.SPADES:
       character = "♠";
       break;
-    case CARD_FORMAT.HEARTS:
+    case CARD_SYMBOL.HEARTS:
       character = "♥";
       break;
-    case CARD_FORMAT.CLUBS:
+    case CARD_SYMBOL.CLUBS:
       character = "♣";
       break;
-    case CARD_FORMAT.DIAMONDS:
+    case CARD_SYMBOL.DIAMONDS:
       character = "♦";
       break;
   }
