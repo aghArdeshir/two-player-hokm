@@ -9,12 +9,12 @@
     "start": "concurrently \"npm run dev-frontend\" \"npm run dev-backend\"",
     "build-frontend": "parcel build frontend/index.html --public-url . --out-dir dist/backend/hokm/; cp frontend/favicon.ico dist/backend/hokm/",
     "build-backend": "tsc -p tsconfig.json",
-    "build": "rm -rf dist; npm run build-frontend; npm run build-backend",
-    "update": "git fetch; git pull; npm i; npm run build; pm2 restart all"
+    "build": "rm -rf dist; npm run build-frontend; npm run build-backend"
   },
   "author": "Ardeshir Izadi (https://github.com/aghArdeshir)",
   "license": "ISC",
   "devDependencies": {
+    "@parcel/transformer-image": "^2.0.0-rc.0",
     "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.25",
     "@types/react": "^17.0.1",
@@ -25,9 +25,8 @@
     "eslint": "^7.18.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "parcel": "^1.12.4",
-    "parcel-bundler": "^1.12.4",
-    "pm2": "^4.5.1",
+    "parcel": "^2.0.0-rc.0",
+    "parcel-bundler": "^1.12.5",
     "ts-node-dev": "^1.0.0",
     "typescript": "^4.1.2"
   },
