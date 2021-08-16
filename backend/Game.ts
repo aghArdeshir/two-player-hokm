@@ -258,7 +258,7 @@ export class Game {
           this.player2.setHaakem(true);
         }
 
-        if (this.player1.wins === 7 || this.player2.wins === 7) {
+        if (this.player1.wins >= 7 || this.player2.wins >= 7) {
           this.nextAction = GAME_ACTION.FINISHED;
         } else {
           this.player1.setWinner(false);
