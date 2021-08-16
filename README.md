@@ -55,7 +55,7 @@ I faced different challenges, easy & hard. I list the ones that I personally fou
 
 # Deployment
 
-- First, the project heavily depended on hard-coded config, like it must have been server from `/hokm/` prefix to work (as I deployed it on my personal domain, in `/hokm` url), or it has embedded script for restarting project using `pm2`. Also it heavily depended on being served from a specified nginx config (to redirect all from `/hokm` to `/hokm/`). Yep! This game did not work without that last `/` specified after `/hokm`
+- TODO
 
 <br />
 <br />
@@ -79,7 +79,6 @@ Then open two browsers, both at `localhost:3000/hokm/`.
 - draw cards in canvas by yourself and publish as web-components
 - pwa
 - decide: making componenets know themselves if they should be rendered and then rendering all of them ??? VERSUS ::: decide if to render components or not ? and render them with cleaner code inside. and write about it in `Clean Code` section.
-- remoe game deployment stuff from project. things like obligating serve from `/hokm/` prefix and usage of `pm2`
 - sanitize `staticFileServer` to serve only valid files. no security hole!
 - show other player's cards on finish on each round
 - show if otherplayer is offline or has a weak connection
