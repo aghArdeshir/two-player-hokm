@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "dist-server",
     "jsx": "react-jsx",
     "target": "ES6",
     "moduleResolution": "Node",
     "module": "CommonJS",
-    
   },
-  "files": ["backend/index.ts"],
+  "files": [
+    "backend/index.ts"
+  ],
 }
